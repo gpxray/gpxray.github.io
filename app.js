@@ -6662,6 +6662,13 @@ function populateRaceLanding(config) {
         }
         if (raceLocation) raceLocation.textContent = config.location || '';
         
+        // Set website link if available
+        const raceWebsiteLink = document.getElementById('raceWebsiteLink');
+        if (raceWebsiteLink && config.website) {
+            raceWebsiteLink.href = config.website;
+            raceWebsiteLink.style.display = 'inline-block';
+        }
+        
         // Set logo if available
         if (raceLogo && config.logo) {
             raceLogo.innerHTML = `<img src="${config.logo}" alt="${config.name} logo">`;
