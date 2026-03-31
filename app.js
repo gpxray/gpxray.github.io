@@ -23,7 +23,8 @@ let preStoredSurfaceData = null; // Pre-computed surface data from race config
 // Environment detection
 const IS_DEV = window.location.hostname === 'localhost' || 
                window.location.hostname === '127.0.0.1' ||
-               window.location.hostname.includes('dev.gpxray');
+               window.location.hostname.includes('gpxray-dev') ||
+               window.location.pathname.includes('gpxray-dev');
 
 // API Configuration (auto-detects environment)
 const API_CONFIG = {
@@ -702,7 +703,25 @@ async function loadDemoGpx() {
         console.log('Demo GPX content length:', gpxContent.length);
         currentRouteName = 'ZUT Garmisch-Partenkirchen Trail';
         isDemoMode = true; // Mark as demo mode
+        
+        // Pre-stored surface profile for demo (75% trail, 22% road, 2% technical)
+        preStoredSurfaceData = [
+            { startKm: 0, endKm: 3.21, surface: 'road' },
+            { startKm: 3.21, endKm: 3.66, surface: 'technical' },
+            { startKm: 3.66, endKm: 4.31, surface: 'trail' },
+            { startKm: 4.31, endKm: 4.92, surface: 'road' },
+            { startKm: 4.92, endKm: 25.76, surface: 'trail' },
+            { startKm: 25.76, endKm: 25.97, surface: 'technical' },
+            { startKm: 25.97, endKm: 27.48, surface: 'road' },
+            { startKm: 27.48, endKm: 27.68, surface: 'unknown' },
+            { startKm: 27.68, endKm: 28.1, surface: 'trail' },
+            { startKm: 28.1, endKm: 29.0, surface: 'road' }
+        ];
+        
         parseGPX(gpxContent);
+        
+        // Auto-apply surface analysis
+        await fetchSurfaceData();
         
         // Add sample AID stations for demo
         aidStations = [
