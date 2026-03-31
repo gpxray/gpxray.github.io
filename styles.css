@@ -3620,6 +3620,14 @@ h2 {
     box-shadow: 0 5px 20px rgba(155, 89, 182, 0.4);
 }
 
+.story-btn {
+    background: linear-gradient(135deg, #E1306C 0%, #C13584 50%, #833AB4 100%);
+}
+
+.story-btn:hover {
+    box-shadow: 0 5px 20px rgba(225, 48, 108, 0.4);
+}
+
 .crew-btn {
     background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
 }

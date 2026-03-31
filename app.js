@@ -4588,6 +4588,7 @@ function setupExport() {
     document.getElementById('exportCsv').addEventListener('click', exportToCsv);
     document.getElementById('exportPdf').addEventListener('click', exportToPdf);
     document.getElementById('exportShareCard').addEventListener('click', exportShareCard);
+    document.getElementById('exportStoryCard')?.addEventListener('click', exportStoryCard);
     document.getElementById('exportCrewCard')?.addEventListener('click', exportCrewCard);
     document.getElementById('exportCrewPdf')?.addEventListener('click', exportCrewPdf);
 }
@@ -5357,6 +5358,238 @@ async function exportShareCard() {
         btn.textContent = originalText;
         btn.disabled = false;
     }
+}
+
+// Instagram Story Card Export - Fun shareable story with witty time-based statements
+async function exportStoryCard() {
+    if (!gpxData || segments.length === 0) {
+        alert('Please load a GPX file and calculate your race strategy first.');
+        return;
+    }
+
+    const btn = document.getElementById('exportStoryCard');
+    const originalText = btn.textContent;
+    btn.textContent = t('btn.creating');
+    btn.disabled = true;
+
+    try {
+        // Get race info
+        const unitLabel = useMetric ? 'km' : 'mi';
+        const distance = useMetric ? gpxData.totalDistance : gpxData.totalDistance * KM_TO_MILES;
+        const totalTimeText = document.getElementById('totalTime')?.textContent || '-';
+        const timeInput = document.getElementById('raceStartTime');
+        const startTime = timeInput?.value || '06:00';
+
+        // Get finish clock time
+        let finishClockTime = '';
+        const splitsTable = document.getElementById('splitsTable');
+        if (splitsTable) {
+            const allRows = splitsTable.querySelectorAll('tbody tr');
+            if (allRows.length > 0) {
+                const lastRow = allRows[allRows.length - 1];
+                const cells = lastRow.querySelectorAll('td');
+                finishClockTime = cells[9]?.textContent || '';
+            }
+        }
+
+        // Parse total time to get hours for statement selection
+        let totalHours = 0;
+        const timeMatch = totalTimeText.match(/(\d+):(\d+)/);
+        if (timeMatch) {
+            totalHours = parseInt(timeMatch[1]) + parseInt(timeMatch[2]) / 60;
+        }
+
+        // Parse finish clock time for statement
+        let finishHour = 12;
+        let isNextDay = finishClockTime.includes('+1') || finishClockTime.includes('+2');
+        const clockMatch = finishClockTime.match(/(\d+):(\d+)/);
+        if (clockMatch) {
+            finishHour = parseInt(clockMatch[1]);
+        }
+
+        // Generate witty statement based on finish time
+        let wittyStatement = getWittyStatement(finishHour, isNextDay, totalHours);
+
+        // Format target time (simplified)
+        let targetTime = totalTimeText.split('(')[0].trim();
+        if (targetTime.includes(':')) {
+            const parts = targetTime.split(':');
+            if (parts.length >= 2) {
+                const h = parseInt(parts[0]);
+                targetTime = `Sub ${h + 1}h`;
+            }
+        }
+
+        let routeName = currentRouteName || 'My Race';
+        if (routeName.length > 30) {
+            routeName = routeName.substring(0, 27) + '...';
+        }
+
+        // Create Instagram Story sized card (1080x1920)
+        const card = document.createElement('div');
+        card.id = 'storyCardContainer';
+        card.style.cssText = `
+            position: fixed;
+            left: -9999px;
+            top: 0;
+            width: 540px;
+            height: 960px;
+            background: linear-gradient(180deg, #0a1628 0%, #0d1f3c 50%, #0a1628 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: white;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 60px 40px;
+        `;
+
+        card.innerHTML = `
+            <div style="flex: 0;"></div>
+            
+            <div style="text-align: center;">
+                <!-- Mountain Logo -->
+                <div style="margin-bottom: 40px;">
+                    <img src="img/gpxray-icon-mountain.png" style="height: 120px; width: auto; opacity: 0.9;">
+                </div>
+                
+                <!-- Witty Statement -->
+                <div style="font-size: 32px; font-weight: 600; font-style: italic; color: #00E5FF; line-height: 1.4; max-width: 420px; margin-bottom: 60px;">
+                    ${wittyStatement}
+                </div>
+                
+                <!-- Race Info -->
+                <div style="text-align: left; max-width: 350px;">
+                    <div style="font-size: 28px; font-weight: 700; margin-bottom: 12px;">My ${routeName} Strategy</div>
+                    <div style="font-size: 24px; font-weight: 500; color: #ddd; margin-bottom: 8px;">${distance.toFixed(0)}${unitLabel} | ${gpxData.elevationGain.toFixed(0)}m</div>
+                    <div style="font-size: 22px; color: #aaa; margin-bottom: 6px;">Start: ${formatStartTime(startTime)}</div>
+                    <div style="font-size: 22px; color: #aaa;">Target: ${targetTime}</div>
+                </div>
+            </div>
+            
+            <!-- GPXray Branding -->
+            <div style="text-align: center;">
+                <div style="font-size: 14px; color: #666; margin-bottom: 6px;">Strategy created by</div>
+                <div style="font-size: 24px; font-weight: 700; color: #00E5FF; letter-spacing: 1px;">GPXray</div>
+            </div>
+        `;
+
+        document.body.appendChild(card);
+
+        // Use html2canvas to capture (scale 2x for retina)
+        const canvas = await html2canvas(card, {
+            width: 540,
+            height: 960,
+            scale: 2,
+            backgroundColor: null,
+            logging: false
+        });
+
+        document.body.removeChild(card);
+
+        // Download as PNG
+        const link = document.createElement('a');
+        const fileName = (currentRouteName || 'race_story').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+        link.download = `${fileName}_story.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+
+        trackEvent('export_story_card', { race_name: currentRouteName || 'unknown' });
+
+    } catch (error) {
+        console.error('Story card generation error:', error);
+        alert('Failed to generate story card. Please try again.');
+    } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+    }
+}
+
+// Get witty statement based on finish time
+function getWittyStatement(finishHour, isNextDay, totalHours) {
+    // Next day or very long races (24h+)
+    if (isNextDay || totalHours >= 24) {
+        const statements = [
+            "See you tomorrow.<br>Keep the coffee warm.",
+            "Don't wait up.<br>This one's gonna take a while.",
+            "I'll be back... eventually.<br>Save me some breakfast.",
+            "Gone running.<br>Back in a day or so."
+        ];
+        return statements[Math.floor(Math.random() * statements.length)];
+    }
+    
+    // Very early morning finish (before 7am)
+    if (finishHour < 7) {
+        const statements = [
+            "I'll be done before you wake up.<br>Don't worry about me.",
+            "Back before breakfast.<br>Just a quick one.",
+            "Early bird gets the medal.<br>See you at sunrise."
+        ];
+        return statements[Math.floor(Math.random() * statements.length)];
+    }
+    
+    // Morning finish (7am - 11am)
+    if (finishHour < 11) {
+        const statements = [
+            "Save me some breakfast.<br>I'll be there by mid-morning.",
+            "I'll be back for brunch.<br>Make it a big one.",
+            "Morning run, they said.<br>Should be done by 10ish."
+        ];
+        return statements[Math.floor(Math.random() * statements.length)];
+    }
+    
+    // Midday finish (11am - 2pm)
+    if (finishHour < 14) {
+        const statements = [
+            "Don't wait for lunch.<br>I'll grab something on the trail.",
+            "Back by lunchtime.<br>With a story or two.",
+            "Noon-ish finish planned.<br>Keep the sandwiches ready."
+        ];
+        return statements[Math.floor(Math.random() * statements.length)];
+    }
+    
+    // Afternoon finish (2pm - 6pm)
+    if (finishHour < 18) {
+        const statements = [
+            "Back for happy hour.<br>First round's on me.",
+            "Afternoon finish ahead.<br>Then straight to the couch.",
+            "Should be done by dinner prep.<br>Don't start without me."
+        ];
+        return statements[Math.floor(Math.random() * statements.length)];
+    }
+    
+    // Evening finish (6pm - 9pm)
+    if (finishHour < 21) {
+        const statements = [
+            "I'll be back for dinner.<br>Maybe.",
+            "Evening finish planned.<br>Save me a plate.",
+            "Don't wait for me at dinner.<br>But do save dessert."
+        ];
+        return statements[Math.floor(Math.random() * statements.length)];
+    }
+    
+    // Night finish (9pm - midnight)
+    if (finishHour < 24) {
+        const statements = [
+            "I'll be back at midnight.<br>Go ahead and chill the beer.",
+            "Late night finish incoming.<br>Keep the lights on.",
+            "Don't wait up.<br>But maybe leave a snack out.",
+            "Back by bedtime.<br>Hopefully."
+        ];
+        return statements[Math.floor(Math.random() * statements.length)];
+    }
+    
+    // Default
+    return "Out for a run.<br>Back when I'm done.";
+}
+
+// Format start time nicely
+function formatStartTime(time) {
+    const [h, m] = time.split(':').map(Number);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const hour12 = h % 12 || 12;
+    return `${hour12}:${m.toString().padStart(2, '0')} ${ampm}`;
 }
 
 // Crew Card Export - Simple card for sharing AID station schedule with supporters
