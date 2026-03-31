@@ -4253,20 +4253,20 @@ function updateHeroSection(totalTime) {
         if (heroDescentInsight) {
             if (ddl.paceLossSeconds >= 25 && ddl.fatigueOnsetKm !== null) {
                 const text = typeof t === 'function'
-                    ? `⚠ ${t('ddl.expectSlower', { km: ddl.fatigueOnsetKm, min: ddl.paceLossRange.min, max: ddl.paceLossRange.max })}`
-                    : `⚠ Expect slower descents after KM${ddl.fatigueOnsetKm} (+${ddl.paceLossRange.min}-${ddl.paceLossRange.max} sec/km)`;
+                    ? `⚠ ${t('ddl.expectSlower', { km: Math.round(ddl.fatigueOnsetKm), min: ddl.paceLossRange.min, max: ddl.paceLossRange.max })}`
+                    : `⚠ Expect slower descents after KM${Math.round(ddl.fatigueOnsetKm)} (+${ddl.paceLossRange.min}-${ddl.paceLossRange.max} sec/km)`;
                 heroDescentInsight.textContent = text;
                 heroDescentInsight.className = 'hero-metric-insight warning';
             } else if (ddl.paceLossSeconds >= 10 && ddl.fatigueOnsetKm !== null) {
                 const text = typeof t === 'function'
-                    ? t('ddl.expectSlower', { km: ddl.fatigueOnsetKm, min: ddl.paceLossRange.min, max: ddl.paceLossRange.max })
-                    : `Expect slower descents after KM${ddl.fatigueOnsetKm} (+${ddl.paceLossRange.min}-${ddl.paceLossRange.max} sec/km)`;
+                    ? t('ddl.expectSlower', { km: Math.round(ddl.fatigueOnsetKm), min: ddl.paceLossRange.min, max: ddl.paceLossRange.max })
+                    : `Expect slower descents after KM${Math.round(ddl.fatigueOnsetKm)} (+${ddl.paceLossRange.min}-${ddl.paceLossRange.max} sec/km)`;
                 heroDescentInsight.textContent = text;
                 heroDescentInsight.className = 'hero-metric-insight';
             } else if (ddl.paceLossSeconds >= 5 && ddl.fatigueOnsetKm !== null) {
                 const text = typeof t === 'function'
-                    ? t('ddl.mildSlowdown', { km: ddl.fatigueOnsetKm })
-                    : `Mild downhill slowdown after KM${ddl.fatigueOnsetKm}`;
+                    ? t('ddl.mildSlowdown', { km: Math.round(ddl.fatigueOnsetKm) })
+                    : `Mild downhill slowdown after KM${Math.round(ddl.fatigueOnsetKm)}`;
                 heroDescentInsight.textContent = text;
                 heroDescentInsight.className = 'hero-metric-insight';
             } else {
