@@ -307,31 +307,32 @@
                                     <!-- Populated by JS -->
                                 </div>
                             </div>
-                            <div class="cutoff-warning" id="cutoffWarning" style="display: none;">
-                                <span class="cutoff-icon">⚠️</span>
-                                <span class="cutoff-text">Cutoff: <span id="cutoffTime">-</span></span>
+                            <div class="cutoff-weather-row">
+                                <div class="cutoff-warning" id="cutoffWarning" style="display: none;">
+                                    <span class="cutoff-icon">✓</span>
+                                    <span class="cutoff-text">Cutoff: <span id="cutoffTime">-</span></span>
+                                </div>
+                                <span class="cutoff-weather-divider" id="cutoffWeatherDivider" style="display: none;">·</span>
+                                <div class="weather-adjusted-inline" id="weatherAdjustedTime" style="display: none;">
+                                    <span class="weather-inline-text">🌡️ <span id="weatherAdjustedValue">+0 min</span> for weather</span>
+                                    <span class="info-tooltip weather-info-tooltip" tabindex="0">
+                                        ⓘ
+                                        <span class="info-tooltip-content">
+                                            <strong data-i18n="weather.title">Weather Impact</strong><br>
+                                            <span data-i18n="weather.description">Race day forecast affects your finish time.</span><br><br>
+                                            <strong data-i18n="weather.factors">Factors:</strong><br>
+                                            • Heat >15°C: +0.5%/°C<br>
+                                            • Cold <5°C: +0.3%/°C<br>
+                                            • Rain: +2-4% (wet trails)<br>
+                                            • Wind >30km/h: +1-2%
+                                        </span>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                         <div class="hero-distance">
                             <span class="hero-distance-value" id="heroDistance">-</span>
                         </div>
-                    </div>
-                    <div class="weather-adjusted-time" id="weatherAdjustedTime" style="display: none;">
-                        <span class="weather-adjusted-label">🌡️ Weather-Adjusted</span>
-                        <span class="weather-adjusted-value" id="weatherAdjustedValue">-</span>
-                        <span class="weather-adjusted-info" id="weatherAdjustedInfo"></span>
-                        <span class="info-tooltip weather-info-tooltip" tabindex="0">
-                            ⓘ
-                            <span class="info-tooltip-content">
-                                <strong data-i18n="weather.title">Weather Impact</strong><br>
-                                <span data-i18n="weather.description">Race day forecast affects your finish time.</span><br><br>
-                                <strong data-i18n="weather.factors">Factors:</strong><br>
-                                • Heat >15°C: +0.5%/°C<br>
-                                • Cold <5°C: +0.3%/°C<br>
-                                • Rain: +2-4% (wet trails)<br>
-                                • Wind >30km/h: +1-2%
-                            </span>
-                        </span>
                     </div>
                     <div class="runner-level-selector">
                         <label for="runnerLevel" data-i18n="hero.runnerLevel">Runner Level:</label>

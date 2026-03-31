@@ -4192,20 +4192,25 @@ function updateHeroSection(totalTime) {
     // Update finish time
     heroTime.textContent = formatTime(totalTime);
     
-    // Update weather-adjusted time if available
+    // Update weather-adjusted time if available (inline format)
     const weatherAdjustedContainer = document.getElementById('weatherAdjustedTime');
     const weatherAdjustedValue = document.getElementById('weatherAdjustedValue');
-    const weatherAdjustedInfo = document.getElementById('weatherAdjustedInfo');
+    const weatherDivider = document.getElementById('cutoffWeatherDivider');
+    const cutoffWarning = document.getElementById('cutoffWarning');
     
     if (weatherAdjustedContainer && weatherAdjustedValue) {
         const adjustment = getWeatherAdjustedTime(totalTime);
         
         if (adjustment && adjustment.addedMinutes >= 1) {
-            weatherAdjustedValue.textContent = formatTime(adjustment.adjustedMinutes);
-            weatherAdjustedInfo.textContent = `+${adjustment.addedMinutes} min (${adjustment.tempAvg}°C${adjustment.isRainy ? ', rain' : ''})`;
-            weatherAdjustedContainer.style.display = 'block';
+            weatherAdjustedValue.textContent = `+${adjustment.addedMinutes} min`;
+            weatherAdjustedContainer.style.display = 'flex';
+            // Show divider only if cutoff is also visible
+            if (weatherDivider && cutoffWarning && cutoffWarning.style.display !== 'none') {
+                weatherDivider.style.display = 'inline';
+            }
         } else {
             weatherAdjustedContainer.style.display = 'none';
+            if (weatherDivider) weatherDivider.style.display = 'none';
         }
     }
     
