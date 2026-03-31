@@ -18,6 +18,7 @@ let lastCalculatedPaces = null; // Store last calculated paces for re-rendering
 let lastCachedDDL = null; // Store DDL from API - formulas protected on server
 let lastCachedCheckpoints = null; // Store checkpoints from API
 let lastCachedFatigue = 1.0; // Store fatigue multiplier from API
+let preStoredSurfaceData = null; // Pre-computed surface data from race config
 
 // API Configuration
 const API_CONFIG = {
@@ -870,6 +871,7 @@ async function loadRace(raceId) {
         const gpxContent = await response.text();
         currentRouteName = race.name;
         isDemoMode = false; // Race browser load, not demo
+        preStoredSurfaceData = null; // Clear pre-stored data, will fetch from OSM
         parseGPX(gpxContent);
         
         // Track race browser selection
@@ -959,6 +961,7 @@ function processFile(file) {
     // Store filename (without extension) as default route name
     currentRouteName = file.name.replace(/\.gpx$/i, '');
     isDemoMode = false; // Regular file upload, not demo
+    preStoredSurfaceData = null; // Clear pre-stored data, will fetch from OSM
     
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -1213,6 +1216,34 @@ function calculateSegments() {
 async function fetchSurfaceData() {
     if (!gpxData || segments.length === 0) return;
     
+    // Check for pre-stored surface data from race config
+    if (preStoredSurfaceData && preStoredSurfaceData.length > 0) {
+        console.log('Using pre-stored surface data');
+        applySurfaceFromPreStored(preStoredSurfaceData);
+        displaySurfaceStats();
+        displayMap();
+        return;
+    }
+    
+    // Check localStorage cache for this route
+    const cacheKey = `surface_${gpxData.totalDistance.toFixed(2)}_${gpxData.elevationGain.toFixed(0)}`;
+    const cachedData = localStorage.getItem(cacheKey);
+    if (cachedData) {
+        try {
+            const cached = JSON.parse(cachedData);
+            if (cached.timestamp > Date.now() - 7 * 24 * 60 * 60 * 1000) { // 7 day cache
+                console.log('Using cached surface data from localStorage');
+                surfaceData = cached.surfaceData;
+                applySurfaceToSegments(cached.surfaceData);
+                displaySurfaceStats();
+                displayMap();
+                return;
+            }
+        } catch (e) {
+            console.warn('Invalid cached surface data');
+        }
+    }
+    
     // Set loading flag
     isSurfaceLoading = true;
     
@@ -1316,6 +1347,18 @@ async function fetchSurfaceData() {
         
         // Apply surface data to segments
         applySurfaceToSegments(surfaceResults);
+        
+        // Cache to localStorage for faster reload
+        try {
+            const cacheKey = `surface_${gpxData.totalDistance.toFixed(2)}_${gpxData.elevationGain.toFixed(0)}`;
+            localStorage.setItem(cacheKey, JSON.stringify({
+                timestamp: Date.now(),
+                surfaceData: surfaceResults
+            }));
+            console.log('Surface data cached to localStorage');
+        } catch (e) {
+            console.warn('Could not cache surface data:', e.message);
+        }
         
         // Clear loading flag
         isSurfaceLoading = false;
@@ -1492,6 +1535,39 @@ function pointToLineDistance(px, py, x1, y1, x2, y2) {
 }
 
 // Apply surface results to segments
+// Apply pre-stored surface data from race config
+// Format: [{ startKm: 0, endKm: 5.2, surface: 'road' }, ...]
+function applySurfaceFromPreStored(preStoredData) {
+    // Sort by startKm
+    const sortedSurfaces = [...preStoredData].sort((a, b) => a.startKm - b.startKm);
+    
+    for (const segment of segments) {
+        const segmentMidpoint = (segment.startDistance + segment.endDistance) / 2;
+        
+        // Find which pre-stored segment contains this midpoint
+        for (const stored of sortedSurfaces) {
+            if (segmentMidpoint >= stored.startKm && segmentMidpoint < stored.endKm) {
+                segment.surfaceType = stored.surface;
+                break;
+            }
+        }
+    }
+    
+    // Build surfaceData array for consistency with OSM-fetched data
+    surfaceData = [];
+    for (const stored of sortedSurfaces) {
+        surfaceData.push({
+            distance: stored.startKm,
+            surfaceType: stored.surface,
+            matchDistance: 0,
+            surfaceTag: null
+        });
+    }
+    
+    isSurfaceLoading = false;
+    updateSurfaceStatus('Surface data loaded from race profile');
+}
+
 function applySurfaceToSegments(surfaceResults) {
     surfaceData = surfaceResults;
     
@@ -6287,6 +6363,13 @@ async function selectRaceDistance(distanceConfig, buttonEl) {
         aidStations = [];
         if (distanceConfig.aidStations && distanceConfig.aidStations.length > 0) {
             aidStations = [...distanceConfig.aidStations];
+        }
+        
+        // Load pre-stored surface profile if available (skips OSM query)
+        preStoredSurfaceData = null;
+        if (distanceConfig.surfaceProfile && distanceConfig.surfaceProfile.length > 0) {
+            preStoredSurfaceData = [...distanceConfig.surfaceProfile];
+            console.log('Pre-stored surface profile loaded:', preStoredSurfaceData.length, 'segments');
         }
         
         // Parse GPX (this will trigger calculateRacePlan with correct aidStations)
