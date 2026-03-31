@@ -3578,7 +3578,7 @@ h2 {
 /* Share Your Strategy button in hero */
 .share-strategy-btn {
     display: block;
-    margin: 20px auto 0;
+    margin: 20px auto 24px;
     padding: 12px 28px;
     font-size: 1rem;
     font-weight: 600;
