@@ -191,6 +191,26 @@
       "available": true
     },
     {
+      "id": "mallorca-utmb-cps-100k",
+      "name": "Mallorca by UTMB - CPS 100K",
+      "country": "🇪🇸",
+      "distance": 100,
+      "elevation": 4800,
+      "category": "ultra",
+      "gpxUrl": "races/Mallorca_UTMB_CPS_100k_2025.gpx",
+      "available": true
+    },
+    {
+      "id": "etm-50k",
+      "name": "Eixam Trail Mallorca 50K",
+      "country": "🇪🇸",
+      "distance": 50,
+      "elevation": 2200,
+      "category": "marathon",
+      "gpxUrl": "races/ETM_50k_2025.gpx",
+      "available": true
+    },
+    {
       "id": "wser",
       "name": "Western States 100",
       "country": "🇺🇸",
