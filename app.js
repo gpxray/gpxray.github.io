@@ -397,16 +397,8 @@ function setupCookieConsent() {
     });
 }
 
-// Early Access Gate - codes are SHA-256 hashed for security
-const EARLY_ACCESS_HASHES = [
-    'ff8f3de662499065ac43246d1fef1091714708a150362cd26a5ca6d46c85e517',
-    '4aac120e578508cd3ce77a6e6f1f1a1538678128557bd2ba1918ba672422b313',
-    'eada00ca9817cb5d4440111fc69bf286e7a740433bdf06a27a83c546ced96115',
-    'c989bcd91f3af9df9ac78ae9eedf6d12a83a10f3b7e7ba8321ffa932a93eed53',
-    '2e3c04952e2f5de90ae722b737c4fec3286167296d6de65de864f112c75fd10e'
-];
-
-// Hash a string using SHA-256
+// Early Access Gate - validation happens server-side for security
+// Hash a string using SHA-256 (fallback only)
 async function hashCode(code) {
     const encoder = new TextEncoder();
     const data = encoder.encode(code);
@@ -415,10 +407,34 @@ async function hashCode(code) {
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-// Validate access code against hashed values
+// Validate access code via API (server-side validation)
 async function validateAccessCode(code) {
-    const hash = await hashCode(code.trim().toUpperCase());
-    return EARLY_ACCESS_HASHES.includes(hash);
+    // Use API for validation if enabled
+    if (API_CONFIG.useBackend) {
+        try {
+            const response = await fetch(API_CONFIG.calculateEndpoint.replace('/calculate', '/validate-code'), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: code.trim().toUpperCase() })
+            });
+            
+            if (response.status === 429) {
+                // Rate limited
+                showNotification('Too many attempts. Please try again later.', 'error');
+                return false;
+            }
+            
+            if (response.ok) {
+                const result = await response.json();
+                return result.valid === true;
+            }
+        } catch (error) {
+            console.warn('API validation failed:', error.message);
+        }
+    }
+    
+    // No fallback - validation requires API
+    return false;
 }
 
 function setupEarlyAccess() {

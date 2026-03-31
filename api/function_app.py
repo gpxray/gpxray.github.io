@@ -8,11 +8,14 @@ Protected Business Logic:
 - DDL (Dynamic Descent Load) model
 - Fatigue multipliers
 - Surface type adjustments
+- Access code validation
 """
 import azure.functions as func
 import json
 import logging
 import math
+import hashlib
+import time
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
@@ -574,3 +577,103 @@ def ddl_endpoint(req: func.HttpRequest) -> func.HttpResponse:
     except Exception as e:
         logging.error(f'DDL error: {str(e)}')
         return func.HttpResponse(json.dumps({'error': str(e)}), status_code=500, headers=headers)
+
+
+# ============================================================================
+# ACCESS CODE VALIDATION - Protected
+# ============================================================================
+
+# Valid access codes (SHA-256 hashed) - codes are hidden server-side
+# To add a new code: hashlib.sha256("NEWCODE".encode()).hexdigest()
+
+VALID_ACCESS_HASHES = {
+    'ff8f3de662499065ac43246d1fef1091714708a150362cd26a5ca6d46c85e517',  # Code 1
+    '4aac120e578508cd3ce77a6e6f1f1a1538678128557bd2ba1918ba672422b313',  # Code 2
+    'eada00ca9817cb5d4440111fc69bf286e7a740433bdf06a27a83c546ced96115',  # Code 3
+    'c989bcd91f3af9df9ac78ae9eedf6d12a83a10f3b7e7ba8321ffa932a93eed53',  # Code 4
+    '2e3c04952e2f5de90ae722b737c4fec3286167296d6de65de864f112c75fd10e',  # Code 5
+}
+
+# Simple in-memory rate limiting (resets on function cold start)
+_rate_limit_cache = {}
+RATE_LIMIT_ATTEMPTS = 10
+RATE_LIMIT_WINDOW = 300  # 5 minutes
+
+
+def check_rate_limit(client_ip: str) -> bool:
+    """Check if client is rate limited. Returns True if allowed."""
+    now = time.time()
+    
+    if client_ip not in _rate_limit_cache:
+        _rate_limit_cache[client_ip] = {'count': 0, 'window_start': now}
+    
+    cache = _rate_limit_cache[client_ip]
+    
+    # Reset window if expired
+    if now - cache['window_start'] > RATE_LIMIT_WINDOW:
+        cache['count'] = 0
+        cache['window_start'] = now
+    
+    # Check limit
+    if cache['count'] >= RATE_LIMIT_ATTEMPTS:
+        return False
+    
+    cache['count'] += 1
+    return True
+
+
+def validate_access_code(code: str) -> dict:
+    """Validate an access code against stored hashes"""
+    if not code or len(code) < 3:
+        return {'valid': False, 'reason': 'invalid_format'}
+    
+    # Normalize and hash
+    normalized = code.strip().upper()
+    code_hash = hashlib.sha256(normalized.encode()).hexdigest()
+    
+    if code_hash in VALID_ACCESS_HASHES:
+        return {'valid': True, 'code': normalized}
+    
+    return {'valid': False, 'reason': 'invalid_code'}
+
+
+@app.route(route="validate-code", methods=["POST", "OPTIONS"])
+def validate_code_endpoint(req: func.HttpRequest) -> func.HttpResponse:
+    """Validate early access code - protected server-side"""
+    logging.info('Validate code API called')
+    headers = get_cors_headers()
+    
+    if req.method == 'OPTIONS':
+        return func.HttpResponse('', status_code=200, headers=headers)
+    
+    try:
+        # Get client IP for rate limiting
+        client_ip = req.headers.get('X-Forwarded-For', req.headers.get('X-Real-IP', 'unknown'))
+        if ',' in client_ip:
+            client_ip = client_ip.split(',')[0].strip()
+        
+        # Check rate limit
+        if not check_rate_limit(client_ip):
+            logging.warning(f'Rate limit exceeded for {client_ip}')
+            return func.HttpResponse(
+                json.dumps({'valid': False, 'reason': 'rate_limited'}),
+                status_code=429,
+                headers=headers
+            )
+        
+        data = req.get_json()
+        code = data.get('code', '')
+        
+        result = validate_access_code(code)
+        
+        if result['valid']:
+            logging.info(f'Valid access code used: {result["code"][:3]}***')
+        
+        return func.HttpResponse(json.dumps(result), status_code=200, headers=headers)
+    except Exception as e:
+        logging.error(f'Validate code error: {str(e)}')
+        return func.HttpResponse(
+            json.dumps({'valid': False, 'reason': 'error'}),
+            status_code=500,
+            headers=headers
+        )
