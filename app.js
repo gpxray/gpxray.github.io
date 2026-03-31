@@ -20,12 +20,18 @@ let lastCachedCheckpoints = null; // Store checkpoints from API
 let lastCachedFatigue = 1.0; // Store fatigue multiplier from API
 let preStoredSurfaceData = null; // Pre-computed surface data from race config
 
-// API Configuration
+// Environment detection
+const IS_DEV = window.location.hostname === 'localhost' || 
+               window.location.hostname === '127.0.0.1' ||
+               window.location.hostname.includes('dev.gpxray');
+
+// API Configuration (auto-detects environment)
 const API_CONFIG = {
-    // Production API with custom domain
-    calculateEndpoint: 'https://api.gpxray.run/api/calculate',
-    useBackend: true,   // Set to true to use backend API instead of local calculation
-    timeout: 15000      // API timeout in milliseconds (increased for cold starts)
+    calculateEndpoint: IS_DEV 
+        ? 'https://gpxray-dev.azurewebsites.net/api/calculate'
+        : 'https://api.gpxray.run/api/calculate',
+    useBackend: true,
+    timeout: 15000
 };
 
 // Helper to resolve GPX URLs (uses blob storage if available)
