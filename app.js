@@ -5577,7 +5577,7 @@ async function exportStoryCard() {
             try {
                 await navigator.share({
                     title: `${routeName} - Race Strategy`,
-                    text: `${wittyStatement.replace(/<br>/g, ' ')}\n\n🏃 ${routeName}\n📅 ${raceDateFormatted}\n\nCreated with https://gpxray.run`,
+                    text: `${wittyStatement.replace(/<br>/g, ' ')}\n\n👟 ${routeName}\n📅 ${raceDateFormatted}\n\nPlan your race with https://gpxray.run`,
                     files: [file]
                 });
                 trackEvent('share_story_card', { race_name: currentRouteName || 'unknown', method: 'native' });
@@ -6109,7 +6109,7 @@ async function exportCrewCard() {
             try {
                 await navigator.share({
                     title: `Crew Schedule - ${routeName}`,
-                    text: `Here's my race schedule for ${routeName}! Meet me at these AID stations 🏃\n\nCreated with https://gpxray.run`,
+                    text: `Here's my race schedule for ${routeName}! Meet me at these AID stations 👟\n\nPlan your race with https://gpxray.run`,
                     files: [file]
                 });
             } catch (shareError) {
