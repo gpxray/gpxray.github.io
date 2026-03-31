@@ -16,6 +16,16 @@ let isDemoMode = false; // Whether demo is currently loaded
 let isSurfaceLoading = false; // Whether surface data is being fetched
 let lastCalculatedPaces = null; // Store last calculated paces for re-rendering
 
+// API Configuration
+// Set to your Azure Function URL in production, or localhost for development
+const API_CONFIG = {
+    // Production Azure Function
+    calculateEndpoint: 'https://gpxray-etfufedraqdhf2br.germanywestcentral-01.azurewebsites.net/api/calculate',
+    // Local dev: 'http://localhost:7071/api/calculate'
+    useBackend: true,   // Set to true to use backend API instead of local calculation
+    timeout: 15000      // API timeout in milliseconds (increased for cold starts)
+};
+
 // Constants
 const GRADE_THRESHOLD = 2; // percentage grade to determine uphill/downhill
 const HISTORY_KEY = 'gpxray_history'; // localStorage key for history
@@ -3512,12 +3522,165 @@ function calculatePacesFromTargetTime() {
     return { flatPace, uphillPace, downhillPace };
 }
 
+// API-based calculation function
+async function calculateRacePlanFromAPI() {
+    if (!gpxData || segments.length === 0) {
+        throw new Error('No GPX data loaded');
+    }
+    
+    // Build request payload
+    const surfaceToggle = document.getElementById('surfaceEnabled');
+    const applySurface = surfaceToggle ? surfaceToggle.checked : false;
+    const startTimeInput = document.getElementById('raceStartTime');
+    const startTime = startTimeInput ? startTimeInput.value : '09:00';
+    const levelSelect = document.getElementById('runnerLevel');
+    const runnerLevel = levelSelect ? levelSelect.value : 'intermediate';
+    
+    // Prepare segments data for API (only send what's needed)
+    const apiSegments = segments.map(seg => ({
+        distance: seg.distance,
+        terrainType: seg.terrainType,
+        surfaceType: seg.surfaceType || 'trail',
+        startDistance: seg.startDistance,
+        endDistance: seg.endDistance
+    }));
+    
+    // Prepare AID stations
+    const apiAidStations = aidStations.map(station => ({
+        km: station.km,
+        name: station.name || 'VP',
+        stopMin: station.stopMin || 0
+    }));
+    
+    // Build request based on current mode
+    const payload = {
+        segments: apiSegments,
+        runnerLevel: runnerLevel,
+        aidStations: apiAidStations,
+        applySurface: applySurface,
+        startTime: startTime,
+        totalDistance: gpxData.totalDistance,
+        mode: currentMode
+    };
+    
+    // Add mode-specific data
+    if (currentMode === 'manual') {
+        payload.manualPaces = {
+            flat: getPaceInMinutes(
+                document.getElementById('flatPaceMin'),
+                document.getElementById('flatPaceSec')
+            ),
+            uphill: getPaceInMinutes(
+                document.getElementById('uphillPaceMin'),
+                document.getElementById('uphillPaceSec')
+            ),
+            downhill: getPaceInMinutes(
+                document.getElementById('downhillPaceMin'),
+                document.getElementById('downhillPaceSec')
+            )
+        };
+    } else if (currentMode === 'target') {
+        const targetHours = parseInt(document.getElementById('targetTimeHours')?.value) || 0;
+        const targetMinutes = parseInt(document.getElementById('targetTimeMinutes')?.value) || 0;
+        payload.targetTime = targetHours * 60 + targetMinutes;
+    } else if (currentMode === 'itra') {
+        payload.itraScore = parseInt(document.getElementById('itraScore')?.value) || 500;
+    }
+    
+    // Call API with timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.timeout);
+    
+    try {
+        const response = await fetch(API_CONFIG.calculateEndpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload),
+            signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || `API error: ${response.status}`);
+        }
+        
+        return await response.json();
+    } catch (error) {
+        clearTimeout(timeoutId);
+        if (error.name === 'AbortError') {
+            throw new Error('API request timed out');
+        }
+        throw error;
+    }
+}
+
+// Display results from API response
+function displayApiResults(result) {
+    const { paces, terrain, totalTimeMinutes, fatigueMultiplier, checkpoints, stopTimeMinutes } = result;
+    
+    // Display results
+    document.getElementById('paceResults').style.display = 'block';
+    document.getElementById('flatDistance').textContent = `${terrain.flatDistance.toFixed(2)} km`;
+    document.getElementById('uphillDistance').textContent = `${terrain.uphillDistance.toFixed(2)} km`;
+    document.getElementById('downhillDistance').textContent = `${terrain.downhillDistance.toFixed(2)} km`;
+    
+    document.getElementById('flatTime').textContent = formatTime(terrain.flatTime);
+    document.getElementById('uphillTime').textContent = formatTime(terrain.uphillTime);
+    document.getElementById('downhillTime').textContent = formatTime(terrain.downhillTime);
+    
+    // Display total time (including stop time if any)
+    if (stopTimeMinutes > 0) {
+        document.getElementById('totalTime').textContent = `${formatTime(totalTimeMinutes)} (incl. ${stopTimeMinutes} min stops)`;
+    } else {
+        document.getElementById('totalTime').textContent = formatTime(totalTimeMinutes);
+    }
+    document.getElementById('estimatedTime').textContent = formatTime(totalTimeMinutes);
+    
+    // Display calculated paces if in target mode
+    if (currentMode === 'target') {
+        document.getElementById('calculatedPaces').style.display = 'block';
+        document.getElementById('calcFlatPace').textContent = formatPace(paces.flat) + ' /km';
+        document.getElementById('calcUphillPace').textContent = formatPace(paces.uphill) + ' /km';
+        document.getElementById('calcDownhillPace').textContent = formatPace(paces.downhill) + ' /km';
+    }
+    
+    // Generate splits table using returned paces
+    generateSplitsTable(paces.flat, paces.uphill, paces.downhill);
+    
+    // Update Hero section
+    updateHeroSection(totalTimeMinutes);
+    
+    console.log('Race plan calculated via API', { fatigueMultiplier, checkpoints });
+}
+
 function calculateRacePlan() {
     if (!gpxData || segments.length === 0) {
         alert('Please load a GPX file first.');
         return;
     }
     
+    // Try API-based calculation if enabled
+    if (API_CONFIG.useBackend) {
+        calculateRacePlanFromAPI()
+            .then(result => {
+                displayApiResults(result);
+            })
+            .catch(error => {
+                console.warn('API calculation failed, falling back to local:', error.message);
+                calculateRacePlanLocal();
+            });
+        return;
+    }
+    
+    // Use local calculation
+    calculateRacePlanLocal();
+}
+
+function calculateRacePlanLocal() {
     let flatPace, uphillPace, downhillPace;
     
     if (currentMode === 'manual') {
