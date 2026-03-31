@@ -3661,13 +3661,13 @@ function calculateRacePlan() {
             if (resultsSection) {
                 resultsSection.classList.remove('loading');
             }
-            showNotification('Calculation service temporarily unavailable. Please try again.', 'error');
+            showNotification('Warming up the servers... Please try again in a moment! ☕', 'error');
         });
 }
 
 // Local calculation removed - all calculations done server-side
 function calculateRacePlanLocal() {
-    showNotification('Please wait for API connection...', 'error');
+    showNotification('Warming up the servers... Please try again in a moment! ☕', 'error');
 }
 
 // Generate kilometer splits table
