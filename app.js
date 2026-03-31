@@ -23,7 +23,7 @@ let preStoredSurfaceData = null; // Pre-computed surface data from race config
 // Environment detection
 const IS_DEV = window.location.hostname === 'localhost' || 
                window.location.hostname === '127.0.0.1' ||
-               window.location.hostname.includes('dev.gpxray');
+               window.location.hostname.includes('gpxray-dev');
 
 // API Configuration (auto-detects environment)
 const API_CONFIG = {
