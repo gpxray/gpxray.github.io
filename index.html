@@ -171,10 +171,22 @@
                     <div class="weather-loading">Loading forecast...</div>
                 </div>
             </div>
-            <div class="race-distances" id="raceDistances">
-                <!-- Distance buttons will be populated here -->
+            <div class="race-setup-row">
+                <div class="race-runner-level">
+                    <label for="raceRunnerLevel" data-i18n="hero.runnerLevel">Runner Level:</label>
+                    <select id="raceRunnerLevel">
+                        <option value="beginner" data-i18n="hero.beginner">Beginner</option>
+                        <option value="intermediate" selected data-i18n="hero.intermediate">Intermediate</option>
+                        <option value="advanced" data-i18n="hero.advanced">Advanced</option>
+                        <option value="elite" data-i18n="hero.elite">Elite</option>
+                    </select>
+                </div>
+                <span class="race-setup-arrow">→</span>
+                <div class="race-distances" id="raceDistances">
+                    <!-- Distance buttons will be populated here -->
+                </div>
             </div>
-            <p class="race-instruction">Select your distance to create your race strategy</p>
+            <p class="race-instruction">Select your level and distance to create your race strategy</p>
         </section>
 
         <!-- Feedback Panel -->
@@ -334,7 +346,7 @@
                             <span class="hero-distance-value" id="heroDistance">-</span>
                         </div>
                     </div>
-                    <div class="runner-level-selector">
+                    <div class="runner-level-selector" id="heroRunnerLevel">
                         <label for="runnerLevel" data-i18n="hero.runnerLevel">Runner Level:</label>
                         <select id="runnerLevel">
                             <option value="beginner" data-i18n="hero.beginner">Beginner</option>

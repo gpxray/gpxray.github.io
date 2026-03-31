@@ -262,16 +262,37 @@ function setupLanguageSelector() {
 
 // Runner Level Selector
 function setupRunnerLevel() {
-    const levelSelect = document.getElementById('runnerLevel');
-    if (!levelSelect) return;
+    const heroLevelSelect = document.getElementById('runnerLevel');
+    const raceLevelSelect = document.getElementById('raceRunnerLevel');
     
-    levelSelect.addEventListener('change', () => {
+    const handleLevelChange = (sourceSelect, targetSelect) => {
         if (!gpxData || segments.length === 0) return;
+        
+        // Sync the other selector
+        if (targetSelect && targetSelect.value !== sourceSelect.value) {
+            targetSelect.value = sourceSelect.value;
+        }
         
         // Apply new paces and recalculate
         applyRunnerLevelPaces();
         calculateRacePlan();
-    });
+    };
+    
+    if (heroLevelSelect) {
+        heroLevelSelect.addEventListener('change', () => {
+            handleLevelChange(heroLevelSelect, raceLevelSelect);
+        });
+    }
+    
+    if (raceLevelSelect) {
+        raceLevelSelect.addEventListener('change', () => {
+            // Also update the hero select since applyRunnerLevelPaces reads from it
+            if (heroLevelSelect) {
+                heroLevelSelect.value = raceLevelSelect.value;
+            }
+            handleLevelChange(raceLevelSelect, heroLevelSelect);
+        });
+    }
 }
 
 // Pace Info Tooltip
@@ -6691,6 +6712,12 @@ function initRaceMode() {
 
 function populateRaceLanding(config) {
     try {
+        // Hide hero runner level selector on race pages (it's in the race setup row instead)
+        const heroRunnerLevel = document.getElementById('heroRunnerLevel');
+        if (heroRunnerLevel) {
+            heroRunnerLevel.style.display = 'none';
+        }
+        
         // Set race info
         const raceName = document.getElementById('raceName');
         const raceTagline = document.getElementById('raceTagline');
