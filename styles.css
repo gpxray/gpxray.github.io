@@ -1749,36 +1749,36 @@ h2 {
     text-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
 }
 
-/* Cutoff Warning */
+/* Cutoff Warning - pill style matching weather pill */
 .cutoff-warning {
-    margin-top: 8px;
-    padding: 6px 14px;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    font-weight: 500;
+    position: relative;
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
 }
 
 .cutoff-warning.safe {
     background: rgba(76, 175, 80, 0.15);
-    border: 1px solid rgba(76, 175, 80, 0.4);
-    color: #4CAF50;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    color: #81c784;
 }
 
 .cutoff-warning.danger {
     background: rgba(244, 67, 54, 0.15);
-    border: 1px solid rgba(244, 67, 54, 0.4);
-    color: #f44336;
+    border: 1px solid rgba(244, 67, 54, 0.3);
+    color: #ef5350;
 }
 
 .cutoff-icon {
-    font-size: 1rem;
+    font-size: 0.85rem;
 }
 
 .cutoff-text {
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
 }
 
 /* Cutoff + Weather Row */
@@ -1786,9 +1786,9 @@ h2 {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     flex-wrap: wrap;
-    margin-top: 8px;
+    margin-top: 10px;
 }
 
 /* Weather Impact Pill */
