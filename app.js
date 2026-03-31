@@ -11,6 +11,7 @@ let useMetric = true; // true = km, false = miles
 let surfaceData = []; // Stores surface data from OSM
 let surfaceEnabled = true; // Whether to use surface multipliers
 let currentRouteName = ''; // Name of current loaded route
+let currentRaceLocation = ''; // Location of current race for AI statements
 let sunTimes = null; // Sunrise/sunset times for race day
 let isDemoMode = false; // Whether demo is currently loaded
 let isSurfaceLoading = false; // Whether surface data is being fetched
@@ -31,6 +32,9 @@ const API_CONFIG = {
     calculateEndpoint: IS_DEV 
         ? 'https://gpxray-dev.azurewebsites.net/api/calculate'
         : 'https://api.gpxray.run/api/calculate',
+    aiStatementEndpoint: IS_DEV
+        ? 'https://gpxray-dev.azurewebsites.net/api/ai/statement'
+        : 'https://api.gpxray.run/api/ai/statement',
     useBackend: true,
     timeout: 15000
 };
@@ -702,6 +706,7 @@ async function loadDemoGpx() {
         const gpxContent = await response.text();
         console.log('Demo GPX content length:', gpxContent.length);
         currentRouteName = 'ZUT Garmisch-Partenkirchen Trail';
+        currentRaceLocation = 'Garmisch-Partenkirchen, Bavaria, Germany';
         isDemoMode = true; // Mark as demo mode
         
         // Pre-stored surface profile for demo (75% trail, 22% road, 2% technical)
@@ -895,6 +900,7 @@ async function loadRace(raceId) {
         
         const gpxContent = await response.text();
         currentRouteName = race.name;
+        currentRaceLocation = race.location || '';
         isDemoMode = false; // Race browser load, not demo
         preStoredSurfaceData = null; // Clear pre-stored data, will fetch from OSM
         parseGPX(gpxContent);
@@ -985,6 +991,7 @@ function setupFileInput() {
 function processFile(file) {
     // Store filename (without extension) as default route name
     currentRouteName = file.name.replace(/\.gpx$/i, '');
+    currentRaceLocation = ''; // No location info for uploaded files
     isDemoMode = false; // Regular file upload, not demo
     preStoredSurfaceData = null; // Clear pre-stored data, will fetch from OSM
     
@@ -5427,8 +5434,14 @@ async function exportStoryCard() {
             finishHour = parseInt(clockMatch[1]);
         }
 
-        // Generate witty statement based on finish time
-        let wittyStatement = getWittyStatement(finishHour, isNextDay, totalHours);
+        // Try AI-generated statement first, fallback to local
+        let wittyStatement = await getAIStatement(
+            currentRouteName || 'Trail Race',
+            currentRaceLocation || 'Mountains',
+            finishHour,
+            isNextDay,
+            totalHours
+        ) || getWittyStatement(finishHour, isNextDay, totalHours);
 
         // Format target time (simplified)
         let targetTime = totalTimeText.split('(')[0].trim();
@@ -5536,7 +5549,47 @@ async function exportStoryCard() {
     }
 }
 
-// Get witty statement based on finish time
+// Try to get AI-generated statement (location-aware)
+async function getAIStatement(raceName, location, finishHour, isNextDay, totalHours) {
+    // Only try AI if we have location info
+    if (!location || !API_CONFIG.aiStatementEndpoint) {
+        return null;
+    }
+    
+    try {
+        const response = await fetch(API_CONFIG.aiStatementEndpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                raceName: raceName,
+                location: location,
+                finishHour: finishHour,
+                isNextDay: isNextDay,
+                totalHours: totalHours,
+                lang: currentLang || 'en'
+            }),
+            signal: AbortSignal.timeout(5000) // 5 second timeout
+        });
+        
+        if (!response.ok) {
+            return null;
+        }
+        
+        const data = await response.json();
+        if (data.statement && data.source === 'ai') {
+            console.log('AI statement generated:', data.statement);
+            trackEvent('ai_statement_generated', { race: raceName, location: location });
+            return data.statement;
+        }
+        
+        return null;
+    } catch (error) {
+        console.log('AI statement fallback to local:', error.message);
+        return null;
+    }
+}
+
+// Get witty statement based on finish time (local fallback)
 function getWittyStatement(finishHour, isNextDay, totalHours) {
     // Helper to pick random translated statement
     const pick = (keys) => {
@@ -6447,6 +6500,7 @@ function validateRaceCode(raceId, raceConfig) {
         
         // Continue with race mode initialization
         currentRaceConfig = raceConfig;
+        currentRaceLocation = raceConfig.location || '';
         initRaceModeContent(raceConfig);
     } else {
         // Show error
@@ -6520,6 +6574,7 @@ function initRaceMode() {
     }
     
     currentRaceConfig = raceConfig;
+    currentRaceLocation = raceConfig.location || '';
     
     // Initialize race mode content
     initRaceModeContent(raceConfig);
