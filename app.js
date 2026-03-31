@@ -18,12 +18,9 @@ let lastCalculatedPaces = null; // Store last calculated paces for re-rendering
 let lastCachedDDL = null; // Store DDL from API - formulas protected on server
 
 // API Configuration
-// Set to your Azure Function URL in production, or localhost for development
 const API_CONFIG = {
-    // Production Azure Function
-    // Custom domain: 'https://api.gpxray.run/api/calculate' (needs SSL binding in Azure Portal)
-    calculateEndpoint: 'https://gpxray-etfufedraqdhf2br.germanywestcentral-01.azurewebsites.net/api/calculate',
-    // Local dev: 'http://localhost:7071/api/calculate'
+    // Production API with custom domain
+    calculateEndpoint: 'https://api.gpxray.run/api/calculate',
     useBackend: true,   // Set to true to use backend API instead of local calculation
     timeout: 15000      // API timeout in milliseconds (increased for cold starts)
 };
