@@ -16,6 +16,8 @@ let isDemoMode = false; // Whether demo is currently loaded
 let isSurfaceLoading = false; // Whether surface data is being fetched
 let lastCalculatedPaces = null; // Store last calculated paces for re-rendering
 let lastCachedDDL = null; // Store DDL from API - formulas protected on server
+let lastCachedCheckpoints = null; // Store checkpoints from API
+let lastCachedFatigue = 1.0; // Store fatigue multiplier from API
 
 // API Configuration
 const API_CONFIG = {
@@ -3537,6 +3539,11 @@ async function calculateRacePlanFromAPI() {
 function displayApiResults(result) {
     const { paces, terrain, totalTimeMinutes, fatigueMultiplier, checkpoints, stopTimeMinutes, ddl } = result;
     
+    // Cache API results for use in other functions
+    lastCachedCheckpoints = checkpoints;
+    lastCachedFatigue = fatigueMultiplier;
+    lastCalculatedPaces = { flat: paces.flat, uphill: paces.uphill, downhill: paces.downhill };
+    
     // Display results
     document.getElementById('paceResults').style.display = 'block';
     document.getElementById('flatDistance').textContent = `${terrain.flatDistance.toFixed(2)} km`;
@@ -4121,11 +4128,25 @@ function updateHeroSection(totalTime) {
     // Update Course Shape
     updateCourseShape();
     
-    // Populate AID station checkpoints (only if stations configured)
-    if (heroCheckpoints && aidStations.length > 0 && lastCalculatedPaces) {
-        const checkpointsHtml = calculateCheckpointTimes();
+    // Populate AID station checkpoints - prefer API checkpoints if available
+    if (heroCheckpoints && aidStations.length > 0) {
+        let checkpointsHtml = '';
+        
+        if (lastCachedCheckpoints && lastCachedCheckpoints.length > 0) {
+            // Use API-calculated checkpoint times
+            checkpointsHtml = lastCachedCheckpoints.map(cp => `
+                <div class="hero-checkpoint">
+                    <span class="hero-checkpoint-name">${cp.name}</span>
+                    <span class="hero-checkpoint-time">${formatTime(cp.timeMinutes)}</span>
+                </div>
+            `).join('');
+        } else if (lastCalculatedPaces) {
+            // Fallback to local calculation (shouldn't happen with API)
+            checkpointsHtml = calculateCheckpointTimes();
+        }
+        
         heroCheckpoints.innerHTML = checkpointsHtml;
-        heroCheckpoints.style.display = 'flex';
+        heroCheckpoints.style.display = checkpointsHtml ? 'flex' : 'none';
     } else if (heroCheckpoints) {
         heroCheckpoints.innerHTML = '';
         heroCheckpoints.style.display = 'none';
