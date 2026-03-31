@@ -5452,6 +5452,26 @@ async function exportStoryCard() {
             routeName = routeName.substring(0, 27) + '...';
         }
 
+        // Get race date and format with weekday
+        const dateInput = document.getElementById('raceStartDate');
+        let raceDateFormatted = '';
+        if (dateInput?.value) {
+            const raceDate = new Date(dateInput.value);
+            const weekdays = currentLang === 'de' 
+                ? ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag']
+                : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const months = currentLang === 'de'
+                ? ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']
+                : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            const weekday = weekdays[raceDate.getDay()];
+            const day = raceDate.getDate();
+            const month = months[raceDate.getMonth()];
+            const year = raceDate.getFullYear();
+            raceDateFormatted = currentLang === 'de' 
+                ? `${weekday}, ${day}. ${month} ${year}`
+                : `${weekday}, ${month} ${day}, ${year}`;
+        }
+
         // Create Instagram Story sized card (1080x1920)
         const card = document.createElement('div');
         card.id = 'storyCardContainer';
@@ -5487,8 +5507,9 @@ async function exportStoryCard() {
             
             <!-- Race Strategy Block -->
             <div style="text-align: center;">
-                <div style="font-size: 18px; color: #888; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px;">${t('story.myStrategy')}</div>
-                <div style="font-size: 30px; font-weight: 700; margin-bottom: 16px; max-width: 400px;">${routeName}</div>
+                <div style="font-size: 18px; color: #888; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px;">🏃 ${t('story.myStrategy')}</div>
+                <div style="font-size: 30px; font-weight: 700; margin-bottom: 12px; max-width: 400px;">${routeName}</div>
+                ${raceDateFormatted ? `<div style="font-size: 18px; color: #00E5FF; margin-bottom: 16px;">📅 ${raceDateFormatted}</div>` : ''}
                 <div style="font-size: 26px; font-weight: 500; color: #ddd; margin-bottom: 20px;">${distance.toFixed(0)}${unitLabel} | ${gpxData.elevationGain.toFixed(0)}m</div>
                 <div style="font-size: 20px; color: #aaa; margin-bottom: 8px;">${t('story.start')}: ${formatStartTime(startTime)}</div>
                 <div style="font-size: 20px; color: #aaa;">${t('story.target')}: ${targetTime}</div>
