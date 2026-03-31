@@ -1783,17 +1783,21 @@ h2 {
 
 /* Weather Adjusted Time */
 .weather-adjusted-time {
-    display: flex;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
     gap: 8px;
-    width: 100%;
-    max-width: 520px;
     margin: 12px auto 0;
-    padding: 10px 20px;
+    padding: 10px 16px;
     background: rgba(255, 152, 0, 0.1);
     border: 1px solid rgba(255, 152, 0, 0.25);
     border-radius: 10px;
+}
+
+.weather-info-tooltip {
+    font-size: 0.85rem;
+    color: #ffb74d;
+    margin-left: 4px;
 }
 
 .weather-adjusted-label {

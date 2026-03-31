@@ -97,6 +97,11 @@ const TRANSLATIONS = {
         'ddl.modal.showFormula': 'Show formula',
         'ddl.modal.disclaimer': 'This is a heuristic model, not medical advice.',
         
+        // Weather adjustment tooltip
+        'weather.title': 'Weather Impact',
+        'weather.description': 'Race day forecast affects your finish time.',
+        'weather.factors': 'Adjustment factors:',
+        
         // Course shape
         'shape.frontLoaded': 'Front-Loaded',
         'shape.backLoaded': 'Back-Loaded',
@@ -451,6 +456,11 @@ const TRANSLATIONS = {
         'ddl.modal.dftExplain': 'DFT = deine Abstiegs-Ermüdungsschwelle (abhängig vom Läufer-Level). Ändere das Level oben für personalisierte Werte.',
         'ddl.modal.showFormula': 'Formel anzeigen',
         'ddl.modal.disclaimer': 'Dies ist ein heuristisches Modell, keine medizinische Beratung.',
+        
+        // Weather adjustment tooltip
+        'weather.title': 'Wetter-Einfluss',
+        'weather.description': 'Die Wettervorhersage beeinflusst deine Zielzeit.',
+        'weather.factors': 'Anpassungsfaktoren:',
         
         // Course shape
         'shape.frontLoaded': 'Front-Lastig',
