@@ -695,41 +695,55 @@ def generate_ai_statement(race_name: str, location: str, finish_hour: int,
     
     deployment = os.environ.get('AZURE_OPENAI_DEPLOYMENT', 'gpt-4-1-mini')
     
-    # Language-specific prompts - PUNCHY style like the examples
+    # Language-specific prompts - PUNCHY and FUNNY like backup statements
     if lang == 'de':
-        system_prompt = """Generiere einen KURZEN, KNACKIGEN Trail-Running-Spruch.
+        system_prompt = """Generiere einen WITZIGEN Trail-Running-Spruch für Instagram.
 
-STIL: Extrem kurz! Maximal 6-8 Wörter pro Zeile. Locker, witzig, für Instagram.
-Kann lokale Referenz haben (Essen/Getränke der Region) - muss aber nicht.
+REGELN:
+1. NUR DEUTSCH! Keine englischen Wörter!
+2. MAX 12 Wörter gesamt (2 kurze Zeilen)
+3. Muss LUSTIG sein - über Essen, Bier, Couch, Schlaf
+4. Locker wie mit Freunden reden
+5. Kann OPTIONAL lokales Essen/Bier erwähnen (Weißwurst, Kölsch, etc.)
 
-GUTE BEISPIELE:
+PERFEKTE BEISPIELE:
 - "Zurück zur Happy Hour. 🍺<br>Erste Runde geht auf mich."
-- "Bin zum Weißwurst-Frühstück da. 🥨<br>Falls noch was übrig ist."
-- "Abendessen? Schaff ich. 🍽️<br>Vielleicht."
+- "Ab aufs Sofa. 🛋️<br>Hab's mir verdient."
+- "Abendessen? Vielleicht. 🤷<br>Wartet nicht auf mich."
+- "Bier kalt stellen. 🍻<br>Bin gegen Mitternacht da."
+- "Erst laufen, dann Kuchen. 🍰<br>Prioritäten."
 
-SCHLECHTE BEISPIELE (zu lang!):
-- "Von Nideggen nach Zimt & Zucker, braucht der Trail-Lauf auch mal 'ne Pause"
-- "Nach so vielen Kilometern durch die wunderschöne Eifel..."
+VERBOTEN:
+- Englische Wörter (KEIN "Finish", "Trail", "Run", etc.)
+- Poetisch oder inspirierend
+- Länger als 12 Wörter
 
-Format: Zeile1<br>Zeile2 (EIN Emoji, am Zeilenende)
-WICHTIG: Familienfreundlich. MAX 15 Wörter total!"""
+Format: Zeile1<br>Zeile2 + EIN Emoji
+Familienfreundlich!"""
     else:
-        system_prompt = """Generate a SHORT, PUNCHY trail running statement.
+        system_prompt = """Generate a FUNNY trail running statement for Instagram.
 
-STYLE: Extremely brief! Max 6-8 words per line. Casual, witty, Instagram-ready.
-Can reference local food/drinks from the region - but doesn't have to.
+RULES:
+1. ENGLISH ONLY! No other languages!
+2. MAX 12 words total (2 short lines)
+3. Must be FUNNY - about food, beer, couch, sleep
+4. Casual like talking to friends
+5. Can OPTIONALLY mention local food/drinks (pretzels, fondue, etc.)
 
-GOOD EXAMPLES:
+PERFECT EXAMPLES:
 - "Back for happy hour. 🍺<br>First round's on me."
-- "Save me some breakfast. 🥞<br>I'll be there by mid-morning."
-- "Dinner time? Maybe. 🍽️<br>Keep a plate warm."
+- "Straight to the couch. 🛋️<br>Earned it."
+- "Dinner? Maybe. 🤷<br>Don't wait up."
+- "Chill the beer. 🍻<br>Be there by midnight."
+- "First run, then cake. 🍰<br>Priorities."
 
-BAD EXAMPLES (too long!):
-- "From the mountains to the valley, through scenic trails and beautiful vistas..."
-- "After running through the amazing Alps all day..."
+FORBIDDEN:
+- Poetic or inspirational
+- Longer than 12 words
+- Trying too hard to be clever
 
-Format: Line1<br>Line2 (ONE emoji, at line end)
-IMPORTANT: Family-friendly. MAX 15 words total!"""
+Format: Line1<br>Line2 + ONE emoji
+Family-friendly!"""
     
     user_prompt = f"""Race: {race_name}
 Location: {location}
