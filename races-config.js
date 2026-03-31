@@ -163,6 +163,23 @@ const RACE_CONFIGS = {
                 aidStations: [
                     { km: 7.3, name: 'VP1 Gut Kallerbend', stopMin: 2 }
                 ],
+                // Surface: 70% trail, 22% road, 7% technical
+                surfaceProfile: [
+                    { startKm: 0, endKm: 0.42, surface: 'trail' },
+                    { startKm: 0.42, endKm: 0.83, surface: 'road' },
+                    { startKm: 0.83, endKm: 2.76, surface: 'trail' },
+                    { startKm: 2.76, endKm: 2.98, surface: 'road' },
+                    { startKm: 2.98, endKm: 5.53, surface: 'trail' },
+                    { startKm: 5.53, endKm: 6.17, surface: 'road' },
+                    { startKm: 6.17, endKm: 6.8, surface: 'trail' },
+                    { startKm: 6.8, endKm: 7.26, surface: 'technical' },
+                    { startKm: 7.26, endKm: 7.68, surface: 'road' },
+                    { startKm: 7.68, endKm: 7.89, surface: 'technical' },
+                    { startKm: 7.89, endKm: 9.85, surface: 'trail' },
+                    { startKm: 9.85, endKm: 10.06, surface: 'technical' },
+                    { startKm: 10.06, endKm: 11.13, surface: 'trail' },
+                    { startKm: 11.13, endKm: 12.42, surface: 'road' }
+                ],
                 cutoffs: [],
                 description: 'Perfect trail running introduction'
             },
@@ -178,6 +195,26 @@ const RACE_CONFIGS = {
                 aidStations: [
                     { km: 8.4, name: 'VP1 Bergstein', stopMin: 2 },
                     { km: 15.0, name: 'VP2 Obermaubach', stopMin: 2 }
+                ],
+                // Surface: 77% trail, 16% road, 2% technical
+                surfaceProfile: [
+                    { startKm: 0, endKm: 0.88, surface: 'road' },
+                    { startKm: 0.88, endKm: 2.81, surface: 'trail' },
+                    { startKm: 2.81, endKm: 3.02, surface: 'road' },
+                    { startKm: 3.02, endKm: 5.56, surface: 'trail' },
+                    { startKm: 5.56, endKm: 6.18, surface: 'road' },
+                    { startKm: 6.18, endKm: 8.32, surface: 'trail' },
+                    { startKm: 8.32, endKm: 8.55, surface: 'road' },
+                    { startKm: 8.55, endKm: 14.06, surface: 'trail' },
+                    { startKm: 14.06, endKm: 15.17, surface: 'road' },
+                    { startKm: 15.17, endKm: 15.81, surface: 'trail' },
+                    { startKm: 15.81, endKm: 16.01, surface: 'technical' },
+                    { startKm: 16.01, endKm: 16.89, surface: 'trail' },
+                    { startKm: 16.89, endKm: 17.31, surface: 'trail' },
+                    { startKm: 17.31, endKm: 20.31, surface: 'trail' },
+                    { startKm: 20.31, endKm: 20.53, surface: 'technical' },
+                    { startKm: 20.53, endKm: 21.6, surface: 'trail' },
+                    { startKm: 21.6, endKm: 22.81, surface: 'road' }
                 ],
                 cutoffs: [],
                 description: 'Challenging half with steep single trails'
@@ -196,6 +233,32 @@ const RACE_CONFIGS = {
                     { km: 26.4, name: 'VP2 Obermaubach', stopMin: 3 },
                     { km: 35.5, name: 'VP3 Rath/Wanderhütte', stopMin: 3 },
                     { km: 40.9, name: 'VP4 Gut Kallerbend', stopMin: 3 }
+                ],
+                // Surface: 68% trail, 13% road, 19% unknown
+                surfaceProfile: [
+                    { startKm: 0, endKm: 0.62, surface: 'road' },
+                    { startKm: 0.62, endKm: 2.78, surface: 'trail' },
+                    { startKm: 2.78, endKm: 3.01, surface: 'road' },
+                    { startKm: 3.01, endKm: 3.85, surface: 'trail' },
+                    { startKm: 3.85, endKm: 5.32, surface: 'road' },
+                    { startKm: 5.32, endKm: 6.63, surface: 'trail' },
+                    { startKm: 6.63, endKm: 6.84, surface: 'road' },
+                    { startKm: 6.84, endKm: 10.24, surface: 'trail' },
+                    { startKm: 10.24, endKm: 10.91, surface: 'road' },
+                    { startKm: 10.91, endKm: 13.45, surface: 'trail' },
+                    { startKm: 13.45, endKm: 13.91, surface: 'road' },
+                    { startKm: 13.91, endKm: 16.03, surface: 'trail' },
+                    { startKm: 16.03, endKm: 16.24, surface: 'road' },
+                    { startKm: 16.24, endKm: 25.38, surface: 'trail' },
+                    { startKm: 25.38, endKm: 26.25, surface: 'road' },
+                    { startKm: 26.25, endKm: 28.88, surface: 'trail' },
+                    { startKm: 28.88, endKm: 30.41, surface: 'trail' },
+                    { startKm: 30.41, endKm: 33.25, surface: 'trail' },
+                    { startKm: 33.25, endKm: 33.45, surface: 'technical' },
+                    { startKm: 33.45, endKm: 44.0, surface: 'trail' },
+                    { startKm: 44.0, endKm: 44.2, surface: 'road' },
+                    { startKm: 44.2, endKm: 44.83, surface: 'trail' },
+                    { startKm: 44.83, endKm: 45.71, surface: 'road' }
                 ],
                 cutoffs: [],
                 description: 'Your first ultra through the Rureifel'
@@ -216,6 +279,30 @@ const RACE_CONFIGS = {
                     { km: 57.3, name: 'VP4 Obermaubach', stopMin: 4 },
                     { km: 66.4, name: 'VP5 Rath/Wanderhütte', stopMin: 3 },
                     { km: 71.8, name: 'VP6 Gut Kallerbend', stopMin: 3 }
+                ],
+                // Surface: 55% trail, 13% road, 2% technical, 30% unknown (forest paths)
+                surfaceProfile: [
+                    { startKm: 0, endKm: 0.41, surface: 'road' },
+                    { startKm: 0.41, endKm: 1.28, surface: 'trail' },
+                    { startKm: 1.28, endKm: 1.48, surface: 'technical' },
+                    { startKm: 1.48, endKm: 5.12, surface: 'trail' },
+                    { startKm: 5.12, endKm: 6.13, surface: 'road' },
+                    { startKm: 6.13, endKm: 10.25, surface: 'trail' },
+                    { startKm: 10.25, endKm: 10.88, surface: 'road' },
+                    { startKm: 10.88, endKm: 17.94, surface: 'trail' },
+                    { startKm: 17.94, endKm: 18.56, surface: 'road' },
+                    { startKm: 18.56, endKm: 25.15, surface: 'trail' },
+                    { startKm: 25.15, endKm: 25.59, surface: 'road' },
+                    { startKm: 25.59, endKm: 33.44, surface: 'trail' },
+                    { startKm: 33.44, endKm: 34.08, surface: 'road' },
+                    { startKm: 34.08, endKm: 45.0, surface: 'trail' },
+                    { startKm: 45.0, endKm: 45.22, surface: 'technical' },
+                    { startKm: 45.22, endKm: 56.27, surface: 'trail' },
+                    { startKm: 56.27, endKm: 56.71, surface: 'road' },
+                    { startKm: 56.71, endKm: 66.28, surface: 'trail' },
+                    { startKm: 66.28, endKm: 66.93, surface: 'road' },
+                    { startKm: 66.93, endKm: 74.57, surface: 'trail' },
+                    { startKm: 74.57, endKm: 76.4, surface: 'road' }
                 ],
                 cutoffs: [],
                 description: 'The ultimate Rureifel adventure with Rursee views'
