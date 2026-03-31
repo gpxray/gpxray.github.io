@@ -1681,6 +1681,12 @@ h2 {
     margin-bottom: 0;
 }
 
+.hero-label-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
 .hero-primary {
     display: flex;
     align-items: center;
