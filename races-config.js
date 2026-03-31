@@ -1,6 +1,9 @@
 // Race Landing Page Configurations
 // B2B feature: Dedicated race pages with pre-configured distances
 
+// GPX files storage location (Azure Blob Storage)
+const GPX_STORAGE_URL = 'https://gpxrayraces.blob.core.windows.net/races';
+
 const RACE_CONFIGS = {
     'zut': {
         id: 'zut',

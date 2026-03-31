@@ -587,11 +587,8 @@ def ddl_endpoint(req: func.HttpRequest) -> func.HttpResponse:
 # To add a new code: hashlib.sha256("NEWCODE".encode()).hexdigest()
 
 VALID_ACCESS_HASHES = {
-    'ff8f3de662499065ac43246d1fef1091714708a150362cd26a5ca6d46c85e517',  # Code 1
-    '4aac120e578508cd3ce77a6e6f1f1a1538678128557bd2ba1918ba672422b313',  # Code 2
-    'eada00ca9817cb5d4440111fc69bf286e7a740433bdf06a27a83c546ced96115',  # Code 3
-    'c989bcd91f3af9df9ac78ae9eedf6d12a83a10f3b7e7ba8321ffa932a93eed53',  # Code 4
-    '2e3c04952e2f5de90ae722b737c4fec3286167296d6de65de864f112c75fd10e',  # Code 5
+    'ff8f3de662499065ac43246d1fef1091714708a150362cd26a5ca6d46c85e517',  # GPXRAYDANIEL
+    '4aac120e578508cd3ce77a6e6f1f1a1538678128557bd2ba1918ba672422b313',  # GPXRAYBENE
 }
 
 # Simple in-memory rate limiting (resets on function cold start)

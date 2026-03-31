@@ -26,6 +26,17 @@ const API_CONFIG = {
     timeout: 15000      // API timeout in milliseconds (increased for cold starts)
 };
 
+// Helper to resolve GPX URLs (uses blob storage if available)
+function resolveGpxUrl(gpxPath) {
+    // If GPX_STORAGE_URL is defined (in races-config.js), use it for races/ paths
+    if (typeof GPX_STORAGE_URL !== 'undefined' && gpxPath.startsWith('races/')) {
+        const filename = gpxPath.replace('races/', '');
+        return `${GPX_STORAGE_URL}/${filename}`;
+    }
+    // Fallback to local path
+    return new URL(gpxPath, window.location.origin + '/').href;
+}
+
 // Constants
 const GRADE_THRESHOLD = 2; // percentage grade to determine uphill/downhill
 const HISTORY_KEY = 'gpxray_history'; // localStorage key for history
@@ -702,7 +713,7 @@ async function loadDemoGpx() {
         demoBtn.textContent = t('btn.loading');
         
         // Construct absolute URL from current origin
-        const demoUrl = new URL('races/demo.gpx', window.location.origin + '/').href;
+        const demoUrl = resolveGpxUrl('races/demo.gpx');
         console.log('Fetching demo from:', demoUrl);
         
         const response = await fetch(demoUrl);
@@ -906,7 +917,7 @@ async function loadRace(raceId) {
         loadBtns.forEach(btn => btn.disabled = true);
         
         // Construct absolute URL from current origin
-        const gpxUrl = new URL(race.gpxUrl, window.location.origin + '/').href;
+        const gpxUrl = resolveGpxUrl(race.gpxUrl);
         console.log('Loading race from:', gpxUrl);
         
         const response = await fetch(gpxUrl);
@@ -6528,8 +6539,8 @@ async function selectRaceDistance(distanceConfig, buttonEl) {
     buttonEl.disabled = true;
     
     try {
-        // Construct absolute URL from current origin
-        const gpxUrl = new URL(distanceConfig.gpxUrl, window.location.origin + '/').href;
+        // Construct GPX URL (uses blob storage if available)
+        const gpxUrl = resolveGpxUrl(distanceConfig.gpxUrl);
         console.log('Fetching race GPX from:', gpxUrl);
         
         // Load GPX file
