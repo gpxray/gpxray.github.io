@@ -352,7 +352,7 @@ const TRANSLATIONS = {
         'story.night.10': 'Night owl mode. 🦉<br>Trail edition.',
         'story.default': "Out for a run. 🏃<br>Back when I'm done.",
         'story.myStrategy': 'My Race Plan',
-        'story.createdBy': 'Strategy created by',
+        'story.createdBy': 'Plan your race with',
         'story.start': 'Start',
         'story.target': 'Target'
     },
@@ -708,7 +708,7 @@ const TRANSLATIONS = {
         'story.night.4': 'Zurück vor der Bettzeit.<br>Hoffentlich. 🤞',
         'story.default': 'Bin laufen. 🏃<br>Zurück wenn ich fertig bin.',
         'story.myStrategy': 'Mein Rennplan',
-        'story.createdBy': 'Strategie erstellt mit',
+        'story.createdBy': 'Plane dein Rennen mit',
         'story.start': 'Start',
         'story.target': 'Ziel'
     }
