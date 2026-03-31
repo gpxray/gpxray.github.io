@@ -5546,37 +5546,37 @@ function getWittyStatement(finishHour, isNextDay, totalHours) {
     
     // Next day or very long races (24h+)
     if (isNextDay || totalHours >= 24) {
-        return pick(['story.nextDay.1', 'story.nextDay.2', 'story.nextDay.3', 'story.nextDay.4']);
+        return pick(['story.nextDay.1', 'story.nextDay.2', 'story.nextDay.3', 'story.nextDay.4', 'story.nextDay.5', 'story.nextDay.6']);
     }
     
     // Very early morning finish (before 7am)
     if (finishHour < 7) {
-        return pick(['story.earlyMorning.1', 'story.earlyMorning.2', 'story.earlyMorning.3']);
+        return pick(['story.earlyMorning.1', 'story.earlyMorning.2', 'story.earlyMorning.3', 'story.earlyMorning.4', 'story.earlyMorning.5']);
     }
     
     // Morning finish (7am - 11am)
     if (finishHour < 11) {
-        return pick(['story.morning.1', 'story.morning.2', 'story.morning.3']);
+        return pick(['story.morning.1', 'story.morning.2', 'story.morning.3', 'story.morning.4', 'story.morning.5']);
     }
     
     // Midday finish (11am - 2pm)
     if (finishHour < 14) {
-        return pick(['story.midday.1', 'story.midday.2', 'story.midday.3']);
+        return pick(['story.midday.1', 'story.midday.2', 'story.midday.3', 'story.midday.4', 'story.midday.5']);
     }
     
     // Afternoon finish (2pm - 6pm)
     if (finishHour < 18) {
-        return pick(['story.afternoon.1', 'story.afternoon.2', 'story.afternoon.3']);
+        return pick(['story.afternoon.1', 'story.afternoon.2', 'story.afternoon.3', 'story.afternoon.4', 'story.afternoon.5']);
     }
     
     // Evening finish (6pm - 9pm)
     if (finishHour < 21) {
-        return pick(['story.evening.1', 'story.evening.2', 'story.evening.3']);
+        return pick(['story.evening.1', 'story.evening.2', 'story.evening.3', 'story.evening.4', 'story.evening.5']);
     }
     
     // Night finish (9pm - midnight)
     if (finishHour < 24) {
-        return pick(['story.night.1', 'story.night.2', 'story.night.3', 'story.night.4']);
+        return pick(['story.night.1', 'story.night.2', 'story.night.3', 'story.night.4', 'story.night.5', 'story.night.6']);
     }
     
     // Default
