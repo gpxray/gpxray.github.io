@@ -394,6 +394,17 @@ function setupItraScore() {
     
     itraApplyBtn.addEventListener('click', applyItraScore);
     
+    // Update button text as user types
+    itraInput.addEventListener('input', () => {
+        if (activeItraScore !== null) return; // Don't update if already applied
+        const score = parseInt(itraInput.value);
+        if (!isNaN(score) && score >= 200 && score <= 1000) {
+            itraApplyBtn.textContent = `Use ${score}`;
+        } else {
+            itraApplyBtn.textContent = typeof t === 'function' ? t('race.itraApply') : 'Apply';
+        }
+    });
+    
     // Enter key to apply
     itraInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
