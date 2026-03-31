@@ -263,34 +263,42 @@ function setupLanguageSelector() {
 // Runner Level Selector
 function setupRunnerLevel() {
     const heroLevelSelect = document.getElementById('runnerLevel');
-    const raceLevelSelect = document.getElementById('raceRunnerLevel');
+    const raceLevelButtons = document.getElementById('raceLevelButtons');
     
-    const handleLevelChange = (sourceSelect, targetSelect) => {
-        if (!gpxData || segments.length === 0) return;
-        
-        // Sync the other selector
-        if (targetSelect && targetSelect.value !== sourceSelect.value) {
-            targetSelect.value = sourceSelect.value;
+    const handleLevelChange = (level) => {
+        // Update hero select (used by applyRunnerLevelPaces)
+        if (heroLevelSelect) {
+            heroLevelSelect.value = level;
         }
+        
+        // Update button selection
+        if (raceLevelButtons) {
+            raceLevelButtons.querySelectorAll('.race-level-btn').forEach(btn => {
+                btn.classList.toggle('selected', btn.dataset.level === level);
+            });
+        }
+        
+        if (!gpxData || segments.length === 0) return;
         
         // Apply new paces and recalculate
         applyRunnerLevelPaces();
         calculateRacePlan();
     };
     
+    // Hero select (for non-race pages)
     if (heroLevelSelect) {
         heroLevelSelect.addEventListener('change', () => {
-            handleLevelChange(heroLevelSelect, raceLevelSelect);
+            handleLevelChange(heroLevelSelect.value);
         });
     }
     
-    if (raceLevelSelect) {
-        raceLevelSelect.addEventListener('change', () => {
-            // Also update the hero select since applyRunnerLevelPaces reads from it
-            if (heroLevelSelect) {
-                heroLevelSelect.value = raceLevelSelect.value;
+    // Race level buttons (for race pages)
+    if (raceLevelButtons) {
+        raceLevelButtons.addEventListener('click', (e) => {
+            const btn = e.target.closest('.race-level-btn');
+            if (btn) {
+                handleLevelChange(btn.dataset.level);
             }
-            handleLevelChange(raceLevelSelect, heroLevelSelect);
         });
     }
 }

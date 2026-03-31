@@ -175,13 +175,11 @@
             <!-- Runner Level Section -->
             <div class="race-setup-section">
                 <label class="race-setup-label" data-i18n="race.selectLevel">Select your Runner Level:</label>
-                <div class="race-runner-level">
-                    <select id="raceRunnerLevel">
-                        <option value="beginner" data-i18n="hero.beginner">Beginner</option>
-                        <option value="intermediate" selected data-i18n="hero.intermediate">Intermediate</option>
-                        <option value="advanced" data-i18n="hero.advanced">Advanced</option>
-                        <option value="elite" data-i18n="hero.elite">Elite</option>
-                    </select>
+                <div class="race-level-buttons" id="raceLevelButtons">
+                    <button type="button" class="race-level-btn" data-level="beginner" data-i18n="hero.beginner">Beginner</button>
+                    <button type="button" class="race-level-btn selected" data-level="intermediate" data-i18n="hero.intermediate">Intermediate</button>
+                    <button type="button" class="race-level-btn" data-level="advanced" data-i18n="hero.advanced">Advanced</button>
+                    <button type="button" class="race-level-btn" data-level="elite" data-i18n="hero.elite">Elite</button>
                 </div>
             </div>
             

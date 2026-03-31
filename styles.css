@@ -4594,28 +4594,33 @@ h2 {
     letter-spacing: 1px;
 }
 
-.race-runner-level {
-    display: inline-flex;
-    align-items: center;
+.race-level-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
     justify-content: center;
 }
 
-.race-runner-level select {
+.race-level-btn {
     background: rgba(0, 0, 0, 0.4);
-    border: 2px solid rgba(0, 212, 255, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 10px;
-    color: #00d4ff;
-    padding: 12px 20px;
-    font-size: 1rem;
+    padding: 10px 20px;
+    color: #fff;
+    font-size: 0.9rem;
     cursor: pointer;
-    min-width: 180px;
     transition: all 0.2s ease;
 }
 
-.race-runner-level select:hover,
-.race-runner-level select:focus {
+.race-level-btn:hover {
     border-color: #00d4ff;
     background: rgba(0, 212, 255, 0.1);
+}
+
+.race-level-btn.selected {
+    border-color: #00d4ff;
+    background: rgba(0, 212, 255, 0.2);
+    color: #00d4ff;
 }
 
 .race-distances {
