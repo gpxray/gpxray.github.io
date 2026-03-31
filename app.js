@@ -373,7 +373,8 @@ function setupItraScore() {
         
         activeItraScore = score;
         itraApplyBtn.classList.add('active');
-        itraApplyBtn.textContent = `ITRA ${score}`;
+        itraApplyBtn.textContent = typeof t === 'function' ? t('race.itraApplied') : 'Applied';
+        itraInput.readOnly = true;
         
         // Dim runner level buttons
         if (raceLevelButtons) {
@@ -427,6 +428,7 @@ function clearItraOverride() {
     
     if (itraInput) {
         itraInput.value = '';
+        itraInput.readOnly = false;
     }
     
     if (itraApplyBtn) {

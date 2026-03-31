@@ -78,6 +78,7 @@ const TRANSLATIONS = {
         'race.selectDistance': 'Which distance are you running?',
         'race.itraOptional': 'Know your ITRA score?',
         'race.itraApply': 'Apply',
+        'race.itraApplied': 'Applied',
         'race.itraHint': 'ITRA score gives more precise pace estimation',
         
         // Downhill Load tooltip
@@ -446,6 +447,7 @@ const TRANSLATIONS = {
         'race.selectDistance': 'Welche Distanz läufst du?',
         'race.itraOptional': 'Kennst du deinen ITRA-Score?',
         'race.itraApply': 'Anwenden',
+        'race.itraApplied': 'Angewendet',
         'race.itraHint': 'ITRA-Score ermöglicht präzisere Tempoberechnung',
         
         // Downhill Load tooltip
