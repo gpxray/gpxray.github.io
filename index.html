@@ -371,13 +371,45 @@
                             <span class="hero-distance-value" id="heroDistance">-</span>
                         </div>
                     </div>
-                    <div class="runner-level-selector" id="heroRunnerLevel">
-                        <label for="runnerLevel" data-i18n="hero.runnerLevel">Runner Level:</label>
-                        <select id="runnerLevel">
-                            <option value="beginner" data-i18n="hero.beginner">Beginner</option>
-                            <option value="intermediate" selected data-i18n="hero.intermediate">Intermediate</option>
-                            <option value="advanced" data-i18n="hero.advanced">Advanced</option>
-                            <option value="elite" data-i18n="hero.elite">Elite</option>
+                    
+                    <!-- Race Strategy Box (main page version) -->
+                    <div class="race-strategy-box main-page-strategy" id="heroRunnerLevel">
+                        <h3 class="race-strategy-title" data-i18n="race.strategyTitle">Create Your Race Strategy</h3>
+                        
+                        <!-- Runner Level Section -->
+                        <div class="race-setup-section">
+                            <label class="race-setup-label" data-i18n="race.selectLevel">What's your runner level?</label>
+                            <div class="race-level-buttons" id="mainLevelButtons">
+                                <button type="button" class="race-level-btn" data-level="beginner" data-i18n="hero.beginner">Beginner</button>
+                                <button type="button" class="race-level-btn selected" data-level="intermediate" data-i18n="hero.intermediate">Intermediate</button>
+                                <button type="button" class="race-level-btn" data-level="advanced" data-i18n="hero.advanced">Advanced</button>
+                                <button type="button" class="race-level-btn" data-level="elite" data-i18n="hero.elite">Elite</button>
+                            </div>
+                            
+                            <!-- ITRA Score Optional -->
+                            <div class="itra-score-section">
+                                <div class="itra-label-row">
+                                    <label class="itra-label" data-i18n="race.itraOptional">Know your ITRA score?</label>
+                                    <span class="itra-info-icon" id="mainItraInfoToggle">i</span>
+                                </div>
+                                <div class="itra-input-row">
+                                    <input type="number" id="mainItraScoreInput" class="itra-input" min="200" max="1000" placeholder="e.g. 550" />
+                                    <button type="button" id="mainItraApplyBtn" class="itra-apply-btn" data-i18n="race.itraApply">Apply</button>
+                                    <button type="button" id="mainItraClearBtn" class="itra-clear-btn">✕</button>
+                                </div>
+                                <div class="itra-info-box" id="mainItraInfoBox">
+                                    <p data-i18n="race.itraExplain">ITRA (International Trail Running Association) assigns performance scores based on your race results.</p>
+                                    <a href="https://itra.run/Runners/FindARunner" target="_blank" rel="noopener" class="itra-link">🔍 <span data-i18n="race.itraFindScore">Find your ITRA score</span></a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Hidden select for compatibility -->
+                        <select id="runnerLevel" style="display: none;">
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate" selected>Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                            <option value="elite">Elite</option>
                         </select>
                     </div>
                 </div>

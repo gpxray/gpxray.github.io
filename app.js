@@ -313,6 +313,7 @@ function setupLanguageSelector() {
 function setupRunnerLevel() {
     const heroLevelSelect = document.getElementById('runnerLevel');
     const raceLevelButtons = document.getElementById('raceLevelButtons');
+    const mainLevelButtons = document.getElementById('mainLevelButtons');
     
     const handleLevelChange = (level) => {
         // Update hero select (used by applyRunnerLevelPaces)
@@ -320,9 +321,16 @@ function setupRunnerLevel() {
             heroLevelSelect.value = level;
         }
         
-        // Update button selection
+        // Update button selection (race page)
         if (raceLevelButtons) {
             raceLevelButtons.querySelectorAll('.race-level-btn').forEach(btn => {
+                btn.classList.toggle('selected', btn.dataset.level === level);
+            });
+        }
+        
+        // Update button selection (main page)
+        if (mainLevelButtons) {
+            mainLevelButtons.querySelectorAll('.race-level-btn').forEach(btn => {
                 btn.classList.toggle('selected', btn.dataset.level === level);
             });
         }
@@ -334,7 +342,7 @@ function setupRunnerLevel() {
         calculateRacePlan();
     };
     
-    // Hero select (for non-race pages)
+    // Hero select (hidden, for compatibility)
     if (heroLevelSelect) {
         heroLevelSelect.addEventListener('change', () => {
             handleLevelChange(heroLevelSelect.value);
@@ -352,16 +360,46 @@ function setupRunnerLevel() {
             }
         });
     }
+    
+    // Main page level buttons
+    if (mainLevelButtons) {
+        mainLevelButtons.addEventListener('click', (e) => {
+            const btn = e.target.closest('.race-level-btn');
+            if (btn) {
+                // Clear ITRA override when manually selecting level
+                clearItraOverride();
+                handleLevelChange(btn.dataset.level);
+            }
+        });
+    }
 }
 
 // ITRA Score Optional Input
 function setupItraScore() {
-    const itraInput = document.getElementById('itraScoreInput');
-    const itraApplyBtn = document.getElementById('itraApplyBtn');
-    const itraClearBtn = document.getElementById('itraClearBtn');
-    const raceLevelButtons = document.getElementById('raceLevelButtons');
-    const itraInfoToggle = document.getElementById('itraInfoToggle');
-    const itraInfoBox = document.getElementById('itraInfoBox');
+    // Setup for race page elements
+    setupItraForElements({
+        input: document.getElementById('itraScoreInput'),
+        applyBtn: document.getElementById('itraApplyBtn'),
+        clearBtn: document.getElementById('itraClearBtn'),
+        levelButtons: document.getElementById('raceLevelButtons'),
+        infoToggle: document.getElementById('itraInfoToggle'),
+        infoBox: document.getElementById('itraInfoBox')
+    });
+    
+    // Setup for main page elements
+    setupItraForElements({
+        input: document.getElementById('mainItraScoreInput'),
+        applyBtn: document.getElementById('mainItraApplyBtn'),
+        clearBtn: document.getElementById('mainItraClearBtn'),
+        levelButtons: document.getElementById('mainLevelButtons'),
+        infoToggle: document.getElementById('mainItraInfoToggle'),
+        infoBox: document.getElementById('mainItraInfoBox')
+    });
+}
+
+function setupItraForElements(els) {
+    const { input: itraInput, applyBtn: itraApplyBtn, clearBtn: itraClearBtn, 
+            levelButtons, infoToggle: itraInfoToggle, infoBox: itraInfoBox } = els;
     
     // Toggle info box visibility
     if (itraInfoToggle && itraInfoBox) {
@@ -387,9 +425,15 @@ function setupItraScore() {
         itraInput.readOnly = true;
         
         // Dim runner level buttons
-        if (raceLevelButtons) {
-            raceLevelButtons.classList.add('itra-override');
+        if (levelButtons) {
+            levelButtons.classList.add('itra-override');
         }
+        
+        // Also update the other page's buttons if visible
+        const raceLevelButtons = document.getElementById('raceLevelButtons');
+        const mainLevelButtons = document.getElementById('mainLevelButtons');
+        if (raceLevelButtons) raceLevelButtons.classList.add('itra-override');
+        if (mainLevelButtons) mainLevelButtons.classList.add('itra-override');
         
         // Show clear button
         if (itraClearBtn) {
@@ -429,30 +473,45 @@ function setupItraScore() {
 }
 
 function clearItraOverride() {
+    activeItraScore = null;
+    
+    // Clear race page elements
     const itraInput = document.getElementById('itraScoreInput');
     const itraApplyBtn = document.getElementById('itraApplyBtn');
     const itraClearBtn = document.getElementById('itraClearBtn');
     const raceLevelButtons = document.getElementById('raceLevelButtons');
     
-    activeItraScore = null;
+    // Clear main page elements
+    const mainItraInput = document.getElementById('mainItraScoreInput');
+    const mainItraApplyBtn = document.getElementById('mainItraApplyBtn');
+    const mainItraClearBtn = document.getElementById('mainItraClearBtn');
+    const mainLevelButtons = document.getElementById('mainLevelButtons');
     
-    if (itraInput) {
-        itraInput.value = '';
-        itraInput.readOnly = false;
-    }
+    // Reset inputs
+    [itraInput, mainItraInput].forEach(inp => {
+        if (inp) {
+            inp.value = '';
+            inp.readOnly = false;
+        }
+    });
     
-    if (itraApplyBtn) {
-        itraApplyBtn.classList.remove('active');
-        itraApplyBtn.textContent = typeof t === 'function' ? t('race.itraApply') : 'Apply';
-    }
+    // Reset apply buttons
+    [itraApplyBtn, mainItraApplyBtn].forEach(btn => {
+        if (btn) {
+            btn.classList.remove('active');
+            btn.textContent = typeof t === 'function' ? t('race.itraApply') : 'Apply';
+        }
+    });
     
-    if (itraClearBtn) {
-        itraClearBtn.style.display = 'none';
-    }
+    // Hide clear buttons
+    [itraClearBtn, mainItraClearBtn].forEach(btn => {
+        if (btn) btn.style.display = 'none';
+    });
     
-    if (raceLevelButtons) {
-        raceLevelButtons.classList.remove('itra-override');
-    }
+    // Re-enable level buttons
+    [raceLevelButtons, mainLevelButtons].forEach(container => {
+        if (container) container.classList.remove('itra-override');
+    });
 }
 
 // Pace Info Tooltip

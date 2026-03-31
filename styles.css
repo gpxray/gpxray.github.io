@@ -4588,6 +4588,15 @@ h2 {
     margin-top: 30px;
 }
 
+/* Main page version - fits within hero section */
+.race-strategy-box.main-page-strategy {
+    margin-top: 25px;
+    padding: 25px 20px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .race-strategy-title {
     text-align: center;
     font-size: 1.2rem;
