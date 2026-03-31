@@ -1754,6 +1754,26 @@ function showSections() {
     document.getElementById('mapSection').style.display = 'block';
     document.getElementById('elevationSection').style.display = 'block';
     document.getElementById('paceSection').style.display = 'block';
+    
+    // Show Story button only for RET races (or all races on dev)
+    updateStoryButtonVisibility();
+}
+
+// Check if Story card button should be visible
+function updateStoryButtonVisibility() {
+    const storyBtn = document.getElementById('exportStoryCard');
+    if (!storyBtn) return;
+    
+    // Always show on dev, only RET races on production
+    const isRETRace = currentRouteName && 
+        (currentRouteName.toLowerCase().includes('ret') || 
+         currentRouteName.toLowerCase().includes('rureifel'));
+    
+    if (IS_DEV || isRETRace) {
+        storyBtn.style.display = 'inline-flex';
+    } else {
+        storyBtn.style.display = 'none';
+    }
 }
 
 // Setup chart selector for elevation/gradient toggle
