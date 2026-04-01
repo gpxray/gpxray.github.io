@@ -613,7 +613,8 @@ function setupDatePresets() {
                 // Fetch weather for GPX upload (if date is within 16 days)
                 fetchGpxWeather();
                 
-                // Update hero sun times display
+                // Recalculate sun times with synced date, then update hero display
+                updateSunTimesDisplay();
                 updateHeroSunTimes();
                 
                 // Hide strategy box and show edit button
