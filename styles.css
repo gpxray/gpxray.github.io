@@ -5229,6 +5229,29 @@ h2 {
     color: #ff5252;
 }
 
+.hero-aid-item-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.hero-aid-item-edit {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 2px 6px;
+}
+
+.hero-aid-item-edit:hover {
+    color: #00d4ff;
+}
+
+.hero-aid-item-stop {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.8rem;
+}
+
 .hero-aid-input {
     display: flex;
     gap: 8px;
@@ -5257,14 +5280,73 @@ h2 {
 }
 
 .hero-aid-km::placeholder,
-.hero-aid-name::placeholder {
+.hero-aid-name::placeholder,
+.hero-aid-stop::placeholder {
     color: rgba(255, 255, 255, 0.4);
 }
 
 .hero-aid-km:focus,
-.hero-aid-name:focus {
+.hero-aid-name:focus,
+.hero-aid-stop:focus {
     outline: none;
     border-color: #00d4ff;
+}
+
+.hero-aid-stop {
+    width: 50px;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: #fff;
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+/* Edit form for AID stations */
+.hero-aid-edit-form {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    width: 100%;
+}
+
+.hero-aid-edit-form .hero-aid-km,
+.hero-aid-edit-form .hero-aid-name,
+.hero-aid-edit-form .hero-aid-stop {
+    padding: 6px;
+    font-size: 0.8rem;
+}
+
+.hero-aid-edit-form .hero-aid-name {
+    min-width: 0;
+}
+
+.hero-aid-save-btn,
+.hero-aid-cancel-btn {
+    padding: 4px 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.hero-aid-save-btn {
+    background: rgba(76, 175, 80, 0.3);
+    color: #81c784;
+}
+
+.hero-aid-save-btn:hover {
+    background: rgba(76, 175, 80, 0.5);
+}
+
+.hero-aid-cancel-btn {
+    background: rgba(255, 82, 82, 0.2);
+    color: #ff5252;
+}
+
+.hero-aid-cancel-btn:hover {
+    background: rgba(255, 82, 82, 0.4);
 }
 
 .hero-aid-add-btn {

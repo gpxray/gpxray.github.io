@@ -4031,6 +4031,7 @@ function setupHeroAidStations() {
     const addBtn = document.getElementById('heroAidAdd');
     const kmInput = document.getElementById('heroAidKm');
     const nameInput = document.getElementById('heroAidName');
+    const stopInput = document.getElementById('heroAidStop');
     
     if (!toggle || !content) return;
     
@@ -4046,22 +4047,24 @@ function setupHeroAidStations() {
         addBtn.addEventListener('click', () => {
             const km = parseFloat(kmInput.value);
             const name = nameInput.value.trim() || `AID ${aidStations.length + 1}`;
+            const stopMin = parseInt(stopInput?.value) || 2;
             
             if (isNaN(km) || km < 0) {
                 return;
             }
             
             // Add to main aidStations array
-            aidStations.push({ km, name, stopMin: 2 });
+            aidStations.push({ km, name, stopMin });
             aidStations.sort((a, b) => a.km - b.km);
             
             // Render both lists
             renderHeroAidList();
             renderAidStations();
             
-            // Clear inputs
+            // Clear inputs (keep default stop time)
             kmInput.value = '';
             nameInput.value = '';
+            if (stopInput) stopInput.value = '2';
         });
     }
 }
@@ -4077,14 +4080,54 @@ function renderHeroAidList() {
     }
     
     list.innerHTML = aidStations.map((station, index) => `
-        <div class="hero-aid-item">
+        <div class="hero-aid-item" id="heroAidItem${index}">
             <div class="hero-aid-item-info">
                 <span class="hero-aid-item-km">KM ${station.km.toFixed(1)}</span>
                 <span class="hero-aid-item-name">${station.name}</span>
+                <span class="hero-aid-item-stop">${station.stopMin || 2} min</span>
             </div>
-            <button class="hero-aid-item-remove" onclick="removeHeroAidStation(${index})">✕</button>
+            <div class="hero-aid-item-actions">
+                <button class="hero-aid-item-edit" onclick="editHeroAidStation(${index})" title="Edit">✏️</button>
+                <button class="hero-aid-item-remove" onclick="removeHeroAidStation(${index})" title="Remove">✕</button>
+            </div>
         </div>
     `).join('');
+}
+
+// Edit AID station inline
+function editHeroAidStation(index) {
+    const station = aidStations[index];
+    const itemEl = document.getElementById(`heroAidItem${index}`);
+    if (!itemEl || !station) return;
+    
+    // Replace with edit form
+    itemEl.innerHTML = `
+        <div class="hero-aid-edit-form">
+            <input type="number" class="hero-aid-km" value="${station.km}" min="0" step="0.1" id="editKm${index}" />
+            <input type="text" class="hero-aid-name" value="${station.name}" id="editName${index}" />
+            <input type="number" class="hero-aid-stop" value="${station.stopMin || 2}" min="0" max="60" id="editStop${index}" />
+            <button class="hero-aid-save-btn" onclick="saveHeroAidStation(${index})">✓</button>
+            <button class="hero-aid-cancel-btn" onclick="renderHeroAidList()">✕</button>
+        </div>
+    `;
+    
+    // Focus km input
+    document.getElementById(`editKm${index}`)?.focus();
+}
+
+// Save edited AID station
+function saveHeroAidStation(index) {
+    const km = parseFloat(document.getElementById(`editKm${index}`)?.value);
+    const name = document.getElementById(`editName${index}`)?.value.trim() || `AID ${index + 1}`;
+    const stopMin = parseInt(document.getElementById(`editStop${index}`)?.value) || 2;
+    
+    if (isNaN(km) || km < 0) return;
+    
+    aidStations[index] = { km, name, stopMin };
+    aidStations.sort((a, b) => a.km - b.km);
+    
+    renderHeroAidList();
+    renderAidStations();
 }
 
 // Remove AID station from hero list
@@ -4095,6 +4138,8 @@ function removeHeroAidStation(index) {
 }
 
 window.removeHeroAidStation = removeHeroAidStation;
+window.editHeroAidStation = editHeroAidStation;
+window.saveHeroAidStation = saveHeroAidStation;
 
 function getAidStationForKm(km) {
     // Find AID station that falls within or at this km
