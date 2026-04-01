@@ -932,19 +932,20 @@ function updateHeroWeatherWidget(weather, weatherCode, adjustment) {
 // Get weather tip based on conditions
 function getWeatherTip(weather, weatherCode) {
     const lang = getCurrentLanguage();
+    const code = Number(weatherCode);
     
     // Check for rain (codes 51-67: drizzle, 71-77: snow, 80-82: rain showers, 95-99: thunderstorm)
     const rainCodes = [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99];
     const snowCodes = [71, 73, 75, 77, 85, 86];
     
-    if (rainCodes.includes(weatherCode) || weather.rainChance >= 50) {
+    if (rainCodes.includes(code) || weather.rainChance >= 50) {
         return {
             icon: '🧥',
             text: lang === 'de' ? 'Regenjacke nicht vergessen!' : "Don't forget your rain jacket!"
         };
     }
     
-    if (snowCodes.includes(weatherCode)) {
+    if (snowCodes.includes(code)) {
         return {
             icon: '🧤',
             text: lang === 'de' ? 'Handschuhe einpacken – es wird kalt!' : 'Pack gloves – it\'ll be cold!'
