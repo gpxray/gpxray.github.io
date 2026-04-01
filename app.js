@@ -712,6 +712,7 @@ async function fetchGpxWeather() {
     // Only fetch if within 16 days (Open-Meteo limit)
     if (daysUntilRace < 0 || daysUntilRace > 16) {
         console.log('Weather forecast not available for this date range');
+        showWeatherUnavailable(daysUntilRace);
         return;
     }
     
@@ -822,6 +823,35 @@ function showGpxWeatherWidget(weather, weatherCode, dateStr) {
     widget.style.display = 'block';
 }
 
+// Show weather unavailable message
+function showWeatherUnavailable(daysUntilRace) {
+    const heroWidget = document.getElementById('heroWeatherWidget');
+    if (!heroWidget) return;
+    
+    const lang = getCurrentLanguage();
+    const iconEl = document.getElementById('heroWeatherIcon');
+    const tempEl = document.getElementById('heroWeatherTemp');
+    const descEl = document.getElementById('heroWeatherDesc');
+    const detailsEl = heroWidget.querySelector('.hero-weather-details');
+    const tipContainer = document.getElementById('heroWeatherTip');
+    const adjContainer = document.getElementById('heroWeatherAdjustment');
+    
+    if (iconEl) iconEl.textContent = '🌐';
+    if (tempEl) tempEl.textContent = '--';
+    
+    if (daysUntilRace < 0) {
+        if (descEl) descEl.textContent = lang === 'de' ? 'Datum in der Vergangenheit' : 'Date is in the past';
+    } else {
+        if (descEl) descEl.textContent = lang === 'de' ? 'Vorhersage max. 16 Tage' : 'Forecast max 16 days';
+    }
+    
+    if (detailsEl) detailsEl.style.display = 'none';
+    if (tipContainer) tipContainer.style.display = 'none';
+    if (adjContainer) adjContainer.style.display = 'none';
+    
+    heroWidget.style.display = 'flex';
+}
+
 // Update hero weather widget (in results section)
 function updateHeroWeatherWidget(weather, weatherCode, adjustment) {
     const heroWidget = document.getElementById('heroWeatherWidget');
@@ -836,6 +866,7 @@ function updateHeroWeatherWidget(weather, weatherCode, adjustment) {
     const descEl = document.getElementById('heroWeatherDesc');
     const rainEl = document.getElementById('heroWeatherRain');
     const windEl = document.getElementById('heroWeatherWind');
+    const detailsEl = heroWidget.querySelector('.hero-weather-details');
     const adjContainer = document.getElementById('heroWeatherAdjustment');
     const adjTextEl = document.getElementById('heroWeatherAdjText');
     const tipContainer = document.getElementById('heroWeatherTip');
@@ -847,6 +878,7 @@ function updateHeroWeatherWidget(weather, weatherCode, adjustment) {
     if (descEl) descEl.textContent = weatherDesc;
     if (rainEl) rainEl.textContent = weather.rainChance;
     if (windEl) windEl.textContent = weather.windSpeed;
+    if (detailsEl) detailsEl.style.display = 'flex'; // Re-show if was hidden
     
     // Show weather tip based on conditions
     if (tipContainer && tipIconEl && tipTextEl) {
