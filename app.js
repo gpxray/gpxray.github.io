@@ -934,18 +934,19 @@ function getWeatherTip(weather, weatherCode) {
     const lang = getCurrentLanguage();
     const code = Number(weatherCode);
     
-    // Check for rain (codes 51-67: drizzle, 71-77: snow, 80-82: rain showers, 95-99: thunderstorm)
-    const rainCodes = [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99];
-    const snowCodes = [71, 73, 75, 77, 85, 86];
+    // Check for rain/drizzle (codes 51-67, 80-82: rain/drizzle, 95-99: thunderstorm)
+    const isRainy = (code >= 51 && code <= 67) || (code >= 80 && code <= 82) || code >= 95;
+    // Check for snow (codes 71-77, 85-86: snow)
+    const isSnowy = (code >= 71 && code <= 77) || (code >= 85 && code <= 86);
     
-    if (rainCodes.includes(code) || weather.rainChance >= 50) {
+    if (isRainy || weather.rainChance >= 50) {
         return {
             icon: '🧥',
             text: lang === 'de' ? 'Regenjacke nicht vergessen!' : "Don't forget your rain jacket!"
         };
     }
     
-    if (snowCodes.includes(code)) {
+    if (isSnowy) {
         return {
             icon: '🧤',
             text: lang === 'de' ? 'Handschuhe einpacken – es wird kalt!' : 'Pack gloves – it\'ll be cold!'
