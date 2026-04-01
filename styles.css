@@ -1820,6 +1820,29 @@ h2 {
     margin-top: 10px;
 }
 
+/* Hero Sun Times */
+.hero-sun-times {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 14px;
+    background: rgba(255, 193, 7, 0.1);
+    border: 1px solid rgba(255, 193, 7, 0.2);
+    border-radius: 20px;
+    font-size: 0.85rem;
+}
+
+.hero-sun-rise,
+.hero-sun-set {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.hero-sun-rise span,
+.hero-sun-set span {
+    color: #ffc107;
+    font-weight: 500;
+}
+
 /* Weather Impact Pill */
 .weather-impact-pill {
     position: relative;
@@ -5111,6 +5134,154 @@ h2 {
 .target-time-hint {
     font-size: 0.75rem;
     color: rgba(255, 255, 255, 0.4);
+}
+
+/* Hero AID Stations Section */
+.hero-aid-section {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hero-aid-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px 14px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.hero-aid-toggle:hover {
+    background: rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #fff;
+}
+
+.hero-aid-toggle.expanded {
+    border-color: #00d4ff;
+    color: #00d4ff;
+}
+
+.hero-aid-arrow {
+    font-size: 0.7rem;
+    transition: transform 0.2s ease;
+}
+
+.hero-aid-toggle.expanded .hero-aid-arrow {
+    transform: rotate(180deg);
+}
+
+.hero-aid-content {
+    margin-top: 12px;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+.hero-aid-list {
+    margin-bottom: 10px;
+}
+
+.hero-aid-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    background: rgba(0, 212, 255, 0.1);
+    border-radius: 6px;
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+}
+
+.hero-aid-item-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.hero-aid-item-km {
+    color: #00d4ff;
+    font-weight: 600;
+    min-width: 50px;
+}
+
+.hero-aid-item-name {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.hero-aid-item-remove {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 2px 6px;
+}
+
+.hero-aid-item-remove:hover {
+    color: #ff5252;
+}
+
+.hero-aid-input {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.hero-aid-km {
+    width: 60px;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: #fff;
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.hero-aid-name {
+    flex: 1;
+    padding: 8px 10px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: #fff;
+    font-size: 0.85rem;
+}
+
+.hero-aid-km::placeholder,
+.hero-aid-name::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.hero-aid-km:focus,
+.hero-aid-name:focus {
+    outline: none;
+    border-color: #00d4ff;
+}
+
+.hero-aid-add-btn {
+    padding: 8px 14px;
+    background: rgba(0, 212, 255, 0.2);
+    border: 1px solid #00d4ff;
+    border-radius: 6px;
+    color: #00d4ff;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.hero-aid-add-btn:hover {
+    background: rgba(0, 212, 255, 0.3);
 }
 
 /* Calculate Button */

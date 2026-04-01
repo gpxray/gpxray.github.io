@@ -346,6 +346,10 @@
                                 </div>
                             </div>
                             <div class="cutoff-weather-row">
+                                <div class="hero-sun-times" id="heroSunTimes" style="display: none;">
+                                    <span class="hero-sun-rise">🌅 <span id="heroSunriseTime">--:--</span></span>
+                                    <span class="hero-sun-set">🌇 <span id="heroSunsetTime">--:--</span></span>
+                                </div>
                                 <div class="cutoff-warning" id="cutoffWarning" style="display: none;">
                                     <span class="cutoff-icon">✓</span>
                                     <span class="cutoff-text">Cutoff: <span id="cutoffTime">-</span></span>
@@ -436,6 +440,24 @@
                                     <div class="race-target-input">
                                         <input type="text" id="heroTargetTime" class="target-time-input" placeholder="HH:MM" pattern="[0-9]{1,2}:[0-9]{2}" />
                                         <span class="target-time-hint" data-i18n="race.targetOptional">(optional)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- AID Stations (optional, collapsible) -->
+                            <div class="hero-aid-section">
+                                <button type="button" class="hero-aid-toggle" id="heroAidToggle">
+                                    <span>🚠 <span data-i18n="race.addAidStations">Add AID Stations</span></span>
+                                    <span class="hero-aid-arrow">▼</span>
+                                </button>
+                                <div class="hero-aid-content" id="heroAidContent" style="display: none;">
+                                    <div class="hero-aid-list" id="heroAidList">
+                                        <!-- AID stations will be added here -->
+                                    </div>
+                                    <div class="hero-aid-input">
+                                        <input type="number" id="heroAidKm" class="hero-aid-km" placeholder="KM" min="0" step="0.1" />
+                                        <input type="text" id="heroAidName" class="hero-aid-name" placeholder="Name (e.g., Water Stop)" />
+                                        <button type="button" id="heroAidAdd" class="hero-aid-add-btn">+ Add</button>
                                     </div>
                                 </div>
                             </div>

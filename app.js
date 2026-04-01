@@ -207,6 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupPaceInfoTooltip();
     setupFeaturePillTooltips();
     setupChangeRouteButton();
+    setupHeroAidStations();
     
     // Check for race landing page mode
     initRaceMode();
@@ -612,11 +613,18 @@ function setupDatePresets() {
                 // Fetch weather for GPX upload (if date is within 16 days)
                 fetchGpxWeather();
                 
+                // Update hero sun times display
+                updateHeroSunTimes();
+                
                 // Hide strategy box and show edit button
                 const strategyBox = document.getElementById('heroRunnerLevel');
                 const editBtn = document.getElementById('editStrategyBtn');
                 if (strategyBox) strategyBox.style.display = 'none';
                 if (editBtn) editBtn.style.display = 'inline-flex';
+                
+                // Hide the paceSection (redundant now)
+                const paceSection = document.getElementById('paceSection');
+                if (paceSection) paceSection.style.display = 'none';
             }
         });
     }
@@ -4014,6 +4022,78 @@ window.editAidStation = editAidStation;
 window.saveAidStation = saveAidStation;
 window.renderAidStations = renderAidStations;
 
+// Hero AID Stations (Strategy Box version)
+function setupHeroAidStations() {
+    const toggle = document.getElementById('heroAidToggle');
+    const content = document.getElementById('heroAidContent');
+    const addBtn = document.getElementById('heroAidAdd');
+    const kmInput = document.getElementById('heroAidKm');
+    const nameInput = document.getElementById('heroAidName');
+    
+    if (!toggle || !content) return;
+    
+    // Toggle expand/collapse
+    toggle.addEventListener('click', () => {
+        const isExpanded = content.style.display !== 'none';
+        content.style.display = isExpanded ? 'none' : 'block';
+        toggle.classList.toggle('expanded', !isExpanded);
+    });
+    
+    // Add AID station
+    if (addBtn) {
+        addBtn.addEventListener('click', () => {
+            const km = parseFloat(kmInput.value);
+            const name = nameInput.value.trim() || `AID ${aidStations.length + 1}`;
+            
+            if (isNaN(km) || km < 0) {
+                return;
+            }
+            
+            // Add to main aidStations array
+            aidStations.push({ km, name, stopMin: 2 });
+            aidStations.sort((a, b) => a.km - b.km);
+            
+            // Render both lists
+            renderHeroAidList();
+            renderAidStations();
+            
+            // Clear inputs
+            kmInput.value = '';
+            nameInput.value = '';
+        });
+    }
+}
+
+// Render hero AID stations list
+function renderHeroAidList() {
+    const list = document.getElementById('heroAidList');
+    if (!list) return;
+    
+    if (aidStations.length === 0) {
+        list.innerHTML = '';
+        return;
+    }
+    
+    list.innerHTML = aidStations.map((station, index) => `
+        <div class="hero-aid-item">
+            <div class="hero-aid-item-info">
+                <span class="hero-aid-item-km">KM ${station.km.toFixed(1)}</span>
+                <span class="hero-aid-item-name">${station.name}</span>
+            </div>
+            <button class="hero-aid-item-remove" onclick="removeHeroAidStation(${index})">✕</button>
+        </div>
+    `).join('');
+}
+
+// Remove AID station from hero list
+function removeHeroAidStation(index) {
+    aidStations.splice(index, 1);
+    renderHeroAidList();
+    renderAidStations();
+}
+
+window.removeHeroAidStation = removeHeroAidStation;
+
 function getAidStationForKm(km) {
     // Find AID station that falls within or at this km
     return aidStations.find(station => 
@@ -4209,10 +4289,40 @@ function updateSunTimesDisplay() {
     
     sunTimesContainer.style.display = 'flex';
     
+    // Also update hero sun times
+    updateHeroSunTimes();
+    
     // Regenerate splits table to update night sections
     if (segments.length > 0) {
         generateSplitsTable();
     }
+}
+
+// Update hero section sun times display
+function updateHeroSunTimes() {
+    const heroSunTimes = document.getElementById('heroSunTimes');
+    const heroSunrise = document.getElementById('heroSunriseTime');
+    const heroSunset = document.getElementById('heroSunsetTime');
+    
+    if (!heroSunTimes || !heroSunrise || !heroSunset) return;
+    
+    if (!sunTimes) {
+        heroSunTimes.style.display = 'none';
+        return;
+    }
+    
+    if (sunTimes.polarNight) {
+        heroSunrise.textContent = t('sun.polarNight');
+        heroSunset.textContent = '';
+    } else if (sunTimes.midnightSun) {
+        heroSunrise.textContent = t('sun.midnightSun');
+        heroSunset.textContent = '';
+    } else {
+        heroSunrise.textContent = formatSunTime(sunTimes.sunrise);
+        heroSunset.textContent = formatSunTime(sunTimes.sunset);
+    }
+    
+    heroSunTimes.style.display = 'inline-flex';
 }
 
 // Check if a given clock time (in minutes from midnight) is during night
