@@ -2353,7 +2353,8 @@ function showAllSections() {
     document.getElementById('statsSection').style.display = 'block';
     document.getElementById('mapSection').style.display = 'block';
     document.getElementById('elevationSection').style.display = 'block';
-    document.getElementById('paceSection').style.display = 'block';
+    // Note: paceSection is hidden after Calculate since settings are now in Strategy Box
+    // splitsSection is shown by calculateRacePlan()
     
     // Fix rendering after containers become visible
     setTimeout(() => {
