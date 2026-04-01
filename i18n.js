@@ -98,8 +98,7 @@ const TRANSLATIONS = {
         'race.editStrategy': '✏️ Edit Strategy',
         'race.units': 'Units:',
         'race.targetTime': 'Target time:',
-        'race.targetOptional': '(optional)',
-        'race.addAidStations': 'Add AID Stations',
+        'race.targetOptional': '(optional)',        'race.createStrategy': 'Create Strategy',        'race.addAidStations': 'Add AID Stations',
         
         // Weather
         'weather.forecast': 'Weather Forecast',
@@ -496,6 +495,7 @@ const TRANSLATIONS = {
         'race.units': 'Einheiten:',
         'race.targetTime': 'Zielzeit:',
         'race.targetOptional': '(optional)',
+        'race.createStrategy': 'Strategie erstellen',
         'race.addAidStations': 'Verpflegungsstationen hinzufügen',
         
         // Weather
