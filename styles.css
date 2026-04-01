@@ -5070,17 +5070,18 @@ h2 {
 
 .itra-apply-btn {
     padding: 8px 16px;
-    background: rgba(0, 212, 255, 0.2);
-    border: 2px solid #00d4ff;
+    background: rgba(100, 200, 255, 0.15);
+    border: 1px solid rgba(100, 200, 255, 0.4);
     border-radius: 8px;
-    color: #00d4ff;
+    color: #64c8ff;
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .itra-apply-btn:hover {
-    background: rgba(0, 212, 255, 0.3);
+    background: rgba(100, 200, 255, 0.25);
+    border-color: #64c8ff;
 }
 
 .itra-apply-btn.active {
@@ -5309,6 +5310,13 @@ h2 {
 .target-time-input:focus {
     outline: none;
     border-color: #00d4ff;
+}
+
+/* Blue styling when target time has a value */
+.target-time-input.has-value {
+    background: rgba(0, 212, 255, 0.15);
+    border-color: #00d4ff;
+    color: #00d4ff;
 }
 
 .target-time-hint {

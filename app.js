@@ -208,10 +208,32 @@ document.addEventListener('DOMContentLoaded', () => {
     setupFeaturePillTooltips();
     setupChangeRouteButton();
     setupHeroAidStations();
+    setupTargetTimeInput();
     
     // Check for race landing page mode
     initRaceMode();
 });
+
+// Target Time Input styling
+function setupTargetTimeInput() {
+    const targetInput = document.getElementById('heroTargetTime');
+    if (!targetInput) return;
+    
+    const updateStyle = () => {
+        if (targetInput.value && targetInput.value.match(/^\d{1,2}:\d{2}$/)) {
+            targetInput.classList.add('has-value');
+        } else {
+            targetInput.classList.remove('has-value');
+        }
+    };
+    
+    targetInput.addEventListener('input', updateStyle);
+    targetInput.addEventListener('change', updateStyle);
+    targetInput.addEventListener('blur', updateStyle);
+    
+    // Initial check
+    updateStyle();
+}
 
 // Feature Pill Tooltips
 function setupFeaturePillTooltips() {
