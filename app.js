@@ -717,10 +717,18 @@ function setDateFromPreset(preset, dateInput, timeInput) {
 
 // Fetch weather for custom GPX uploads
 async function fetchGpxWeather() {
-    if (!gpxData || !gpxData.points || gpxData.points.length === 0) return;
+    console.log('=== fetchGpxWeather START ===');
+    if (!gpxData || !gpxData.points || gpxData.points.length === 0) {
+        console.log('No gpxData, exiting');
+        return;
+    }
     
     const dateInput = document.getElementById('heroRaceDate') || document.getElementById('raceStartDate');
-    if (!dateInput || !dateInput.value) return;
+    console.log('dateInput:', dateInput, 'value:', dateInput?.value);
+    if (!dateInput || !dateInput.value) {
+        console.log('No date input or value, exiting');
+        return;
+    }
     
     // Get coordinates from first GPX point
     const firstPoint = gpxData.points[0];
@@ -887,16 +895,23 @@ function showWeatherUnavailable(daysUntilRace) {
 // Update hero weather widget (in results section)
 function updateHeroWeatherWidget(weather, weatherCode, adjustment) {
     console.log('=== updateHeroWeatherWidget START ===');
-    const heroWidget = document.getElementById('heroWeatherWidget');
-    console.log('heroWidget found:', !!heroWidget, heroWidget);
-    if (!heroWidget) {
-        console.log('ERROR: heroWeatherWidget element not found!');
-        return;
-    }
-    
-    const weatherIcon = getWeatherIcon(weatherCode);
-    const weatherDesc = getWeatherDescription(weatherCode);
-    console.log('Weather data:', weatherIcon, weatherDesc, weather.tempMin + '-' + weather.tempMax + '°C');
+    try {
+        const heroWidget = document.getElementById('heroWeatherWidget');
+        console.log('heroWidget found:', !!heroWidget, heroWidget);
+        if (!heroWidget) {
+            console.log('ERROR: heroWeatherWidget element not found!');
+            alert('ERROR: heroWeatherWidget not found!');
+            return;
+        }
+        
+        // Force visibility first to debug
+        heroWidget.style.display = 'flex';
+        heroWidget.style.border = '3px solid red'; // Debug indicator
+        console.log('Forced widget visible with red border');
+        
+        const weatherIcon = getWeatherIcon(weatherCode);
+        const weatherDesc = getWeatherDescription(weatherCode);
+        console.log('Weather data:', weatherIcon, weatherDesc, weather.tempMin + '-' + weather.tempMax + '°C');
     
     // Update elements
     const iconEl = document.getElementById('heroWeatherIcon');
