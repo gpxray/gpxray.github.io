@@ -2294,6 +2294,15 @@ function showAllSections() {
     document.getElementById('elevationSection').style.display = 'block';
     document.getElementById('paceSection').style.display = 'block';
     
+    // Fix rendering after containers become visible
+    setTimeout(() => {
+        // Leaflet map needs invalidateSize
+        if (map) map.invalidateSize();
+        // Chart.js charts need resize
+        if (elevationChart) elevationChart.resize();
+        if (gradientChart) gradientChart.resize();
+    }, 100);
+    
     // Show Story button only for RET races (or all races on dev)
     updateStoryButtonVisibility();
 }
