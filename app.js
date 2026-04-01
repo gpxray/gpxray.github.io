@@ -7919,7 +7919,7 @@ async function fetchRaceWeather(config) {
         
         const tempMax = Math.round(data.daily.temperature_2m_max[dayIndex]);
         const tempMin = Math.round(data.daily.temperature_2m_min[dayIndex]);
-        const rainChance = data.daily.precipitation_probability_max[dayIndex];
+        const rainChance = 55; // DEBUG: Fake rain chance to test tip
         const windSpeed = Math.round(data.daily.windspeed_10m_max[dayIndex]);
         const weatherCode = data.daily.weathercode[dayIndex];
         
@@ -7934,7 +7934,7 @@ async function fetchRaceWeather(config) {
             isRainy: weatherCode >= 51 && weatherCode <= 82,
             adjustment: calculateWeatherAdjustment(tempMax, tempMin, rainChance, windSpeed, weatherCode)
         };
-        console.log('Weather adjustment calculated:', raceWeatherData);
+        console.log('Race Weather with fake 55%:', raceWeatherData);
         
         const weatherIcon = getWeatherIcon(weatherCode);
         const weatherDesc = getWeatherDescription(weatherCode);
