@@ -759,7 +759,7 @@ async function fetchGpxWeather() {
         
         const tempMax = Math.round(data.daily.temperature_2m_max[dayIndex]);
         const tempMin = Math.round(data.daily.temperature_2m_min[dayIndex]);
-        const rainChance = data.daily.precipitation_probability_max[dayIndex];
+        const rainChance = 55; // DEBUG: Fake rain chance to test tip
         const weatherCode = data.daily.weathercode[dayIndex];
         const windSpeed = Math.round(data.daily.windspeed_10m_max[dayIndex]);
         
