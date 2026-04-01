@@ -264,10 +264,10 @@ const TRANSLATIONS = {
         'btn.creating': '⏳ Creating...',
         'btn.joining': 'Joining...',
         'btn.joinWaitlist': 'Join Waitlist',
-        'btn.shareStrategy': 'Share Your Plan',
+        'btn.shareStrategy': 'Create Share Card',
         
         // Share card preview
-        'share.previewLabel': 'Your Share Card will say:',
+        'share.previewLabel': 'On your Share Card:',
         
         // Race browser
         'races.noResults': 'No races found matching your criteria.',
@@ -638,10 +638,10 @@ const TRANSLATIONS = {
         'btn.creating': '⏳ Erstelle...',
         'btn.joining': 'Beitritt...',
         'btn.joinWaitlist': 'Warteliste beitreten',
-        'btn.shareStrategy': 'Plan teilen',
+        'btn.shareStrategy': 'Share Card erstellen',
         
         // Share card preview
-        'share.previewLabel': 'Auf deiner Share Card steht:',
+        'share.previewLabel': 'Auf deiner Share Card:',
         
         // Race browser
         'races.noResults': 'Keine Rennen gefunden, die deinen Kriterien entsprechen.',
