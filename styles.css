@@ -5187,6 +5187,7 @@ h2 {
     font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.7);
     white-space: nowrap;
+    line-height: 1;
 }
 
 .race-unit-toggle {
@@ -5230,11 +5231,9 @@ h2 {
     border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 6px;
     color: #fff;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     font-weight: 500;
     text-align: center;
-    height: auto;
-    line-height: 1.2;
 }
 
 .target-time-input::placeholder {
@@ -5247,8 +5246,9 @@ h2 {
 }
 
 .target-time-hint {
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.4);
+    line-height: 1;
 }
 
 /* Hero AID Stations Section */
