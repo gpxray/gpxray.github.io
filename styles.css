@@ -5188,6 +5188,7 @@ h2 {
 .target-time-section {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
     margin-top: 12px;
     padding-top: 12px;
