@@ -982,9 +982,14 @@ function updateHeroWeatherWidget(weather, weatherCode, adjustment) {
     
     if (tipContainer && tipIconEl && tipTextEl) {
         console.log('Getting weather tip for:', weather, 'code:', weatherCode);
-        const tip = getWeatherTip(weather, weatherCode);
+        let tip = null;
+        try {
+            tip = getWeatherTip(weather, weatherCode);
+            alert(`TIP RESULT: ${tip ? tip.text : 'NULL'}`);
+        } catch (err) {
+            alert(`ERROR in getWeatherTip: ${err.message}`);
+        }
         console.log('Weather tip result:', tip);
-        alert(`TIP RESULT: ${tip ? tip.text : 'NULL'}`);
         if (tip) {
             tipIconEl.textContent = tip.icon;
             tipTextEl.textContent = tip.text;
