@@ -380,7 +380,7 @@ const TRANSLATIONS = {
         'story.evening.7': 'Home for movie night. 🎬<br>Probably.',
         'story.evening.8': 'Late but not too late. ⏰<br>Perfect.',
         'story.evening.9': 'Twilight triumph. 🌆<br>Day well spent.',
-        'story.evening.10': 'Dinner reservation? �<br>Open the wine at 9pm.',
+        'story.evening.10': 'Dinner reservation? 🍷<br>Open the wine at 9pm.',
         'story.night.1': "I'll be back at midnight.<br>Go ahead and chill the Prosecco. 🥂",
         'story.night.2': 'Late night finish incoming. 🌙<br>Keep the lights on.',
         'story.night.3': "Don't wait up. 😴<br>But maybe leave a snack out.",
