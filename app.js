@@ -4693,12 +4693,18 @@ async function calculateRacePlanFromAPI() {
 
 // Display results from API response
 function displayApiResults(result) {
-    const { paces, terrain, totalTimeMinutes, fatigueMultiplier, checkpoints, stopTimeMinutes, ddl } = result;
+    const { paces, terrain, totalTimeMinutes, fatigueMultiplier, checkpoints, stopTimeMinutes, ddl, finishClockTime } = result;
     
     // Cache API results for use in other functions
     lastCachedCheckpoints = checkpoints;
     lastCachedFatigue = fatigueMultiplier;
     lastCalculatedPaces = { flat: paces.flat, uphill: paces.uphill, downhill: paces.downhill };
+    
+    // Update finish clock time in hero section
+    const heroFinishClock = document.getElementById('heroFinishClock');
+    if (heroFinishClock && finishClockTime) {
+        heroFinishClock.textContent = finishClockTime;
+    }
     
     // Show hero results section (hidden until Calculate is clicked)
     const heroResults = document.getElementById('heroResults');

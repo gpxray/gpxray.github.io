@@ -1688,6 +1688,7 @@ h2 {
 }
 
 .hero-main {
+    position: relative;
     text-align: center;
     margin-bottom: 25px;
     padding-bottom: 20px;
@@ -1833,7 +1834,8 @@ h2 {
 }
 
 .hero-sun-rise,
-.hero-sun-set {
+.hero-sun-set,
+.hero-finish-clock {
     color: rgba(255, 255, 255, 0.8);
 }
 
@@ -1841,6 +1843,11 @@ h2 {
 .hero-sun-set span {
     color: #ffc107;
     font-weight: 500;
+}
+
+.hero-finish-clock span {
+    color: #4CAF50;
+    font-weight: 600;
 }
 
 /* Hero Weather Widget */
@@ -5538,6 +5545,9 @@ h2 {
 
 /* Edit Strategy Button */
 .edit-strategy-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -5550,7 +5560,6 @@ h2 {
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-    margin-top: 10px;
 }
 
 .edit-strategy-btn:hover {
