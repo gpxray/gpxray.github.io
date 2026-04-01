@@ -908,24 +908,17 @@ function updateHeroWeatherWidget(weather, weatherCode, adjustment) {
     if (detailsEl) detailsEl.style.display = 'flex'; // Re-show if was hidden
     
     // Show weather tip based on conditions
+    console.log('Tip elements:', { tipContainer: !!tipContainer, tipIconEl: !!tipIconEl, tipTextEl: !!tipTextEl });
+    
     if (tipContainer && tipIconEl && tipTextEl) {
-        const tip = getWeatherTip(weather, weatherCode);
-        console.log('Weather tip check:', { 
-            rainChance: weather.rainChance, 
-            weatherCode, 
-            tip,
-            tipContainer: !!tipContainer 
-        });
-        if (tip) {
-            tipIconEl.textContent = tip.icon;
-            tipTextEl.textContent = tip.text;
-            tipContainer.style.display = 'flex';
-            console.log('Tip displayed:', tip.text);
-        } else {
-            tipContainer.style.display = 'none';
-        }
+        // FORCE TIP FOR DEBUG
+        tipIconEl.textContent = '🧥';
+        tipTextEl.textContent = "DEBUG: Rain jacket test!";
+        tipContainer.style.display = 'flex';
+        tipContainer.style.border = '2px solid red';
+        console.log('FORCED tip to display!');
     } else {
-        console.log('Tip elements not found:', { tipContainer: !!tipContainer, tipIconEl: !!tipIconEl, tipTextEl: !!tipTextEl });
+        console.log('Tip elements not found!');
     }
     
     // Show adjustment if applicable
