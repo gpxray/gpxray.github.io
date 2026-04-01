@@ -7954,6 +7954,10 @@ async function fetchRaceWeather(config) {
             </div>
         `;
         
+        // Also update the hero weather widget
+        const adjustment = getWeatherAdjustedTime(100);
+        showGpxWeatherWidget(raceWeatherData, weatherCode, config.date);
+        
     } catch (error) {
         console.error('Weather fetch error:', error);
         content.innerHTML = `<p class="weather-note">Weather forecast temporarily unavailable</p>`;
