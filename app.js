@@ -759,6 +759,7 @@ function setDateFromPreset(preset, dateInput, timeInput) {
 
 // Fetch weather for custom GPX uploads
 async function fetchGpxWeather() {
+    console.log('=== fetchGpxWeather CALLED ===');
     if (!gpxData || !gpxData.points || gpxData.points.length === 0) {
         console.log('fetchGpxWeather: No GPX data');
         return;
@@ -846,7 +847,10 @@ function showGpxWeatherWidget(weather, weatherCode, dateStr) {
     // Update hero weather widget (main page)
     const heroWidget = document.getElementById('heroWeatherWidget');
     
+    console.log('showGpxWeatherWidget: heroWidget exists?', !!heroWidget);
+    
     if (heroWidget) {
+        console.log('Calling updateHeroWeatherWidget with:', weather, weatherCode);
         updateHeroWeatherWidget(weather, weatherCode, adjustment);
         return; // Hero widget is enough on main page
     }
@@ -939,8 +943,13 @@ function showWeatherUnavailable(daysUntilRace) {
 
 // Update hero weather widget (in results section)
 function updateHeroWeatherWidget(weather, weatherCode, adjustment) {
+    console.log('=== updateHeroWeatherWidget CALLED ===', weather);
     const heroWidget = document.getElementById('heroWeatherWidget');
-    if (!heroWidget) return;
+    if (!heroWidget) {
+        console.log('heroWeatherWidget element NOT found');
+        return;
+    }
+    console.log('heroWeatherWidget element found');
     
     heroWidget.style.display = 'flex';
     
@@ -8005,6 +8014,7 @@ function populateRaceLanding(config) {
 
 // Weather forecast for race landing page
 async function fetchRaceWeather(config) {
+    console.log('=== fetchRaceWeather CALLED ===', config.name);
     const widget = document.getElementById('raceWeatherWidget');
     const content = document.getElementById('weatherContent');
     if (!widget || !content) return;
