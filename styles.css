@@ -5105,6 +5105,55 @@ h2 {
     background: rgba(244, 67, 54, 0.3);
 }
 
+/* Race Create Strategy Button */
+.race-create-section {
+    margin-top: 25px;
+    text-align: center;
+}
+
+.race-create-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, #00d4ff 0%, #00a8cc 100%);
+    border: none;
+    border-radius: 12px;
+    color: #0a1628;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+}
+
+.race-create-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
+}
+
+.race-create-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Race strategy settings - smooth reveal */
+.race-strategy-settings {
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .itra-input.error {
     border-color: #f44336;
     animation: shake 0.3s ease;

@@ -7890,6 +7890,9 @@ function initRaceModeContent(raceConfig) {
     // Populate race landing page
     populateRaceLanding(raceConfig);
     
+    // Setup Create Strategy button handler
+    setupRaceCreateStrategyButton();
+    
     // Track race page view
     trackEvent('race_landing_view', { race_id: raceConfig.id, race_name: raceConfig.name });
 }
@@ -8264,11 +8267,14 @@ async function selectRaceDistance(distanceConfig, buttonEl) {
         const gpxContent = await response.text();
         console.log('Race GPX content length:', gpxContent.length);
         
+        // Store the GPX content for later use when Create Strategy is clicked
+        currentDistanceConfig = distanceConfig;
+        currentDistanceConfig._gpxContent = gpxContent;
+        
         // Set route name
         currentRouteName = `${currentRaceConfig.shortName || currentRaceConfig.name} - ${distanceConfig.name}`;
-        currentDistanceConfig = distanceConfig;
         
-        // Clear and load AID stations BEFORE parseGPX (so calculateRacePlan uses correct stations)
+        // Clear and load AID stations
         aidStations = [];
         if (distanceConfig.aidStations && distanceConfig.aidStations.length > 0) {
             aidStations = [...distanceConfig.aidStations];
@@ -8281,72 +8287,6 @@ async function selectRaceDistance(distanceConfig, buttonEl) {
             console.log('Pre-stored surface profile loaded:', preStoredSurfaceData.length, 'segments');
         }
         
-        // Handle target time from race page input (before parseGPX triggers calculations)
-        const raceTargetTime = document.getElementById('raceTargetTime');
-        if (raceTargetTime && raceTargetTime.value) {
-            const targetValue = raceTargetTime.value;
-            const match = targetValue.match(/^(\d{1,2}):(\d{2})$/);
-            if (match) {
-                const hours = parseInt(match[1]);
-                const minutes = parseInt(match[2]);
-                
-                // Sync to target time mode inputs
-                const targetHoursInput = document.getElementById('targetHours');
-                const targetMinutesInput = document.getElementById('targetMinutes');
-                if (targetHoursInput) targetHoursInput.value = hours;
-                if (targetMinutesInput) targetMinutesInput.value = minutes;
-                
-                // Set target mode
-                currentMode = 'target';
-                console.log('Race page: Target time mode activated:', hours, ':', minutes);
-            }
-        } else {
-            // No target time - use runner level / manual mode
-            currentMode = 'manual';
-        }
-        
-        // Parse GPX (this will trigger calculateRacePlan with correct aidStations)
-        parseGPX(gpxContent);
-        
-        // Override elevation gain with official race value if configured
-        if (distanceConfig.elevation && gpxData) {
-            gpxData.elevationGain = distanceConfig.elevation;
-            // Re-render with correct elevation
-            displayStats();
-            calculateRacePlan();
-        }
-        
-        // Set fixed race date and start time if configured
-        if (distanceConfig.raceDate || distanceConfig.startTime) {
-            const dateInput = document.getElementById('raceStartDate');
-            const timeInput = document.getElementById('raceStartTime');
-            
-            if (dateInput && distanceConfig.raceDate) {
-                dateInput.value = distanceConfig.raceDate;
-                dateInput.readOnly = true;
-                dateInput.style.opacity = '0.7';
-                dateInput.style.cursor = 'not-allowed';
-                dateInput.title = 'Fixed race date';
-            }
-            
-            if (timeInput && distanceConfig.startTime) {
-                timeInput.value = distanceConfig.startTime;
-                timeInput.readOnly = true;
-                timeInput.style.opacity = '0.7';
-                timeInput.style.cursor = 'not-allowed';
-                timeInput.title = 'Official start time';
-            }
-            
-            // Recalculate sun times for the race date/location
-            if (distanceConfig.raceDate && gpxData) {
-                try {
-                    calculateSunTimes();
-                } catch (e) {
-                    console.warn('Could not calculate sun times:', e);
-                }
-            }
-        }
-        
         // Track selection
         trackEvent('race_distance_selected', { 
             race_id: currentRaceConfig.id, 
@@ -8354,13 +8294,12 @@ async function selectRaceDistance(distanceConfig, buttonEl) {
             distance_km: distanceConfig.distance 
         });
         
-        // Show statement preview and story button for race pages
-        updateStoryButtonVisibility();
-        
-        // Scroll to results
-        setTimeout(() => {
-            document.getElementById('statsSection')?.scrollIntoView({ behavior: 'smooth' });
-        }, 500);
+        // Show Step 2 (settings section) with animation
+        const step2 = document.getElementById('raceStep2');
+        if (step2) {
+            step2.style.display = 'block';
+            step2.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
         
     } catch (error) {
         console.error('Error loading race distance:', error);
@@ -8370,3 +8309,105 @@ async function selectRaceDistance(distanceConfig, buttonEl) {
         buttonEl.disabled = false;
     }
 }
+
+// Create Strategy button click handler for race pages
+function setupRaceCreateStrategyButton() {
+    const createBtn = document.getElementById('raceCreateStrategyBtn');
+    if (!createBtn) return;
+    
+    createBtn.addEventListener('click', async () => {
+        if (!currentDistanceConfig || !currentDistanceConfig._gpxContent) {
+            alert('Please select a distance first');
+            return;
+        }
+        
+        // Show loading state
+        const originalHTML = createBtn.innerHTML;
+        createBtn.innerHTML = '⏳ Creating...';
+        createBtn.disabled = true;
+        
+        try {
+            // Handle target time from race page input
+            const raceTargetTime = document.getElementById('raceTargetTime');
+            if (raceTargetTime && raceTargetTime.value) {
+                const targetValue = raceTargetTime.value;
+                const match = targetValue.match(/^(\d{1,2}):(\d{2})$/);
+                if (match) {
+                    const hours = parseInt(match[1]);
+                    const minutes = parseInt(match[2]);
+                    
+                    // Sync to target time mode inputs
+                    const targetHoursInput = document.getElementById('targetHours');
+                    const targetMinutesInput = document.getElementById('targetMinutes');
+                    if (targetHoursInput) targetHoursInput.value = hours;
+                    if (targetMinutesInput) targetMinutesInput.value = minutes;
+                    
+                    // Set target mode
+                    currentMode = 'target';
+                    console.log('Race page: Target time mode activated:', hours, ':', minutes);
+                }
+            } else {
+                // No target time - use runner level / manual mode
+                currentMode = 'manual';
+            }
+            
+            // Parse GPX (this will trigger calculateRacePlan with correct aidStations)
+            parseGPX(currentDistanceConfig._gpxContent);
+            
+            // Override elevation gain with official race value if configured
+            if (currentDistanceConfig.elevation && gpxData) {
+                gpxData.elevationGain = currentDistanceConfig.elevation;
+                // Re-render with correct elevation
+                displayStats();
+                calculateRacePlan();
+            }
+            
+            // Set fixed race date and start time if configured
+            if (currentDistanceConfig.raceDate || currentDistanceConfig.startTime) {
+                const dateInput = document.getElementById('raceStartDate');
+                const timeInput = document.getElementById('raceStartTime');
+                
+                if (dateInput && currentDistanceConfig.raceDate) {
+                    dateInput.value = currentDistanceConfig.raceDate;
+                    dateInput.readOnly = true;
+                    dateInput.style.opacity = '0.7';
+                    dateInput.style.cursor = 'not-allowed';
+                    dateInput.title = 'Fixed race date';
+                }
+                
+                if (timeInput && currentDistanceConfig.startTime) {
+                    timeInput.value = currentDistanceConfig.startTime;
+                    timeInput.readOnly = true;
+                    timeInput.style.opacity = '0.7';
+                    timeInput.style.cursor = 'not-allowed';
+                    timeInput.title = 'Official start time';
+                }
+                
+                // Recalculate sun times for the race date/location
+                if (currentDistanceConfig.raceDate && gpxData) {
+                    try {
+                        calculateSunTimes();
+                    } catch (e) {
+                        console.warn('Could not calculate sun times:', e);
+                    }
+                }
+            }
+            
+            // Show statement preview and story button for race pages
+            updateStoryButtonVisibility();
+            
+            // Scroll to results
+            setTimeout(() => {
+                document.getElementById('statsSection')?.scrollIntoView({ behavior: 'smooth' });
+            }, 300);
+            
+        } catch (error) {
+            console.error('Error creating race strategy:', error);
+            alert('Failed to create strategy. Please try again.');
+        } finally {
+            createBtn.innerHTML = originalHTML;
+            createBtn.disabled = false;
+        }
+    });
+}
+

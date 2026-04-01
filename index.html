@@ -176,8 +176,16 @@
             <div class="race-strategy-box">
                 <h3 class="race-strategy-title" data-i18n="race.strategyTitle">Create Your Race Strategy</h3>
                 
-                <!-- Runner Level Section -->
-                <div class="race-setup-section">
+                <!-- Step 1: Distance Section (shown first) -->
+                <div class="race-setup-section" id="raceStep1">
+                    <label class="race-setup-label" data-i18n="race.selectDistance">Which distance are you running?</label>
+                    <div class="race-distances" id="raceDistances">
+                        <!-- Distance buttons will be populated here -->
+                    </div>
+                </div>
+                
+                <!-- Step 2: Strategy Settings (shown after distance selected) -->
+                <div class="race-setup-section race-strategy-settings" id="raceStep2" style="display: none;">
                     <label class="race-setup-label" data-i18n="race.selectLevel">What's your runner level?</label>
                     <div class="race-level-buttons" id="raceLevelButtons">
                         <button type="button" class="race-level-btn" data-level="beginner" data-i18n="hero.beginner">Beginner</button>
@@ -209,13 +217,12 @@
                             <a href="https://itra.run/Runners/FindARunner" target="_blank" rel="noopener" class="itra-link">🔍 <span data-i18n="race.itraFindScore">Find your ITRA score</span></a>
                         </div>
                     </div>
-                </div>
-                
-                <!-- Distance Section -->
-                <div class="race-setup-section">
-                    <label class="race-setup-label" data-i18n="race.selectDistance">Which distance are you running?</label>
-                    <div class="race-distances" id="raceDistances">
-                        <!-- Distance buttons will be populated here -->
+                    
+                    <!-- Create Strategy Button -->
+                    <div class="race-create-section">
+                        <button type="button" id="raceCreateStrategyBtn" class="race-create-btn">
+                            🚀 <span data-i18n="race.createStrategy">Create Strategy</span>
+                        </button>
                     </div>
                 </div>
             </div>
