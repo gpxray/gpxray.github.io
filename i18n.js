@@ -92,6 +92,9 @@ const TRANSLATIONS = {
         'race.presetCustom': 'Custom',
         'race.calculate': '🚀 Calculate Strategy',
         'race.editStrategy': '✏️ Edit Strategy',
+        'race.units': 'Units:',
+        'race.targetTime': 'Target time:',
+        'race.targetOptional': '(optional)',
         
         // Weather
         'weather.forecast': 'Weather Forecast',
@@ -479,6 +482,9 @@ const TRANSLATIONS = {
         'race.presetCustom': 'Individuell',
         'race.calculate': '🚀 Strategie berechnen',
         'race.editStrategy': '✏️ Strategie ändern',
+        'race.units': 'Einheiten:',
+        'race.targetTime': 'Zielzeit:',
+        'race.targetOptional': '(optional)',
         
         // Weather
         'weather.forecast': 'Wettervorhersage',

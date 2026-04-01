@@ -574,6 +574,33 @@ function setupDatePresets() {
             if (mainDateInput) mainDateInput.value = dateInput.value;
             if (mainTimeInput) mainTimeInput.value = timeInput.value;
             
+            // Handle target time from hero input
+            const heroTargetTime = document.getElementById('heroTargetTime');
+            if (heroTargetTime && heroTargetTime.value) {
+                const targetValue = heroTargetTime.value;
+                const match = targetValue.match(/^(\d{1,2}):(\d{2})$/);
+                if (match) {
+                    const hours = parseInt(match[1]);
+                    const minutes = parseInt(match[2]);
+                    
+                    // Sync to target time mode inputs
+                    const targetHoursInput = document.getElementById('targetHours');
+                    const targetMinutesInput = document.getElementById('targetMinutes');
+                    if (targetHoursInput) targetHoursInput.value = hours;
+                    if (targetMinutesInput) targetMinutesInput.value = minutes;
+                    
+                    // Activate target time mode
+                    const targetBtn = document.getElementById('targetModeBtn');
+                    const manualBtn = document.getElementById('manualModeBtn');
+                    const targetMode = document.getElementById('targetMode');
+                    const manualMode = document.getElementById('manualMode');
+                    if (targetBtn) targetBtn.classList.add('active');
+                    if (manualBtn) manualBtn.classList.remove('active');
+                    if (targetMode) targetMode.style.display = 'block';
+                    if (manualMode) manualMode.style.display = 'none';
+                }
+            }
+            
             // Trigger calculation
             if (gpxData && segments.length > 0) {
                 // Show all sections that were hidden until Calculate
@@ -2715,37 +2742,81 @@ function displayGradientChart() {
 function setupUnitToggle() {
     const kmBtn = document.getElementById('kmBtn');
     const milesBtn = document.getElementById('milesBtn');
+    const heroKmBtn = document.getElementById('heroKmBtn');
+    const heroMilesBtn = document.getElementById('heroMilesBtn');
     
-    if (!kmBtn || !milesBtn) return;
-    
-    kmBtn.addEventListener('click', () => {
-        useMetric = true;
-        kmBtn.classList.add('active');
-        milesBtn.classList.remove('active');
+    // Helper to sync all unit buttons
+    function setMetric(isMetric) {
+        useMetric = isMetric;
+        
+        // Update pace section buttons
+        if (kmBtn && milesBtn) {
+            if (isMetric) {
+                kmBtn.classList.add('active');
+                milesBtn.classList.remove('active');
+            } else {
+                milesBtn.classList.add('active');
+                kmBtn.classList.remove('active');
+            }
+        }
+        
+        // Update hero (Strategy Box) buttons
+        if (heroKmBtn && heroMilesBtn) {
+            if (isMetric) {
+                heroKmBtn.classList.add('active');
+                heroMilesBtn.classList.remove('active');
+            } else {
+                heroMilesBtn.classList.add('active');
+                heroKmBtn.classList.remove('active');
+            }
+        }
+        
         updateDistanceHeader();
         if (gpxData) {
             displayStats();
-            // Recalculate if plan was already calculated
-            const paceResults = document.getElementById('paceResults');
-            if (paceResults && paceResults.style.display !== 'none') {
-                calculateRacePlan();
+            // Update hero distance display
+            const heroDistance = document.getElementById('heroDistance');
+            if (heroDistance) {
+                const dist = useMetric ? gpxData.totalDistance : gpxData.totalDistance * KM_TO_MILES;
+                const unit = useMetric ? 'km' : 'mi';
+                heroDistance.textContent = `${dist.toFixed(1)} ${unit}`;
             }
         }
-    });
+    }
     
-    milesBtn.addEventListener('click', () => {
-        useMetric = false;
-        milesBtn.classList.add('active');
-        kmBtn.classList.remove('active');
-        updateDistanceHeader();
-        if (gpxData) {
-            displayStats();
-            const paceResults = document.getElementById('paceResults');
-            if (paceResults && paceResults.style.display !== 'none') {
-                calculateRacePlan();
+    // Pace section buttons
+    if (kmBtn) {
+        kmBtn.addEventListener('click', () => {
+            setMetric(true);
+            if (gpxData) {
+                const paceResults = document.getElementById('paceResults');
+                if (paceResults && paceResults.style.display !== 'none') {
+                    calculateRacePlan();
+                }
             }
-        }
-    });
+        });
+    }
+    
+    if (milesBtn) {
+        milesBtn.addEventListener('click', () => {
+            setMetric(false);
+            if (gpxData) {
+                const paceResults = document.getElementById('paceResults');
+                if (paceResults && paceResults.style.display !== 'none') {
+                    calculateRacePlan();
+                }
+            }
+        });
+    }
+    
+    // Hero (Strategy Box) buttons
+    if (heroKmBtn) {
+        heroKmBtn.addEventListener('click', () => setMetric(true));
+    }
+    
+    if (heroMilesBtn) {
+        heroMilesBtn.addEventListener('click', () => setMetric(false));
+    }
 }
 
 function updateDistanceHeader() {

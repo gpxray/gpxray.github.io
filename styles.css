@@ -5009,6 +5009,90 @@ h2 {
     border-color: #00d4ff;
 }
 
+/* Unit & Target Time Row */
+.race-options-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    flex-wrap: wrap;
+}
+
+.race-unit-section,
+.race-target-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.race-setup-label-inline {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    white-space: nowrap;
+}
+
+.race-unit-toggle {
+    display: flex;
+    gap: 4px;
+}
+
+.race-unit-btn {
+    padding: 6px 12px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.race-unit-btn:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+    color: #fff;
+}
+
+.race-unit-btn.active {
+    background: rgba(0, 212, 255, 0.2);
+    border-color: #00d4ff;
+    color: #00d4ff;
+}
+
+.race-target-input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.target-time-input {
+    width: 70px;
+    padding: 6px 10px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: #fff;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.target-time-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.target-time-input:focus {
+    outline: none;
+    border-color: #00d4ff;
+}
+
+.target-time-hint {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4);
+}
+
 /* Calculate Button */
 .hero-calculate-btn {
     display: block;
