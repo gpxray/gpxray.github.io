@@ -340,9 +340,14 @@ function setupRunnerLevel() {
         
         if (!gpxData || segments.length === 0) return;
         
-        // Apply new paces and recalculate
+        // Apply new paces and recalculate (only if not waiting for Calculate button)
         applyRunnerLevelPaces();
-        calculateRacePlan();
+        
+        // Only auto-calculate on race pages, not on main page with Calculate button
+        const heroCalculateBtn = document.getElementById('heroCalculateBtn');
+        if (!heroCalculateBtn) {
+            calculateRacePlan();
+        }
     };
     
     // Hero select (hidden, for compatibility)
@@ -443,10 +448,13 @@ function setupItraForElements(els) {
             itraClearBtn.style.display = 'inline-block';
         }
         
-        // Apply and recalculate
+        // Apply and recalculate (only auto-calc on race pages)
         if (gpxData && segments.length > 0) {
             applyRunnerLevelPaces();
-            calculateRacePlan();
+            const heroCalculateBtn = document.getElementById('heroCalculateBtn');
+            if (!heroCalculateBtn) {
+                calculateRacePlan();
+            }
         }
     };
     
@@ -1539,9 +1547,13 @@ function parseGPX(gpxContent) {
     // Update sun times display based on route center
     updateSunTimesDisplay();
     
-    // Auto-calculate race plan with runner level paces
+    // Auto-calculate race plan (only on race pages, not main page with Calculate button)
     applyRunnerLevelPaces();
-    calculateRacePlan();
+    
+    const heroCalculateBtn = document.getElementById('heroCalculateBtn');
+    if (!heroCalculateBtn) {
+        calculateRacePlan();
+    }
     
     // Track GPX load
     trackEvent('gpx_loaded', { 
