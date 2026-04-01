@@ -969,7 +969,9 @@ function updateHeroWeatherWidget(weather, weatherCode, adjustment) {
     
     // Show weather tip based on conditions
     if (tipContainer && tipIconEl && tipTextEl) {
+        console.log('Getting weather tip for:', weather, 'code:', weatherCode);
         const tip = getWeatherTip(weather, weatherCode);
+        console.log('Weather tip result:', tip);
         if (tip) {
             tipIconEl.textContent = tip.icon;
             tipTextEl.textContent = tip.text;
@@ -977,6 +979,8 @@ function updateHeroWeatherWidget(weather, weatherCode, adjustment) {
         } else {
             tipContainer.style.display = 'none';
         }
+    } else {
+        console.log('Tip elements not found:', { tipContainer, tipIconEl, tipTextEl });
     }
     
     // Show adjustment if applicable
@@ -994,10 +998,20 @@ function getWeatherTip(weather, weatherCode) {
     const lang = getCurrentLanguage();
     const code = Number(weatherCode);
     
+    console.log('getWeatherTip called with:', { 
+        rainChance: weather.rainChance, 
+        tempMax: weather.tempMax, 
+        tempMin: weather.tempMin,
+        windSpeed: weather.windSpeed,
+        code 
+    });
+    
     // Check for rain/drizzle (codes 51-67, 80-82: rain/drizzle, 95-99: thunderstorm)
     const isRainy = (code >= 51 && code <= 67) || (code >= 80 && code <= 82) || code >= 95;
     // Check for snow (codes 71-77, 85-86: snow)
     const isSnowy = (code >= 71 && code <= 77) || (code >= 85 && code <= 86);
+    
+    console.log('Weather checks:', { isRainy, isSnowy, rainCheck: weather.rainChance >= 40 });
     
     // Rain tip: only if significant rain chance (≥40%) or heavy rain with ≥30% chance
     if (weather.rainChance >= 40 || (isRainy && weather.rainChance >= 30)) {
