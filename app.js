@@ -216,23 +216,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Target Time Input styling
 function setupTargetTimeInput() {
-    const targetInput = document.getElementById('heroTargetTime');
-    if (!targetInput) return;
-    
-    const updateStyle = () => {
-        if (targetInput.value && targetInput.value.match(/^\d{1,2}:\d{2}$/)) {
-            targetInput.classList.add('has-value');
-        } else {
-            targetInput.classList.remove('has-value');
-        }
+    // Setup for both main page and race page target time inputs
+    const setupInput = (inputId) => {
+        const targetInput = document.getElementById(inputId);
+        if (!targetInput) return;
+        
+        const updateStyle = () => {
+            if (targetInput.value && targetInput.value.match(/^\d{1,2}:\d{2}$/)) {
+                targetInput.classList.add('has-value');
+            } else {
+                targetInput.classList.remove('has-value');
+            }
+        };
+        
+        targetInput.addEventListener('input', updateStyle);
+        targetInput.addEventListener('change', updateStyle);
+        targetInput.addEventListener('blur', updateStyle);
+        
+        // Initial check
+        updateStyle();
     };
     
-    targetInput.addEventListener('input', updateStyle);
-    targetInput.addEventListener('change', updateStyle);
-    targetInput.addEventListener('blur', updateStyle);
-    
-    // Initial check
-    updateStyle();
+    setupInput('heroTargetTime');
+    setupInput('raceTargetTime');
 }
 
 // Feature Pill Tooltips
@@ -7873,6 +7879,11 @@ function initRaceModeContent(raceConfig) {
     if (addAidStationBox) addAidStationBox.style.display = 'none'; // Hide add AID station in race mode
     if (planActionsBox) planActionsBox.style.display = 'none'; // Hide Save/Load Plan in race mode
     
+    // Force metric units for race pages (German races use km)
+    useMetric = true;
+    const unitToggle = document.querySelector('.unit-toggle');
+    if (unitToggle) unitToggle.style.display = 'none';
+    
     // Update page title for SEO
     document.title = `${raceConfig.name} - Race Strategy | GPXray`;
     
@@ -8268,6 +8279,30 @@ async function selectRaceDistance(distanceConfig, buttonEl) {
         if (distanceConfig.surfaceProfile && distanceConfig.surfaceProfile.length > 0) {
             preStoredSurfaceData = [...distanceConfig.surfaceProfile];
             console.log('Pre-stored surface profile loaded:', preStoredSurfaceData.length, 'segments');
+        }
+        
+        // Handle target time from race page input (before parseGPX triggers calculations)
+        const raceTargetTime = document.getElementById('raceTargetTime');
+        if (raceTargetTime && raceTargetTime.value) {
+            const targetValue = raceTargetTime.value;
+            const match = targetValue.match(/^(\d{1,2}):(\d{2})$/);
+            if (match) {
+                const hours = parseInt(match[1]);
+                const minutes = parseInt(match[2]);
+                
+                // Sync to target time mode inputs
+                const targetHoursInput = document.getElementById('targetHours');
+                const targetMinutesInput = document.getElementById('targetMinutes');
+                if (targetHoursInput) targetHoursInput.value = hours;
+                if (targetMinutesInput) targetMinutesInput.value = minutes;
+                
+                // Set target mode
+                currentMode = 'target';
+                console.log('Race page: Target time mode activated:', hours, ':', minutes);
+            }
+        } else {
+            // No target time - use runner level / manual mode
+            currentMode = 'manual';
         }
         
         // Parse GPX (this will trigger calculateRacePlan with correct aidStations)
