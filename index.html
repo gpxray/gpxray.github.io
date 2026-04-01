@@ -71,6 +71,21 @@
         
         initGA();
     </script>
+    <!-- Early race mode detection to prevent flash of upload section -->
+    <script>
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+            const raceParam = params.get('race');
+            const pathMatch = window.location.pathname.match(/\/race\/([a-z0-9-]+)/i);
+            if (raceParam || pathMatch) {
+                document.documentElement.classList.add('race-mode');
+            }
+        })();
+    </script>
+    <style>
+        /* Hide upload section on race pages before JS loads */
+        .race-mode #uploadSection { display: none !important; }
+    </style>
 </head>
 <body>
     <!-- Dev Password Gate (hidden on main branch) -->
