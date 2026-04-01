@@ -576,6 +576,9 @@ function setupDatePresets() {
             
             // Trigger calculation
             if (gpxData && segments.length > 0) {
+                // Show all sections that were hidden until Calculate
+                showAllSections();
+                
                 calculateRacePlan();
                 
                 // Fetch weather for GPX upload (if date is within 16 days)
@@ -2236,6 +2239,26 @@ function displaySurfaceStats() {
 
 // Show hidden sections
 function showSections() {
+    // On main page with Calculate button, don't auto-show sections
+    const heroCalculateBtn = document.getElementById('heroCalculateBtn');
+    if (heroCalculateBtn) {
+        // Only show stats section (basic info), hide the rest until Calculate
+        document.getElementById('statsSection').style.display = 'block';
+        return;
+    }
+    
+    // On race landing pages, show everything immediately
+    document.getElementById('statsSection').style.display = 'block';
+    document.getElementById('mapSection').style.display = 'block';
+    document.getElementById('elevationSection').style.display = 'block';
+    document.getElementById('paceSection').style.display = 'block';
+    
+    // Show Story button only for RET races (or all races on dev)
+    updateStoryButtonVisibility();
+}
+
+// Show all sections (called after Calculate on main page)
+function showAllSections() {
     document.getElementById('statsSection').style.display = 'block';
     document.getElementById('mapSection').style.display = 'block';
     document.getElementById('elevationSection').style.display = 'block';
