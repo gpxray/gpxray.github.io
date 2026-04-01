@@ -784,8 +784,8 @@ async function fetchGpxWeather() {
             return;
         }
         
-        const tempMax = 32; // DEBUG: Fake hot weather to test adjustment
-        const tempMin = 25; // DEBUG: Fake hot weather
+        const tempMax = Math.round(data.daily.temperature_2m_max[dayIndex]);
+        const tempMin = Math.round(data.daily.temperature_2m_min[dayIndex]);
         const rainChance = data.daily.precipitation_probability_max[dayIndex];
         const weatherCode = data.daily.weathercode[dayIndex];
         const windSpeed = Math.round(data.daily.windspeed_10m_max[dayIndex]);
@@ -948,17 +948,11 @@ function updateHeroWeatherWidget(weather, weatherCode, adjustment) {
     }
     
     // Show adjustment if applicable
-    console.log('Adjustment check:', adjustment);
-    console.log('adjContainer:', adjContainer, 'adjTextEl:', adjTextEl);
-    if (adjContainer && adjTextEl) {
-        // DEBUG: Force adjustment display
-        adjTextEl.textContent = `+15 min`;
+    if (adjContainer && adjTextEl && adjustment && adjustment.addedMinutes > 0) {
+        adjTextEl.textContent = `+${adjustment.addedMinutes} min`;
         adjContainer.style.display = 'flex';
-        adjContainer.style.border = '3px solid red';
-        adjContainer.style.backgroundColor = 'yellow';
-        console.log('Forced adjustment display with yellow bg');
-    } else {
-        console.log('Adjustment elements NOT FOUND!');
+    } else if (adjContainer) {
+        adjContainer.style.display = 'none';
     }
     
 }
@@ -7965,7 +7959,6 @@ async function fetchRaceWeather(config) {
         
         // Get weather tip
         const tip = getWeatherTip(raceWeatherData, weatherCode);
-        console.log('Weather tip result:', tip, 'tempMax:', tempMax, 'rainChance:', rainChance, 'code:', weatherCode);
         const tipHtml = tip ? `
             <div class="weather-tip">
                 <span class="weather-tip-icon">${tip.icon}</span>
@@ -7975,7 +7968,6 @@ async function fetchRaceWeather(config) {
         
         // Get adjustment info
         const adj = raceWeatherData.adjustment;
-        console.log('Weather adjustment:', adj);
         const adjHtml = (adj && adj.totalPenaltyPercent >= 1) ? `
             <div class="weather-adjustment">
                 <span class="weather-adj-icon">⏱️</span>
@@ -7983,9 +7975,6 @@ async function fetchRaceWeather(config) {
                 <span class="weather-adj-label">${adj.description}</span>
             </div>
         ` : '';
-        
-        // DEBUG: Show what's happening
-        console.log('tipHtml:', tipHtml ? 'yes' : 'no', 'adjHtml:', adjHtml ? 'yes' : 'no');
         
         content.innerHTML = `
             <div class="weather-forecast">
