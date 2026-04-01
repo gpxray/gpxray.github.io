@@ -8396,6 +8396,9 @@ function setupRaceCreateStrategyButton() {
             // Show statement preview and story button for race pages
             updateStoryButtonVisibility();
             
+            // Show all result sections (map, elevation, splits, etc.)
+            showAllSections();
+            
             // Scroll to results
             setTimeout(() => {
                 document.getElementById('statsSection')?.scrollIntoView({ behavior: 'smooth' });
