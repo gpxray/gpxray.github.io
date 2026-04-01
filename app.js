@@ -707,11 +707,12 @@ async function fetchGpxWeather() {
     
     const raceDate = new Date(dateInput.value);
     const today = new Date();
+    today.setHours(0, 0, 0, 0); // Normalize to start of day
     const daysUntilRace = Math.ceil((raceDate - today) / (1000 * 60 * 60 * 24));
     
     // Only fetch if within 16 days (Open-Meteo limit)
     if (daysUntilRace < 0 || daysUntilRace > 16) {
-        console.log('Weather forecast not available for this date range');
+        console.log('Weather forecast not available for this date range, days until race:', daysUntilRace);
         showWeatherUnavailable(daysUntilRace);
         return;
     }
@@ -724,20 +725,30 @@ async function fetchGpxWeather() {
         
         const data = await response.json();
         
-        // Find race day in forecast
-        const raceDateStr = dateInput.value;
+        // Find race day in forecast - ensure YYYY-MM-DD format
+        const raceDateStr = dateInput.value; // Should already be YYYY-MM-DD from input type="date"
         const dayIndex = data.daily.time.indexOf(raceDateStr);
         
+        console.log('Looking for date:', raceDateStr, 'in', data.daily.time, 'found at index:', dayIndex);
+        
         if (dayIndex === -1) {
-            console.log('Race date not found in forecast');
-            return;
+            console.log('Race date not found in forecast, trying alternative match');
+            // Fallback: try to find by matching the date object
+            const targetDate = raceDate.toISOString().split('T')[0];
+            const altIndex = data.daily.time.indexOf(targetDate);
+            if (altIndex === -1) {
+                showWeatherUnavailable(daysUntilRace);
+                return;
+            }
         }
         
-        const tempMax = Math.round(data.daily.temperature_2m_max[dayIndex]);
-        const tempMin = Math.round(data.daily.temperature_2m_min[dayIndex]);
-        const rainChance = data.daily.precipitation_probability_max[dayIndex];
-        const weatherCode = data.daily.weathercode[dayIndex];
-        const windSpeed = Math.round(data.daily.windspeed_10m_max[dayIndex]);
+        const finalIndex = dayIndex !== -1 ? dayIndex : data.daily.time.indexOf(raceDate.toISOString().split('T')[0]);
+        
+        const tempMax = Math.round(data.daily.temperature_2m_max[finalIndex]);
+        const tempMin = Math.round(data.daily.temperature_2m_min[finalIndex]);
+        const rainChance = data.daily.precipitation_probability_max[finalIndex];
+        const weatherCode = data.daily.weathercode[finalIndex];
+        const windSpeed = Math.round(data.daily.windspeed_10m_max[finalIndex]);
         
         // Store weather data for pace adjustment
         raceWeatherData = {
