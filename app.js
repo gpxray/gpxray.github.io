@@ -6015,7 +6015,9 @@ function updateStatementPreview() {
     const finishInfo = getFinishTimeInfo();
     if (!finishInfo) return;
     
-    const statement = getWittyStatement(finishInfo.finishHour, finishInfo.isNextDay, finishInfo.totalHours, currentStatementIndex);
+    let statement = getWittyStatement(finishInfo.finishHour, finishInfo.isNextDay, finishInfo.totalHours, currentStatementIndex);
+    // Replace <br> tags with space for preview display
+    statement = statement.replace(/<br\s*\/?>/gi, ' ');
     previewEl.textContent = `"${statement}"`;
 }
 
