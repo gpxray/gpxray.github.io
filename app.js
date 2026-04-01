@@ -922,12 +922,16 @@ function updateHeroWeatherWidget(weather, weatherCode, adjustment) {
     
     // Show adjustment if applicable
     console.log('Adjustment check:', adjustment);
+    console.log('adjContainer:', adjContainer, 'adjTextEl:', adjTextEl);
     if (adjContainer && adjTextEl) {
         // DEBUG: Force adjustment display
         adjTextEl.textContent = `+15 min`;
         adjContainer.style.display = 'flex';
-        adjContainer.style.border = '2px solid red';
-        console.log('Forced adjustment display');
+        adjContainer.style.border = '3px solid red';
+        adjContainer.style.backgroundColor = 'yellow';
+        console.log('Forced adjustment display with yellow bg');
+    } else {
+        console.log('Adjustment elements NOT FOUND!');
     }
     
 }

@@ -5176,12 +5176,21 @@ h2 {
     flex-wrap: wrap;
 }
 
-.race-unit-section,
-.race-target-section {
+.race-unit-section {
     display: flex;
     align-items: center;
     gap: 10px;
     height: 32px;
+}
+
+/* Target time as its own section above ITRA */
+.target-time-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .race-setup-label-inline {

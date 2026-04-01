@@ -395,6 +395,13 @@
                                 <button type="button" class="race-level-btn" data-level="elite" data-i18n="hero.elite">Elite</button>
                             </div>
                             
+                            <!-- Target Time (moved up, simple input) -->
+                            <div class="target-time-section">
+                                <label class="race-setup-label-inline" data-i18n="race.targetTime">Target time:</label>
+                                <input type="text" id="heroTargetTime" class="target-time-input" placeholder="HH:MM" pattern="[0-9]{1,2}:[0-9]{2}" />
+                                <span class="target-time-hint" data-i18n="race.targetOptional">(optional)</span>
+                            </div>
+                            
                             <!-- ITRA Score Optional -->
                             <div class="itra-score-section">
                                 <div class="itra-label-row">
@@ -427,7 +434,7 @@
                                 </div>
                             </div>
                             
-                            <!-- Unit & Target Time Row -->
+                            <!-- Units Row (simplified) -->
                             <div class="race-options-row">
                                 <div class="race-unit-section">
                                     <label class="race-setup-label-inline" data-i18n="race.units">Units:</label>
@@ -435,11 +442,6 @@
                                         <button type="button" class="race-unit-btn active" id="heroKmBtn">KM</button>
                                         <button type="button" class="race-unit-btn" id="heroMilesBtn">Miles</button>
                                     </div>
-                                </div>
-                                <div class="race-target-section">
-                                    <label class="race-setup-label-inline" data-i18n="race.targetTime">Target time:</label>
-                                    <input type="text" id="heroTargetTime" class="target-time-input" placeholder="HH:MM" pattern="[0-9]{1,2}:[0-9]{2}" />
-                                    <span class="target-time-hint" data-i18n="race.targetOptional">(optional)</span>
                                 </div>
                             </div>
                             
