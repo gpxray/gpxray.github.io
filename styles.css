@@ -3888,31 +3888,26 @@ h2 {
 .reroll-btn {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 18px;
-    padding: 6px 14px;
-    font-size: 0.85rem;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
     flex-shrink: 0;
-    color: rgba(255, 255, 255, 0.8);
-}
-
-.reroll-btn .reroll-hint {
-    font-size: 0.75rem;
-    opacity: 0.9;
 }
 
 .reroll-btn:hover {
     background: rgba(0, 212, 255, 0.2);
     border-color: #00d4ff;
-    color: #00d4ff;
+    transform: rotate(180deg);
 }
 
 .reroll-btn:active {
-    transform: scale(0.95);
+    transform: rotate(360deg) scale(0.95);
 }
 
 /* Share Your Strategy button in hero */
