@@ -712,20 +712,33 @@ function setDateFromPreset(preset, dateInput, timeInput) {
 
 // Fetch weather for custom GPX uploads
 async function fetchGpxWeather() {
-    if (!gpxData || !gpxData.points || gpxData.points.length === 0) return;
+    console.log('fetchGpxWeather called');
+    console.log('gpxData exists:', !!gpxData, 'points:', gpxData?.points?.length);
+    
+    if (!gpxData || !gpxData.points || gpxData.points.length === 0) {
+        console.log('Weather: No GPX data available');
+        return;
+    }
     
     const dateInput = document.getElementById('heroRaceDate') || document.getElementById('raceStartDate');
-    if (!dateInput || !dateInput.value) return;
+    console.log('Date input found:', !!dateInput, 'value:', dateInput?.value);
+    
+    if (!dateInput || !dateInput.value) {
+        console.log('Weather: No date input found');
+        return;
+    }
     
     // Get coordinates from first GPX point
     const firstPoint = gpxData.points[0];
     const lat = firstPoint.lat;
     const lon = firstPoint.lon;
+    console.log('Weather: Coords:', lat, lon);
     
     const raceDate = new Date(dateInput.value);
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Normalize to start of day
     const daysUntilRace = Math.ceil((raceDate - today) / (1000 * 60 * 60 * 24));
+    console.log('Weather: Days until race:', daysUntilRace);
     
     // Only fetch if within 16 days (Open-Meteo limit)
     if (daysUntilRace < 0 || daysUntilRace > 16) {
@@ -783,6 +796,8 @@ async function fetchGpxWeather() {
 }
 
 function showGpxWeatherWidget(weather, weatherCode, dateStr) {
+    console.log('showGpxWeatherWidget called with:', weather, weatherCode);
+    
     const weatherIcon = getWeatherIcon(weatherCode);
     const weatherDesc = getWeatherDescription(weatherCode);
     
@@ -791,6 +806,8 @@ function showGpxWeatherWidget(weather, weatherCode, dateStr) {
     
     // Update hero weather widget (main page)
     const heroWidget = document.getElementById('heroWeatherWidget');
+    console.log('heroWeatherWidget element:', heroWidget);
+    
     if (heroWidget) {
         updateHeroWeatherWidget(weather, weatherCode, adjustment);
         return; // Hero widget is enough on main page
@@ -875,11 +892,14 @@ function showWeatherUnavailable(daysUntilRace) {
 
 // Update hero weather widget (in results section)
 function updateHeroWeatherWidget(weather, weatherCode, adjustment) {
+    console.log('updateHeroWeatherWidget called');
     const heroWidget = document.getElementById('heroWeatherWidget');
+    console.log('heroWidget element found:', !!heroWidget);
     if (!heroWidget) return;
     
     const weatherIcon = getWeatherIcon(weatherCode);
     const weatherDesc = getWeatherDescription(weatherCode);
+    console.log('Weather display:', weatherIcon, weatherDesc, weather.tempMin + '-' + weather.tempMax + '°C');
     
     // Update elements
     const iconEl = document.getElementById('heroWeatherIcon');
