@@ -7943,6 +7943,7 @@ async function fetchRaceWeather(config) {
         
         // Get weather tip
         const tip = getWeatherTip(raceWeatherData, weatherCode);
+        console.log('Weather tip result:', tip, 'tempMax:', tempMax, 'rainChance:', rainChance, 'code:', weatherCode);
         const tipHtml = tip ? `
             <div class="weather-tip">
                 <span class="weather-tip-icon">${tip.icon}</span>
@@ -7952,6 +7953,7 @@ async function fetchRaceWeather(config) {
         
         // Get adjustment info
         const adj = raceWeatherData.adjustment;
+        console.log('Weather adjustment:', adj);
         const adjHtml = (adj && adj.totalPenaltyPercent >= 1) ? `
             <div class="weather-adjustment">
                 <span class="weather-adj-icon">⏱️</span>
@@ -7959,6 +7961,9 @@ async function fetchRaceWeather(config) {
                 <span class="weather-adj-label">${adj.description}</span>
             </div>
         ` : '';
+        
+        // DEBUG: Show what's happening
+        console.log('tipHtml:', tipHtml ? 'yes' : 'no', 'adjHtml:', adjHtml ? 'yes' : 'no');
         
         content.innerHTML = `
             <div class="weather-forecast">
