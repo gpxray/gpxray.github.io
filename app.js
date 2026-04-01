@@ -5159,13 +5159,15 @@ function generateSplitsTable(flatPace, uphillPace, downhillPace) {
             if (isNightTime(clockTimeMinutes % (24 * 60))) {
                 aidRow.classList.add('night-section');
             }
+            // Find station index for editing
+            const stationIndex = aidStations.findIndex(s => s.km === station.km);
             aidRow.innerHTML = `
                 <td>${displayDistance.toFixed(1)}</td>
                 <td>-</td>
                 <td>-</td>
                 <td>-</td>
                 <td class="aid-station-cell">${station.name}</td>
-                <td class="stop-time">${stopTime > 0 ? '+' + stopTime + ' min' : '-'}</td>
+                <td class="stop-time editable-stop" data-station-index="${stationIndex}" data-station-km="${station.km}">${stopTime > 0 ? '+' + stopTime + ' min' : '-'}</td>
                 <td>-</td>
                 <td>-</td>
                 <td>${formatTime(timeToStation)}</td>
@@ -5243,7 +5245,7 @@ function generateSplitsTable(flatPace, uphillPace, downhillPace) {
             <td class="terrain-${terrain}">${getTerrainName(terrain)}</td>
             <td class="${surfaceClass}">${surfaceDisplay}</td>
             <td class="${hasAidStation ? 'aid-station-cell' : ''}">${aidStationText}</td>
-            <td class="stop-time">${stopTime > 0 ? '+' + stopTime + ' min' : '-'}</td>
+            <td class="stop-time${hasAidStation ? ' editable-stop' : ''}"${hasAidStation ? ` data-station-index="${aidStations.findIndex(s => s.km === aidStation.km)}" data-station-km="${aidStation.km}"` : ''}>${stopTime > 0 ? '+' + stopTime + ' min' : '-'}</td>
             <td>${formatPace(actualPace)} /${unitLabel}</td>
             <td>${formatTime(splitTime)}</td>
             <td>${formatTime(cumulativeTime)}</td>
@@ -5257,6 +5259,72 @@ function generateSplitsTable(flatPace, uphillPace, downhillPace) {
     
     // Show splits section
     document.getElementById('splitsSection').style.display = 'block';
+    
+    // Setup editable stop times for AID stations
+    setupEditableStopTimes();
+}
+
+// Setup inline editing for AID station stop times
+function setupEditableStopTimes() {
+    const editableCells = document.querySelectorAll('.editable-stop');
+    
+    editableCells.forEach(cell => {
+        // Add click indicator
+        cell.style.cursor = 'pointer';
+        cell.title = 'Click to edit stop time';
+        
+        cell.addEventListener('click', function(e) {
+            // Don't re-trigger if already editing
+            if (this.querySelector('input')) return;
+            
+            const stationIndex = parseInt(this.dataset.stationIndex);
+            const currentValue = aidStations[stationIndex]?.stopMin || 0;
+            
+            // Store original content
+            const originalContent = this.textContent;
+            
+            // Create input
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.min = '0';
+            input.max = '60';
+            input.value = currentValue;
+            input.className = 'stop-time-input';
+            input.style.cssText = 'width: 50px; padding: 2px 4px; border: 1px solid #00d4ff; border-radius: 4px; background: #1a2744; color: #fff; text-align: center; font-size: 0.85rem;';
+            
+            // Replace cell content with input
+            this.textContent = '';
+            this.appendChild(input);
+            input.focus();
+            input.select();
+            
+            // Handle save on blur or enter
+            const saveValue = () => {
+                const newValue = Math.max(0, Math.min(60, parseInt(input.value) || 0));
+                
+                // Update the aidStations array
+                if (aidStations[stationIndex]) {
+                    aidStations[stationIndex].stopMin = newValue;
+                }
+                
+                // Restore cell display
+                cell.textContent = newValue > 0 ? '+' + newValue + ' min' : '-';
+                
+                // Recalculate race plan with new stop time
+                calculateRacePlan();
+            };
+            
+            input.addEventListener('blur', saveValue);
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    input.blur();
+                } else if (e.key === 'Escape') {
+                    cell.textContent = originalContent;
+                }
+            });
+        });
+    });
 }
 
 // Render leg summary table
