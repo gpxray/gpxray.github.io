@@ -2938,11 +2938,12 @@ function showSections() {
     const isRacePage = typeof detectRaceMode === 'function' && detectRaceMode();
     
     // On race pages, don't show heroRunnerLevel (race pages use raceStep2 instead)
+    // Also don't show paceSection (race pages use the compact race strategy box)
     if (isRacePage) {
         document.getElementById('statsSection').style.display = 'block';
         document.getElementById('mapSection').style.display = 'block';
         document.getElementById('elevationSection').style.display = 'block';
-        document.getElementById('paceSection').style.display = 'block';
+        // paceSection stays hidden - race pages use raceStep2 for settings
         
         // Show Story button only for RET races (or all races on dev)
         updateStoryButtonVisibility();
