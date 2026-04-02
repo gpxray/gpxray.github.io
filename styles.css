@@ -2099,6 +2099,12 @@ h2 {
     white-space: nowrap;
 }
 
+.hero-aid-km {
+    font-size: 0.6rem;
+    color: rgba(0, 188, 212, 0.6);
+    margin-top: 2px;
+}
+
 .hero-aid-time {
     font-size: 0.95rem;
     font-weight: 600;

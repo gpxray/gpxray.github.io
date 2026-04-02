@@ -2835,6 +2835,7 @@ function updateHeroAidWidget() {
         const html = lastCachedCheckpoints.map(cp => `
             <div class="hero-aid-item">
                 <span class="hero-aid-name">${cp.name}</span>
+                <span class="hero-aid-km">km ${cp.km.toFixed(1)}</span>
                 <span class="hero-aid-time">+${formatTime(cp.timeMinutes)}</span>
             </div>
         `).join('');
@@ -2847,6 +2848,7 @@ function updateHeroAidWidget() {
         const html = aidStations.map(aid => `
             <div class="hero-aid-item">
                 <span class="hero-aid-name">${aid.name}</span>
+                <span class="hero-aid-km">km ${aid.km.toFixed(1)}</span>
                 <span class="hero-aid-time">--:--</span>
             </div>
         `).join('');
