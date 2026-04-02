@@ -42,7 +42,7 @@ const TRANSLATIONS = {
         'upload.privacy': '100% Local Processing – Your GPX data never leaves your device',
         
         // Route name
-        'route.changeRoute': '↻ Change',
+        'route.changeRoute': '↻ Start Over',
         
         // Dev gate
         'beta.title': 'GPXray',
@@ -455,7 +455,7 @@ const TRANSLATIONS = {
         'upload.privacy': '100% lokale Verarbeitung – Deine GPX-Daten verlassen nie dein Gerät',
         
         // Route name
-        'route.changeRoute': '↻ Ändern',
+        'route.changeRoute': '↻ Neu starten',
         
         // Dev gate
         'beta.title': 'GPXray',
