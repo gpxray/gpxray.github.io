@@ -4852,6 +4852,26 @@ h2 {
         font-size: 0.7rem;
     }
     
+    /* Add AID Station - Mobile */
+    .add-aid-station {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+    
+    .add-aid-station input[type="number"] {
+        width: 100%;
+    }
+    
+    .add-aid-station input[type="text"] {
+        width: 100%;
+        min-width: 0;
+    }
+    
+    .add-aid-btn {
+        width: 100%;
+    }
+    
     .runner-level-selector {
         flex-direction: column;
         gap: 8px;
