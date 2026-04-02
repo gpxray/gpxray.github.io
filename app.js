@@ -3119,7 +3119,7 @@ function updateStoryButtonVisibility() {
     const previewSection = document.getElementById('statementPreviewSection');
     if (!storyBtn) return;
     
-    // Always show on dev, only RET races on production, or in demo mode (for early access prompt)
+    // Show button for RET races, dev environment, or in demo mode (for early access prompt)
     const isRETRace = currentRouteName && 
         (currentRouteName.toLowerCase().includes('ret') || 
          currentRouteName.toLowerCase().includes('rureifel'));
@@ -3128,7 +3128,7 @@ function updateStoryButtonVisibility() {
         storyBtn.style.display = 'inline-flex';
         if (previewSection) {
             // Don't show preview section in demo mode (only show early access prompt)
-            if (isDemoMode && !IS_DEV && !isRETRace) {
+            if (isDemoMode && !isRETRace) {
                 previewSection.style.display = 'none';
             } else {
                 previewSection.style.display = 'block';
@@ -7201,12 +7201,12 @@ async function exportShareCard() {
 
 // Instagram Story Card Export - Fun shareable story with witty time-based statements
 async function exportStoryCard() {
-    // In demo mode on production, show early access prompt
+    // In demo mode, show early access prompt (except for RET races which have it unlocked)
     const isRETRace = currentRouteName && 
         (currentRouteName.toLowerCase().includes('ret') || 
          currentRouteName.toLowerCase().includes('rureifel'));
     
-    if (isDemoMode && !IS_DEV && !isRETRace) {
+    if (isDemoMode && !isRETRace) {
         showEarlyAccessModal();
         return;
     }
