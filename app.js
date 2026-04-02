@@ -1580,19 +1580,40 @@ function setupChangeRouteButton() {
             return;
         }
         
-        // Main page: Show upload section while keeping current results visible
+        // Main page: Confirm and start fresh
+        const confirmMsg = typeof t === 'function' ? t('route.confirmStartOver') : 'Start over? This will clear your current race plan.';
+        if (!confirm(confirmMsg)) return;
         
-        // Reset strategy state (clears AID stations, weather, etc. for new route)
+        // Reset strategy state (clears AID stations, weather, ITRA, etc.)
         resetStrategyState();
         
-        // Remove race-mode class to allow upload section to show (overrides early hide CSS)
+        // Clear GPX data completely
+        gpxData = null;
+        segments = [];
+        surfaceData = [];
+        preStoredSurfaceData = null;
+        
+        // Remove race-mode class to allow upload section to show
         document.documentElement.classList.remove('race-mode');
         
         // Hide race landing section (from Race Browser selection)
         const raceLanding = document.getElementById('raceLanding');
         if (raceLanding) raceLanding.style.display = 'none';
         
-        // Keep statsSection visible so user can see last results as reference
+        // Hide ALL result sections
+        const sectionsToHide = ['statsSection', 'mapSection', 'elevationSection', 'splitsSection', 'heroResults'];
+        sectionsToHide.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
+        
+        // Hide the Start Over button itself until new route is loaded
+        const changeBtn = document.getElementById('changeRouteBtn');
+        if (changeBtn) changeBtn.style.display = 'none';
+        
+        // Reset file input
+        const fileInput = document.getElementById('gpxFile');
+        if (fileInput) fileInput.value = '';
         
         // Show upload section
         const uploadSection = document.getElementById('uploadSection');

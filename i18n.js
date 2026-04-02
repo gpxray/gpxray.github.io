@@ -43,6 +43,7 @@ const TRANSLATIONS = {
         
         // Route name
         'route.changeRoute': '↻ Start Over',
+        'route.confirmStartOver': 'Start over? This will clear your current race plan.',
         
         // Dev gate
         'beta.title': 'GPXray',
@@ -456,6 +457,7 @@ const TRANSLATIONS = {
         
         // Route name
         'route.changeRoute': '↻ Neu starten',
+        'route.confirmStartOver': 'Neu starten? Dein aktueller Rennplan wird gelöscht.',
         
         // Dev gate
         'beta.title': 'GPXray',
