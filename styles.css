@@ -2038,7 +2038,29 @@ h2 {
     text-align: right;
 }
 
-/* AID Station Widget */
+/* AID Station Widget (full width, outside insights row) */
+.hero-aid-widget-container {
+    width: 100%;
+    margin: 16px 0;
+    padding: 14px 18px;
+    background: rgba(0, 188, 212, 0.1);
+    border: 1px solid rgba(0, 188, 212, 0.2);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.hero-aid-widget-container .hero-widget-title {
+    color: rgba(0, 188, 212, 0.8);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Legacy - keep for backwards compatibility */
 .hero-aid-widget {
     background: rgba(0, 188, 212, 0.1);
     border: 1px solid rgba(0, 188, 212, 0.2);
