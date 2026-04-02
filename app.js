@@ -2975,6 +2975,10 @@ function showAllSections() {
     // Note: paceSection is hidden after Calculate since settings are now in Strategy Box
     // splitsSection is shown by calculateRacePlan()
     
+    // Show hero results section (contains time display on race pages)
+    const heroResults = document.getElementById('heroResults');
+    if (heroResults) heroResults.style.display = 'block';
+    
     // Fix rendering after containers become visible
     setTimeout(() => {
         // Leaflet map needs invalidateSize + re-fit bounds
@@ -8857,9 +8861,12 @@ function setupRaceCreateStrategyButton() {
             if (step2) step2.style.display = 'none';
             if (editBtn) editBtn.style.display = 'inline-flex';
             
-            // Scroll to results
+            // Scroll to hero results (time display)
             setTimeout(() => {
-                document.getElementById('statsSection')?.scrollIntoView({ behavior: 'smooth' });
+                const heroResults = document.getElementById('heroResults');
+                if (heroResults) {
+                    heroResults.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
             }, 300);
             
         } catch (error) {
