@@ -1405,6 +1405,28 @@ function setupEarlyAccess() {
             
             // Show success feedback
             showNotification('🎉 Access granted! You can now upload GPX files.', 'success');
+            
+            // Reset to clean state so user can upload their own GPX
+            resetStrategyState();
+            gpxData = null;
+            segments = [];
+            surfaceData = [];
+            preStoredSurfaceData = null;
+            isDemoMode = false;
+            
+            // Hide all result sections
+            const sectionsToHide = ['statsSection', 'mapSection', 'elevationSection', 'splitsSection', 'heroResults', 'raceLanding'];
+            sectionsToHide.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'none';
+            });
+            
+            // Show upload section
+            const uploadSection = document.getElementById('uploadSection');
+            if (uploadSection) {
+                uploadSection.style.display = 'block';
+                uploadSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         } else {
             // Invalid code
             errorMsg.classList.add('visible');
