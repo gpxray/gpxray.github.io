@@ -2815,7 +2815,7 @@ function updateHeroClimbWidget() {
 // Update Hero AID Station Widget
 function updateHeroAidWidget() {
     const widget = document.getElementById('heroAidWidget');
-    const listContainer = document.getElementById('heroAidList');
+    const listContainer = document.getElementById('heroAidWidgetList');
     
     if (!widget || !listContainer) {
         console.log('updateHeroAidWidget: Missing elements');
