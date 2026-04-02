@@ -1174,28 +1174,8 @@ function updatePaceInfoContent() {
     let basisValue = '';
     let flatPace, uphillPace, downhillPace;
     
-    if (currentMode === 'target') {
-        // Target time mode - show target time and calculated paces
-        const heroTargetTime = document.getElementById('heroTargetTime');
-        const raceTargetTime = document.getElementById('raceTargetTime');
-        const targetValue = heroTargetTime?.value || raceTargetTime?.value || '';
-        
-        basisLabel = 'Target Time';
-        basisValue = targetValue || '-';
-        
-        // Use calculated paces if available
-        if (lastCalculatedPaces) {
-            flatPace = lastCalculatedPaces.flat;
-            uphillPace = lastCalculatedPaces.uphill;
-            downhillPace = lastCalculatedPaces.downhill;
-        } else {
-            // Fallback to intermediate
-            const preset = RUNNER_LEVELS.intermediate;
-            flatPace = preset.flatPace;
-            uphillPace = flatPace * preset.uphillRatio;
-            downhillPace = flatPace * preset.downhillRatio;
-        }
-    } else if (currentMode === 'itra' && activeItraScore) {
+    // Check ITRA first (activeItraScore indicates ITRA is being used)
+    if (activeItraScore) {
         // ITRA mode - show score and calculated paces
         basisLabel = 'ITRA Score';
         basisValue = activeItraScore.toString();
@@ -1213,23 +1193,47 @@ function updatePaceInfoContent() {
             downhillPace = flatPace * preset.downhillRatio;
         }
     } else {
-        // Manual/Runner level mode - show level and preset paces
-        const levelSelect = document.getElementById('runnerLevel');
-        const level = levelSelect ? levelSelect.value : 'intermediate';
-        const preset = RUNNER_LEVELS[level] || RUNNER_LEVELS.intermediate;
+        // Check for target time (either by mode or by having a value in the input)
+        const heroTargetTime = document.getElementById('heroTargetTime');
+        const raceTargetTime = document.getElementById('raceTargetTime');
+        const targetValue = heroTargetTime?.value || raceTargetTime?.value || '';
         
-        basisLabel = 'Runner Level';
-        basisValue = preset.name;
-        
-        // Use calculated paces if available (they may differ due to fatigue)
-        if (lastCalculatedPaces) {
-            flatPace = lastCalculatedPaces.flat;
-            uphillPace = lastCalculatedPaces.uphill;
-            downhillPace = lastCalculatedPaces.downhill;
+        if (currentMode === 'target' || targetValue) {
+            // Target time mode - show target time and calculated paces
+            basisLabel = 'Target Time';
+            basisValue = targetValue || '-';
+            
+            // Use calculated paces if available
+            if (lastCalculatedPaces) {
+                flatPace = lastCalculatedPaces.flat;
+                uphillPace = lastCalculatedPaces.uphill;
+                downhillPace = lastCalculatedPaces.downhill;
+            } else {
+                // Fallback to intermediate
+                const preset = RUNNER_LEVELS.intermediate;
+                flatPace = preset.flatPace;
+                uphillPace = flatPace * preset.uphillRatio;
+                downhillPace = flatPace * preset.downhillRatio;
+            }
         } else {
-            flatPace = preset.flatPace;
-            uphillPace = flatPace * preset.uphillRatio;
-            downhillPace = flatPace * preset.downhillRatio;
+            // Manual/Runner level mode - show level and preset paces
+            const levelSelect = document.getElementById('runnerLevel');
+            const level = levelSelect ? levelSelect.value : 'intermediate';
+            const preset = RUNNER_LEVELS[level] || RUNNER_LEVELS.intermediate;
+            
+            basisLabel = 'Runner Level';
+            basisValue = preset.name;
+            
+            // Use calculated paces if available (they may differ due to fatigue)
+            if (lastCalculatedPaces) {
+                flatPace = lastCalculatedPaces.flat;
+                uphillPace = lastCalculatedPaces.uphill;
+                downhillPace = lastCalculatedPaces.downhill;
+            } else {
+                flatPace = preset.flatPace;
+                uphillPace = flatPace * preset.uphillRatio;
+                downhillPace = flatPace * preset.downhillRatio;
+            }
         }
     }
     
