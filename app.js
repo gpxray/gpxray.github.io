@@ -1704,9 +1704,9 @@ async function loadDemoGpx() {
         
         // Add sample AID stations for demo
         aidStations = [
-            { km: 5.2, name: 'VP1 Hammersbach', stopMin: 3 },
-            { km: 12.8, name: 'VP2 Kreuzeck', stopMin: 5 },
-            { km: 18.5, name: 'VP3 Hausberg', stopMin: 3 }
+            { km: 8.4, name: 'Z8 Laubhütte', stopMin: 3 },
+            { km: 13.3, name: 'Z9 Hochalm', stopMin: 5 },
+            { km: 21.7, name: 'Z10 Trögllift', stopMin: 4 }
         ];
         renderAidStations();
         renderHeroAidList(); // Update main page AID list
