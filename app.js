@@ -2724,6 +2724,9 @@ function displaySurfaceStats() {
     // Hide the old surface stats section - we use hero widget now
     const statsContainer = document.getElementById('surfaceStats');
     if (statsContainer) statsContainer.style.display = 'none';
+    
+    // Update the hero surface widget with fetched data
+    updateHeroSurfaceWidget();
 }
 
 // Update Hero Surface Widget (in hero results section)
