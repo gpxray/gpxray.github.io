@@ -5242,8 +5242,11 @@ function displayApiResults(result) {
         heroResults.style.display = 'block';
     }
     
-    // Display results
-    document.getElementById('paceResults').style.display = 'block';
+    // Display results (hide paceResults on race pages since hero box shows the result)
+    const isRacePage = detectRaceMode();
+    if (!isRacePage) {
+        document.getElementById('paceResults').style.display = 'block';
+    }
     document.getElementById('flatDistance').textContent = `${terrain.flatDistance.toFixed(2)} km`;
     document.getElementById('uphillDistance').textContent = `${terrain.uphillDistance.toFixed(2)} km`;
     document.getElementById('downhillDistance').textContent = `${terrain.downhillDistance.toFixed(2)} km`;
