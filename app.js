@@ -4273,7 +4273,22 @@ function setupAidStations() {
         kmInput.value = '';
         nameInput.value = '';
         stopTimeInput.value = '2';
+        
+        // Focus back on km input for next entry
+        kmInput.focus();
     });
+    
+    // Add AID station on Enter key in any input field
+    const handleEnter = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            newBtn.click();
+        }
+    };
+    
+    if (kmInput) kmInput.addEventListener('keypress', handleEnter);
+    if (nameInput) nameInput.addEventListener('keypress', handleEnter);
+    if (stopTimeInput) stopTimeInput.addEventListener('keypress', handleEnter);
 }
 
 function renderAidStations() {
@@ -4581,31 +4596,49 @@ function setupHeroAidStations() {
         toggle.classList.toggle('expanded', !isExpanded);
     });
     
-    // Add AID station
+    // Function to add AID station
+    const addAidStation = () => {
+        const km = parseFloat(kmInput.value);
+        const name = nameInput.value.trim() || `AID ${aidStations.length + 1}`;
+        const stopMin = parseInt(stopInput?.value) || 2;
+        
+        if (isNaN(km) || km < 0) {
+            return;
+        }
+        
+        // Add to main aidStations array
+        aidStations.push({ km, name, stopMin });
+        aidStations.sort((a, b) => a.km - b.km);
+        
+        // Render both lists
+        renderHeroAidList();
+        renderAidStations();
+        
+        // Clear inputs (keep default stop time)
+        kmInput.value = '';
+        nameInput.value = '';
+        if (stopInput) stopInput.value = '2';
+        
+        // Focus back on km input for next entry
+        kmInput.focus();
+    };
+    
+    // Add AID station on button click
     if (addBtn) {
-        addBtn.addEventListener('click', () => {
-            const km = parseFloat(kmInput.value);
-            const name = nameInput.value.trim() || `AID ${aidStations.length + 1}`;
-            const stopMin = parseInt(stopInput?.value) || 2;
-            
-            if (isNaN(km) || km < 0) {
-                return;
-            }
-            
-            // Add to main aidStations array
-            aidStations.push({ km, name, stopMin });
-            aidStations.sort((a, b) => a.km - b.km);
-            
-            // Render both lists
-            renderHeroAidList();
-            renderAidStations();
-            
-            // Clear inputs (keep default stop time)
-            kmInput.value = '';
-            nameInput.value = '';
-            if (stopInput) stopInput.value = '2';
-        });
+        addBtn.addEventListener('click', addAidStation);
     }
+    
+    // Add AID station on Enter key in any input field
+    const handleEnter = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            addAidStation();
+        }
+    };
+    
+    if (kmInput) kmInput.addEventListener('keypress', handleEnter);
+    if (nameInput) nameInput.addEventListener('keypress', handleEnter);
+    if (stopInput) stopInput.addEventListener('keypress', handleEnter);
 }
 
 // Render hero AID stations list
