@@ -158,10 +158,25 @@ header h1 {
     padding: 4px 10px;
     border-radius: 6px;
     vertical-align: middle;
-    margin-left: 10px;
-    text-shadow: none;
+}
+
+.dev-badge {
+    font-size: 0.45em;
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: #fff;
+    padding: 3px 8px;
+    border-radius: 4px;
+    vertical-align: middle;
+    margin-left: 8px;
     font-weight: 700;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    animation: dev-pulse 2s ease-in-out infinite;
+}
+
+@keyframes dev-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
 }
 
 .tagline {
@@ -4253,6 +4268,20 @@ h2 {
 
 .share-strategy-btn:active {
     transform: translateY(0);
+}
+
+.share-strategy-btn:disabled,
+.share-strategy-btn.demo-disabled {
+    background: linear-gradient(135deg, #666 0%, #555 100%);
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: none;
+}
+
+.share-strategy-btn:disabled:hover,
+.share-strategy-btn.demo-disabled:hover {
+    transform: none;
+    box-shadow: none;
 }
 
 /* Section Header */

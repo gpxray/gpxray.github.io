@@ -45,6 +45,23 @@ const API_CONFIG = {
     timeout: 15000
 };
 
+// Setup dev environment indicator
+function setupDevIndicator() {
+    if (!IS_DEV) return;
+    
+    // Update page title
+    document.title = 'DEV | GPXray - Know your race before it starts';
+    
+    // Add DEV badge to logo
+    const logoText = document.querySelector('.logo-text');
+    if (logoText && !logoText.querySelector('.dev-badge')) {
+        const devBadge = document.createElement('span');
+        devBadge.className = 'dev-badge';
+        devBadge.textContent = 'DEV';
+        logoText.appendChild(devBadge);
+    }
+}
+
 // Helper to resolve GPX URLs (uses blob storage if available)
 function resolveGpxUrl(gpxPath) {
     // If GPX_STORAGE_URL is defined (in races-config.js), use it for races/ paths
@@ -195,6 +212,9 @@ document.addEventListener('DOMContentLoaded', () => {
     setupHeroAidStations();
     setupTargetTimeInput();
     setupHeroSurfaceToggle();
+    
+    // Set up dev indicator (only on dev site)
+    setupDevIndicator();
     
     // Check for race landing page mode
     initRaceMode();
