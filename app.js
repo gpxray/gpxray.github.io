@@ -742,6 +742,14 @@ function setupDatePresets() {
                     // Hide the paceSection (redundant now)
                     const paceSection = document.getElementById('paceSection');
                     if (paceSection) paceSection.style.display = 'none';
+                    
+                    // Scroll to results (statsSection shows finish time at top)
+                    setTimeout(() => {
+                        const statsSection = document.getElementById('statsSection');
+                        if (statsSection) {
+                            statsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }, 300);
                 }, 50);
             }
         });
