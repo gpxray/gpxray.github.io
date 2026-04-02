@@ -5242,6 +5242,9 @@ function displayApiResults(result) {
     // Update statement preview if visible
     updateStatementPreview();
     
+    // Update export buttons state (disable in demo mode)
+    updateExportButtonsState();
+    
     console.log('Race plan calculated via API', { fatigueMultiplier, checkpoints, ddl });
 }
 
@@ -6214,6 +6217,28 @@ function setupExport() {
     document.getElementById('exportStoryCard')?.addEventListener('click', exportStoryCard);
     document.getElementById('exportCrewCard')?.addEventListener('click', exportCrewCard);
     document.getElementById('exportCrewPdf')?.addEventListener('click', exportCrewPdf);
+}
+
+// Update export buttons disabled state based on demo mode
+function updateExportButtonsState() {
+    const exportButtons = [
+        'exportCsv', 'exportPdf', 'exportShareCard', 
+        'exportStoryCard', 'exportCrewCard', 'exportCrewPdf'
+    ];
+    
+    exportButtons.forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) {
+            btn.disabled = isDemoMode;
+            if (isDemoMode) {
+                btn.title = 'Export disabled in demo mode';
+                btn.classList.add('demo-disabled');
+            } else {
+                btn.title = '';
+                btn.classList.remove('demo-disabled');
+            }
+        }
+    });
 }
 
 function exportToCsv() {

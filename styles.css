@@ -4284,12 +4284,30 @@ h2 {
     box-shadow: 0 5px 20px rgba(76, 175, 80, 0.4);
 }
 
+.export-btn:disabled,
+.export-btn.demo-disabled {
+    background: linear-gradient(135deg, #666 0%, #555 100%);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.export-btn:disabled:hover,
+.export-btn.demo-disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
 .pdf-btn {
     background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
 }
 
 .pdf-btn:hover {
     box-shadow: 0 5px 20px rgba(231, 76, 60, 0.4);
+}
+
+.pdf-btn:disabled,
+.pdf-btn.demo-disabled {
+    background: linear-gradient(135deg, #666 0%, #555 100%);
 }
 
 .share-btn {
@@ -4300,6 +4318,11 @@ h2 {
     box-shadow: 0 5px 20px rgba(155, 89, 182, 0.4);
 }
 
+.share-btn:disabled,
+.share-btn.demo-disabled {
+    background: linear-gradient(135deg, #666 0%, #555 100%);
+}
+
 .story-btn {
     background: linear-gradient(135deg, #E1306C 0%, #C13584 50%, #833AB4 100%);
 }
@@ -4308,12 +4331,22 @@ h2 {
     box-shadow: 0 5px 20px rgba(225, 48, 108, 0.4);
 }
 
+.story-btn:disabled,
+.story-btn.demo-disabled {
+    background: linear-gradient(135deg, #666 0%, #555 100%);
+}
+
 .crew-btn {
     background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
 }
 
 .crew-btn:hover {
     box-shadow: 0 5px 20px rgba(52, 152, 219, 0.4);
+}
+
+.crew-btn:disabled,
+.crew-btn.demo-disabled {
+    background: linear-gradient(135deg, #666 0%, #555 100%);
 }
 
 /* Leg Summary */
