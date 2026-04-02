@@ -4598,6 +4598,11 @@ function setupHeroAidStations() {
     
     // Function to add AID station
     const addAidStation = () => {
+        // Block adding in demo mode
+        if (isDemoMode) {
+            return;
+        }
+        
         const km = parseFloat(kmInput.value);
         const name = nameInput.value.trim() || `AID ${aidStations.length + 1}`;
         const stopMin = parseInt(stopInput?.value) || 2;
@@ -4644,6 +4649,23 @@ function setupHeroAidStations() {
 // Render hero AID stations list
 function renderHeroAidList() {
     const list = document.getElementById('heroAidList');
+    const addBtn = document.getElementById('heroAidAdd');
+    const kmInput = document.getElementById('heroAidKm');
+    const nameInput = document.getElementById('heroAidName');
+    const stopInput = document.getElementById('heroAidStop');
+    
+    // Disable add form in demo mode
+    if (addBtn) {
+        addBtn.disabled = isDemoMode;
+        addBtn.title = isDemoMode ? 'Disabled in demo mode' : 'Add AID station';
+    }
+    [kmInput, nameInput, stopInput].forEach(input => {
+        if (input) {
+            input.disabled = isDemoMode;
+            if (isDemoMode) input.placeholder = 'Demo mode';
+        }
+    });
+    
     if (!list) return;
     
     if (aidStations.length === 0) {
@@ -4658,10 +4680,12 @@ function renderHeroAidList() {
                 <span class="hero-aid-item-name">${station.name}</span>
                 <span class="hero-aid-item-stop">${station.stopMin || 2} min</span>
             </div>
+            ${isDemoMode ? '' : `
             <div class="hero-aid-item-actions">
                 <button class="hero-aid-item-edit" onclick="editHeroAidStation(${index})" title="Edit">✏️</button>
                 <button class="hero-aid-item-remove" onclick="removeHeroAidStation(${index})" title="Remove">✕</button>
             </div>
+            `}
         </div>
     `).join('');
 }
