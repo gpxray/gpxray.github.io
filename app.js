@@ -4271,6 +4271,7 @@ function setupAidStations() {
 }
 
 function renderAidStations() {
+    console.log('renderAidStations called, aidStations:', aidStations.length, aidStations);
     const list = document.getElementById('aidStationsList');
     const addBtn = document.getElementById('addAidStation');
     if (!list) return;
@@ -8554,6 +8555,7 @@ async function selectRaceDistance(distanceConfig, buttonEl) {
         if (distanceConfig.aidStations && distanceConfig.aidStations.length > 0) {
             aidStations = [...distanceConfig.aidStations];
         }
+        console.log('selectRaceDistance: aidStations set to', aidStations.length, 'stations:', aidStations);
         
         // Load pre-stored surface profile if available (skips OSM query)
         preStoredSurfaceData = null;
