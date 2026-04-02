@@ -2821,8 +2821,14 @@ function updateHeroAidWidget() {
         return;
     }
     
+    // Debug: log what data we have
+    console.log('updateHeroAidWidget:', { 
+        lastCachedCheckpoints: lastCachedCheckpoints?.length || 0, 
+        aidStations: aidStations?.length || 0 
+    });
+    
     // Check if we have AID stations and checkpoint times
-    if (lastCachedCheckpoints && lastCachedCheckpoints.length > 0) {
+    if (lastCachedCheckpoints && Array.isArray(lastCachedCheckpoints) && lastCachedCheckpoints.length > 0) {
         // Use API-calculated checkpoint times
         const html = lastCachedCheckpoints.map(cp => `
             <div class="hero-aid-item">
@@ -2833,7 +2839,7 @@ function updateHeroAidWidget() {
         
         listContainer.innerHTML = html;
         widget.style.display = 'flex';
-    } else if (typeof aidStations !== 'undefined' && aidStations && aidStations.length > 0) {
+    } else if (typeof aidStations !== 'undefined' && aidStations && Array.isArray(aidStations) && aidStations.length > 0) {
         // Fallback: show AID stations without times (they'll get times after recalculation)
         const html = aidStations.map(aid => `
             <div class="hero-aid-item">
