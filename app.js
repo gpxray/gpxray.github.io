@@ -1520,11 +1520,14 @@ function setupChangeRouteButton() {
     if (!changeBtn) return;
     
     changeBtn.addEventListener('click', () => {
+        // Check if we're on a race page URL (not main page with Race Browser selection)
+        const isRacePageUrl = typeof detectRaceMode === 'function' && detectRaceMode();
+        
         // Check if we're on a race page (multi-distance with step selection)
         const raceStep1 = document.getElementById('raceStep1');
         const raceStep2 = document.getElementById('raceStep2');
         
-        if (raceStep1) {
+        if (isRacePageUrl && raceStep1) {
             // Multi-distance race page: scroll to distance selection, hide step 2
             if (raceStep2) raceStep2.style.display = 'none';
             
@@ -1546,8 +1549,7 @@ function setupChangeRouteButton() {
         }
         
         // Check if we're on a single-distance race page
-        const isRacePage = typeof detectRaceMode === 'function' && detectRaceMode();
-        if (isRacePage) {
+        if (isRacePageUrl) {
             // Single-distance race page: scroll to strategy box to edit settings
             const strategyBox = document.getElementById('heroRunnerLevel');
             const editBtn = document.getElementById('editStrategyBtn');
@@ -1567,22 +1569,20 @@ function setupChangeRouteButton() {
         // Remove race-mode class to allow upload section to show (overrides early hide CSS)
         document.documentElement.classList.remove('race-mode');
         
+        // Hide race landing section (from Race Browser selection)
+        const raceLanding = document.getElementById('raceLanding');
+        if (raceLanding) raceLanding.style.display = 'none';
+        
+        // Hide stats section (contains route name, results)
+        const statsSection = document.getElementById('statsSection');
+        if (statsSection) statsSection.style.display = 'none';
+        
         // Show upload section
         const uploadSection = document.getElementById('uploadSection');
         if (uploadSection) {
             uploadSection.style.display = 'block';
             uploadSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-        
-        // Show strategy box, hide edit button
-        const strategyBox = document.getElementById('heroRunnerLevel');
-        const editBtn = document.getElementById('editStrategyBtn');
-        if (strategyBox) strategyBox.style.display = 'block';
-        if (editBtn) editBtn.style.display = 'none';
-        
-        // Hide hero results until new calculation
-        const heroResults = document.getElementById('heroResults');
-        if (heroResults) heroResults.style.display = 'none';
     });
 }
 
