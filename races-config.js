@@ -142,6 +142,7 @@ const RACE_CONFIGS = {
         logo: 'https://gpxrayraces.blob.core.windows.net/logos/ret-logo.png',
         tagline: 'Go Nature, Go Rureifel Trail',
         accessCode: 'RUREIFEL26', // Access code for race page
+        publicDate: '2026-04-08', // Race page becomes public after this date
         
         // Branding colors
         branding: {

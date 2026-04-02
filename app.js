@@ -8294,8 +8294,9 @@ function initRaceMode() {
         return;
     }
     
-    // Check access code if required
-    if (raceConfig.accessCode) {
+    // Check access code if required (skip if past publicDate)
+    const isPublic = raceConfig.publicDate && new Date() >= new Date(raceConfig.publicDate);
+    if (raceConfig.accessCode && !isPublic) {
         const urlParams = new URLSearchParams(window.location.search);
         const urlCode = urlParams.get('code');
         const storedCode = localStorage.getItem(`gpxray-race-${raceId}`);
