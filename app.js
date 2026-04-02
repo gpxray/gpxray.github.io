@@ -421,6 +421,7 @@ function setupRunnerLevel() {
         const heroCalculateBtn = document.getElementById('heroCalculateBtn');
         if (!heroCalculateBtn) {
             calculateRacePlan();
+            fetchGpxWeather(); // Re-fetch weather after recalculating
         }
     };
     
@@ -528,6 +529,7 @@ function setupItraForElements(els) {
             const heroCalculateBtn = document.getElementById('heroCalculateBtn');
             if (!heroCalculateBtn) {
                 calculateRacePlan();
+                fetchGpxWeather(); // Re-fetch weather after recalculating
             }
         }
     };
@@ -7157,7 +7159,7 @@ async function exportStoryCard() {
             
             <!-- Race Strategy Block -->
             <div style="text-align: center;">
-                <div style="font-size: 18px; color: #888; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px;">🏃 ${t('story.myStrategy')}</div>
+                <div style="font-size: 18px; color: #888; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px;">👟 ${t('story.myStrategy')}</div>
                 <div style="font-size: 30px; font-weight: 700; margin-bottom: 12px; max-width: 400px;">${routeName}</div>
                 ${raceDateFormatted ? `<div style="font-size: 18px; color: #00E5FF; margin-bottom: 16px;">📅 ${raceDateFormatted}</div>` : ''}
                 <div style="font-size: 26px; font-weight: 500; color: #ddd; margin-bottom: 20px;">${distance.toFixed(0)}${unitLabel} | ${gpxData.elevationGain.toFixed(0)}m</div>
