@@ -41,6 +41,9 @@ const API_CONFIG = {
     itraPacesEndpoint: IS_DEV
         ? 'https://gpxray-dev.azurewebsites.net/api/itra-paces'
         : 'https://api.gpxray.run/api/itra-paces',
+    weatherEndpoint: IS_DEV
+        ? 'https://gpxray-dev.azurewebsites.net/api/weather'
+        : 'https://api.gpxray.run/api/weather',
     useBackend: true,
     timeout: 15000
 };
@@ -839,12 +842,18 @@ async function fetchGpxWeather() {
     }
     
     try {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weathercode,windspeed_10m_max&timezone=auto`;
+        // Use our cached weather API
+        const url = `${API_CONFIG.weatherEndpoint}?lat=${lat}&lon=${lon}&date=${dateInput.value}`;
         
         const response = await fetch(url);
         if (!response.ok) throw new Error('Weather API error');
         
-        const data = await response.json();
+        const result = await response.json();
+        const data = result.data; // Our API wraps the Open-Meteo response
+        
+        if (result.cached) {
+            console.log('Weather data served from cache');
+        }
         
         // Find race day in forecast - dateInput.value is already YYYY-MM-DD format from input type="date"
         const raceDateStr = dateInput.value;
@@ -8429,12 +8438,18 @@ async function fetchRaceWeather(config) {
     
     try {
         const { lat, lon } = config.coordinates;
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weathercode,windspeed_10m_max&timezone=Europe/Berlin`;
+        // Use our cached weather API
+        const url = `${API_CONFIG.weatherEndpoint}?lat=${lat}&lon=${lon}&date=${config.date}`;
         
         const response = await fetch(url);
         if (!response.ok) throw new Error('Weather API error');
         
-        const data = await response.json();
+        const result = await response.json();
+        const data = result.data; // Our API wraps the Open-Meteo response
+        
+        if (result.cached) {
+            console.log('Race weather data served from cache');
+        }
         
         // Find race day in forecast
         const raceDateStr = config.date;

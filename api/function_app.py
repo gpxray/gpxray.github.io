@@ -17,7 +17,20 @@ import math
 import hashlib
 import time
 import os
+from datetime import datetime, timedelta
 from openai import AzureOpenAI
+
+# Weather caching - try to import Table Storage, fall back to memory-only
+try:
+    from azure.data.tables import TableServiceClient, TableClient
+    TABLE_STORAGE_AVAILABLE = True
+except ImportError:
+    TABLE_STORAGE_AVAILABLE = False
+    logging.warning("azure-data-tables not available, using memory-only cache")
+
+# In-memory weather cache (survives within function instance)
+WEATHER_CACHE = {}
+WEATHER_CACHE_TTL = 6 * 60 * 60  # 6 hours in seconds
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
@@ -677,6 +690,179 @@ def ddl_endpoint(req: func.HttpRequest) -> func.HttpResponse:
     except Exception as e:
         logging.error(f'DDL error: {str(e)}')
         return func.HttpResponse(json.dumps({'error': str(e)}), status_code=500, headers=headers)
+
+
+# ============================================================================
+# WEATHER API - Cached Open-Meteo Proxy
+# ============================================================================
+
+def get_weather_table_client():
+    """Get Azure Table Storage client for weather cache"""
+    if not TABLE_STORAGE_AVAILABLE:
+        return None
+    
+    connection_string = os.environ.get('AzureWebJobsStorage')
+    if not connection_string:
+        return None
+    
+    try:
+        table_service = TableServiceClient.from_connection_string(connection_string)
+        # Create table if it doesn't exist
+        try:
+            table_service.create_table("weathercache")
+        except Exception:
+            pass  # Table already exists
+        return table_service.get_table_client("weathercache")
+    except Exception as e:
+        logging.warning(f"Could not connect to Table Storage: {e}")
+        return None
+
+
+def get_cached_weather(lat: float, lon: float, date: str):
+    """Check cache for weather data (memory first, then Table Storage)"""
+    cache_key = f"{lat:.2f}_{lon:.2f}_{date}"
+    current_time = time.time()
+    
+    # Check in-memory cache first
+    if cache_key in WEATHER_CACHE:
+        cached = WEATHER_CACHE[cache_key]
+        if current_time - cached['timestamp'] < WEATHER_CACHE_TTL:
+            logging.info(f"Weather cache HIT (memory): {cache_key}")
+            return cached['data']
+        else:
+            del WEATHER_CACHE[cache_key]  # Expired
+    
+    # Check Table Storage
+    table_client = get_weather_table_client()
+    if table_client:
+        try:
+            # PartitionKey is date, RowKey is lat_lon
+            entity = table_client.get_entity(partition_key=date, row_key=f"{lat:.2f}_{lon:.2f}")
+            cached_time = float(entity.get('CachedAt', 0))
+            if current_time - cached_time < WEATHER_CACHE_TTL:
+                data = json.loads(entity.get('WeatherData', '{}'))
+                # Store in memory for faster subsequent access
+                WEATHER_CACHE[cache_key] = {'data': data, 'timestamp': cached_time}
+                logging.info(f"Weather cache HIT (table): {cache_key}")
+                return data
+        except Exception:
+            pass  # Entity not found or error
+    
+    logging.info(f"Weather cache MISS: {cache_key}")
+    return None
+
+
+def set_cached_weather(lat: float, lon: float, date: str, data: dict):
+    """Store weather data in cache (memory and Table Storage)"""
+    cache_key = f"{lat:.2f}_{lon:.2f}_{date}"
+    current_time = time.time()
+    
+    # Store in memory
+    WEATHER_CACHE[cache_key] = {'data': data, 'timestamp': current_time}
+    
+    # Store in Table Storage for persistence
+    table_client = get_weather_table_client()
+    if table_client:
+        try:
+            entity = {
+                'PartitionKey': date,
+                'RowKey': f"{lat:.2f}_{lon:.2f}",
+                'WeatherData': json.dumps(data),
+                'CachedAt': str(current_time),
+                'Latitude': str(lat),
+                'Longitude': str(lon)
+            }
+            table_client.upsert_entity(entity)
+            logging.info(f"Weather cached to table: {cache_key}")
+        except Exception as e:
+            logging.warning(f"Failed to cache weather to table: {e}")
+
+
+@app.route(route="weather", methods=["GET", "OPTIONS"])
+def weather_endpoint(req: func.HttpRequest) -> func.HttpResponse:
+    """
+    Weather API proxy with caching.
+    Fetches from Open-Meteo and caches results for 6 hours.
+    
+    Query params:
+    - lat: latitude (required)
+    - lon: longitude (required)  
+    - date: forecast date YYYY-MM-DD (required)
+    """
+    headers = get_cors_headers()
+    
+    if req.method == 'OPTIONS':
+        return func.HttpResponse('', status_code=200, headers=headers)
+    
+    try:
+        lat = req.params.get('lat')
+        lon = req.params.get('lon')
+        date = req.params.get('date')
+        
+        if not all([lat, lon, date]):
+            return func.HttpResponse(
+                json.dumps({'error': 'Missing required parameters: lat, lon, date'}),
+                status_code=400, headers=headers
+            )
+        
+        lat = float(lat)
+        lon = float(lon)
+        
+        # Validate date format
+        try:
+            datetime.strptime(date, '%Y-%m-%d')
+        except ValueError:
+            return func.HttpResponse(
+                json.dumps({'error': 'Invalid date format. Use YYYY-MM-DD'}),
+                status_code=400, headers=headers
+            )
+        
+        # Check cache first
+        cached_data = get_cached_weather(lat, lon, date)
+        if cached_data:
+            return func.HttpResponse(
+                json.dumps({'data': cached_data, 'cached': True}),
+                status_code=200, headers=headers
+            )
+        
+        # Fetch from Open-Meteo
+        import urllib.request
+        import urllib.error
+        
+        # Build Open-Meteo URL for daily forecast (same format as frontend expects)
+        url = (
+            f"https://api.open-meteo.com/v1/forecast?"
+            f"latitude={lat}&longitude={lon}"
+            f"&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weathercode,windspeed_10m_max"
+            f"&timezone=auto"
+        )
+        
+        logging.info(f"Fetching weather from Open-Meteo: lat={lat}, lon={lon}, date={date}")
+        
+        request = urllib.request.Request(url, headers={'User-Agent': 'GPXray/1.0'})
+        with urllib.request.urlopen(request, timeout=10) as response:
+            weather_data = json.loads(response.read().decode('utf-8'))
+        
+        # Cache the result
+        set_cached_weather(lat, lon, date, weather_data)
+        
+        return func.HttpResponse(
+            json.dumps({'data': weather_data, 'cached': False}),
+            status_code=200, headers=headers
+        )
+        
+    except urllib.error.URLError as e:
+        logging.error(f"Weather API fetch error: {e}")
+        return func.HttpResponse(
+            json.dumps({'error': 'Failed to fetch weather data'}),
+            status_code=502, headers=headers
+        )
+    except Exception as e:
+        logging.error(f"Weather endpoint error: {e}")
+        return func.HttpResponse(
+            json.dumps({'error': str(e)}),
+            status_code=500, headers=headers
+        )
 
 
 # ============================================================================
