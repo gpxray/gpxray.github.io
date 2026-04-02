@@ -104,6 +104,18 @@ const TRANSLATIONS = {
         'weather.forecast': 'Weather Forecast',
         'weather.adjustment': 'weather adjustment',
         
+        // Surface Analysis
+        'surface.title': 'Surface Analysis',
+        'surface.road': 'Road',
+        'surface.trail': 'Trail',
+        'surface.technical': 'Technical',
+        
+        // Climb Profile
+        'climb.profile': 'Climb Profile',
+        'climb.uphill': 'Uphill',
+        'climb.flat': 'Flat',
+        'climb.downhill': 'Downhill',
+        
         // Downhill Load tooltip
         'ddl.title': 'Descent Load (DDL/km)',
         'ddl.description': 'Measures downhill stress (steepness + time + surface).',
@@ -501,6 +513,18 @@ const TRANSLATIONS = {
         // Weather
         'weather.forecast': 'Wettervorhersage',
         'weather.adjustment': 'Wetteranpassung',
+        
+        // Surface Analysis
+        'surface.title': 'Untergrundanalyse',
+        'surface.road': 'Straße',
+        'surface.trail': 'Trail',
+        'surface.technical': 'Technisch',
+        
+        // Climb Profile
+        'climb.profile': 'Höhenprofil',
+        'climb.uphill': 'Bergauf',
+        'climb.flat': 'Flach',
+        'climb.downhill': 'Bergab',
         
         // Downhill Load tooltip
         'ddl.title': 'Abstiegsbelastung (DDL/km)',

@@ -598,26 +598,45 @@
                     <!-- AID station times will appear here -->
                 </div>
                 
-                <!-- Hero Weather Widget -->
-                <div class="hero-weather-widget" id="heroWeatherWidget" style="display: none;">
-                    <div class="hero-weather-title" data-i18n="weather.forecast">Weather Forecast</div>
-                    <div class="hero-weather-header">
-                        <span class="hero-weather-icon" id="heroWeatherIcon">🌤️</span>
-                        <span class="hero-weather-temp" id="heroWeatherTemp">--°C</span>
-                        <span class="hero-weather-desc" id="heroWeatherDesc">--</span>
+                <!-- Hero Insights Row: Weather, Surface, Climb Profile -->
+                <div class="hero-insights-row" id="heroInsightsRow">
+                    <!-- Hero Weather Widget -->
+                    <div class="hero-insight-widget hero-weather-widget" id="heroWeatherWidget" style="display: none;">
+                        <div class="hero-widget-title" data-i18n="weather.forecast">Weather Forecast</div>
+                        <div class="hero-weather-header">
+                            <span class="hero-weather-icon" id="heroWeatherIcon">🌤️</span>
+                            <span class="hero-weather-temp" id="heroWeatherTemp">--°C</span>
+                            <span class="hero-weather-desc" id="heroWeatherDesc">--</span>
+                        </div>
+                        <div class="hero-weather-details">
+                            <span class="hero-weather-rain">💧 <span id="heroWeatherRain">--</span>%</span>
+                            <span class="hero-weather-wind">💨 <span id="heroWeatherWind">--</span> km/h</span>
+                        </div>
+                        <div class="hero-weather-tip" id="heroWeatherTip" style="display: none;">
+                            <span class="hero-weather-tip-icon" id="heroWeatherTipIcon">🧥</span>
+                            <span class="hero-weather-tip-text" id="heroWeatherTipText"></span>
+                        </div>
+                        <div class="hero-weather-adjustment" id="heroWeatherAdjustment" style="display: none;">
+                            <span class="hero-weather-adj-icon">⏱️</span>
+                            <span class="hero-weather-adj-text" id="heroWeatherAdjText">+0 min</span>
+                            <span class="hero-weather-adj-label" data-i18n="weather.adjustment">weather adjustment</span>
+                        </div>
                     </div>
-                    <div class="hero-weather-details">
-                        <span class="hero-weather-rain">💧 <span id="heroWeatherRain">--</span>%</span>
-                        <span class="hero-weather-wind">💨 <span id="heroWeatherWind">--</span> km/h</span>
+                    
+                    <!-- Hero Surface Widget -->
+                    <div class="hero-insight-widget hero-surface-widget" id="heroSurfaceWidget" style="display: none;">
+                        <div class="hero-widget-title" data-i18n="surface.title">Surface Analysis</div>
+                        <div class="hero-surface-bars" id="heroSurfaceBars">
+                            <!-- Filled by JS -->
+                        </div>
                     </div>
-                    <div class="hero-weather-tip" id="heroWeatherTip" style="display: none;">
-                        <span class="hero-weather-tip-icon" id="heroWeatherTipIcon">🧥</span>
-                        <span class="hero-weather-tip-text" id="heroWeatherTipText"></span>
-                    </div>
-                    <div class="hero-weather-adjustment" id="heroWeatherAdjustment" style="display: none;">
-                        <span class="hero-weather-adj-icon">⏱️</span>
-                        <span class="hero-weather-adj-text" id="heroWeatherAdjText">+0 min</span>
-                        <span class="hero-weather-adj-label" data-i18n="weather.adjustment">weather adjustment</span>
+                    
+                    <!-- Hero Climb Profile Widget -->
+                    <div class="hero-insight-widget hero-climb-widget" id="heroClimbWidget" style="display: none;">
+                        <div class="hero-widget-title" data-i18n="climb.profile">Climb Profile</div>
+                        <div class="hero-climb-stats" id="heroClimbStats">
+                            <!-- Filled by JS -->
+                        </div>
                     </div>
                 </div>
                 

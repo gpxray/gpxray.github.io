@@ -2672,6 +2672,116 @@ function displaySurfaceStats() {
     if (toggleLabel) toggleLabel.style.display = 'flex';
 }
 
+// Update Hero Surface Widget (in hero results section)
+function updateHeroSurfaceWidget() {
+    const widget = document.getElementById('heroSurfaceWidget');
+    const barsContainer = document.getElementById('heroSurfaceBars');
+    
+    if (!widget || !barsContainer || segments.length === 0) {
+        if (widget) widget.style.display = 'none';
+        return;
+    }
+    
+    const surfaceDistances = { road: 0, trail: 0, technical: 0 };
+    let totalDistance = 0;
+    
+    for (const segment of segments) {
+        if (segment.surfaceType !== 'unknown') {
+            surfaceDistances[segment.surfaceType] = (surfaceDistances[segment.surfaceType] || 0) + segment.distance;
+        }
+        totalDistance += segment.distance;
+    }
+    
+    if (totalDistance === 0) {
+        widget.style.display = 'none';
+        return;
+    }
+    
+    const surfaceIcons = { road: '🛤️', trail: '🌲', technical: '🏔️' };
+    const surfaceNames = { 
+        road: typeof t === 'function' ? t('surface.road') : 'Road', 
+        trail: typeof t === 'function' ? t('surface.trail') : 'Trail', 
+        technical: typeof t === 'function' ? t('surface.technical') : 'Technical' 
+    };
+    
+    // Sort by percentage descending
+    const sorted = Object.entries(surfaceDistances)
+        .filter(([type, dist]) => dist > 0)
+        .sort((a, b) => b[1] - a[1]);
+    
+    let html = '';
+    for (const [type, dist] of sorted) {
+        const pct = Math.round((dist / totalDistance) * 100);
+        html += `
+            <div class="hero-surface-row">
+                <span class="hero-surface-icon">${surfaceIcons[type] || '🏃'}</span>
+                <div class="hero-surface-bar-container">
+                    <div class="hero-surface-bar ${type}" style="width: ${pct}%"></div>
+                </div>
+                <span class="hero-surface-pct">${pct}%</span>
+                <span class="hero-surface-name">${surfaceNames[type] || type}</span>
+            </div>
+        `;
+    }
+    
+    barsContainer.innerHTML = html;
+    widget.style.display = html ? 'flex' : 'none';
+}
+
+// Update Hero Climb Profile Widget (uphill/flat/downhill percentages)
+function updateHeroClimbWidget() {
+    const widget = document.getElementById('heroClimbWidget');
+    const statsContainer = document.getElementById('heroClimbStats');
+    
+    if (!widget || !statsContainer || segments.length === 0) {
+        if (widget) widget.style.display = 'none';
+        return;
+    }
+    
+    const terrainDistances = { uphill: 0, flat: 0, downhill: 0 };
+    let totalDistance = 0;
+    
+    for (const segment of segments) {
+        const type = segment.terrainType || 'flat';
+        terrainDistances[type] = (terrainDistances[type] || 0) + segment.distance;
+        totalDistance += segment.distance;
+    }
+    
+    if (totalDistance === 0) {
+        widget.style.display = 'none';
+        return;
+    }
+    
+    const climbIcons = { uphill: '⬆️', flat: '➡️', downhill: '⬇️' };
+    const climbLabels = { 
+        uphill: typeof t === 'function' ? t('climb.uphill') : 'Uphill', 
+        flat: typeof t === 'function' ? t('climb.flat') : 'Flat', 
+        downhill: typeof t === 'function' ? t('climb.downhill') : 'Downhill' 
+    };
+    
+    // Fixed order: uphill, flat, downhill
+    const order = ['uphill', 'flat', 'downhill'];
+    
+    let html = '';
+    for (const type of order) {
+        const dist = terrainDistances[type] || 0;
+        const pct = Math.round((dist / totalDistance) * 100);
+        html += `
+            <div class="hero-climb-row">
+                <span class="hero-climb-icon">${climbIcons[type]}</span>
+                <div class="hero-climb-bar-container">
+                    <div class="hero-climb-bar ${type}" style="width: ${pct}%"></div>
+                </div>
+                <span class="hero-climb-pct">${pct}%</span>
+                <span class="hero-climb-label">${climbLabels[type]}</span>
+            </div>
+        `;
+    }
+    
+    statsContainer.innerHTML = html;
+    widget.style.display = 'flex';
+}
+
 // Show hidden sections
 function showSections() {
     // On main page with Calculate button, don't auto-show sections
@@ -5607,6 +5717,10 @@ function updateHeroSection(totalTime) {
     
     // Update Course Shape
     updateCourseShape();
+    
+    // Update Hero Insight Widgets (Surface & Climb Profile)
+    updateHeroSurfaceWidget();
+    updateHeroClimbWidget();
     
     // Populate AID station checkpoints - prefer API checkpoints if available
     if (heroCheckpoints && aidStations.length > 0) {

@@ -1954,6 +1954,160 @@ h2 {
     color: rgba(255, 183, 77, 0.7);
 }
 
+/* Hero Insights Row - Container for Weather, Surface, Climb widgets */
+.hero-insights-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    margin: 15px auto;
+    max-width: 900px;
+}
+
+.hero-insight-widget {
+    flex: 1;
+    min-width: 200px;
+    max-width: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 18px;
+    border-radius: 12px;
+}
+
+.hero-widget-title {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 4px;
+}
+
+/* Surface Widget */
+.hero-surface-widget {
+    background: rgba(139, 195, 74, 0.1);
+    border: 1px solid rgba(139, 195, 74, 0.2);
+}
+
+.hero-surface-widget .hero-widget-title {
+    color: rgba(139, 195, 74, 0.8);
+}
+
+.hero-surface-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+.hero-surface-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.hero-surface-icon {
+    font-size: 1rem;
+    width: 20px;
+    text-align: center;
+}
+
+.hero-surface-bar-container {
+    flex: 1;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.hero-surface-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.hero-surface-bar.road { background: linear-gradient(90deg, #78909c, #607d8b); }
+.hero-surface-bar.trail { background: linear-gradient(90deg, #8bc34a, #689f38); }
+.hero-surface-bar.technical { background: linear-gradient(90deg, #ff9800, #f57c00); }
+.hero-surface-bar.unknown { background: linear-gradient(90deg, #9e9e9e, #757575); }
+
+.hero-surface-pct {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    min-width: 35px;
+    text-align: right;
+}
+
+.hero-surface-name {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    min-width: 55px;
+}
+
+/* Climb Profile Widget */
+.hero-climb-widget {
+    background: rgba(156, 39, 176, 0.1);
+    border: 1px solid rgba(156, 39, 176, 0.2);
+}
+
+.hero-climb-widget .hero-widget-title {
+    color: rgba(186, 104, 200, 0.8);
+}
+
+.hero-climb-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+.hero-climb-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.hero-climb-icon {
+    font-size: 1rem;
+    width: 20px;
+    text-align: center;
+}
+
+.hero-climb-bar-container {
+    flex: 1;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.hero-climb-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.hero-climb-bar.uphill { background: linear-gradient(90deg, #ef5350, #d32f2f); }
+.hero-climb-bar.flat { background: linear-gradient(90deg, #42a5f5, #1976d2); }
+.hero-climb-bar.downhill { background: linear-gradient(90deg, #66bb6a, #388e3c); }
+
+.hero-climb-pct {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    min-width: 35px;
+    text-align: right;
+}
+
+.hero-climb-label {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    min-width: 60px;
+}
+
 /* Weather Impact Pill */
 .weather-impact-pill {
     position: relative;
@@ -4611,16 +4765,26 @@ h2 {
         padding: 10px 16px;
     }
     
+    /* Hero Insights Row - Mobile */
+    .hero-insights-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .hero-insight-widget {
+        max-width: 100%;
+        padding: 12px 14px;
+    }
+    
+    .hero-widget-title {
+        font-size: 0.6rem;
+    }
+    
     /* Weather Widget - Mobile (compact) */
     .hero-weather-widget {
         padding: 12px 16px;
         max-width: 100%;
         gap: 6px;
-    }
-    
-    .hero-weather-title {
-        font-size: 0.65rem;
-        margin-bottom: 2px;
     }
     
     .hero-weather-header {
@@ -4659,6 +4823,18 @@ h2 {
     
     .hero-weather-adj-text {
         font-size: 0.85rem;
+    }
+    
+    /* Surface & Climb Widgets - Mobile */
+    .hero-surface-pct,
+    .hero-climb-pct {
+        font-size: 0.8rem;
+        min-width: 32px;
+    }
+    
+    .hero-surface-name,
+    .hero-climb-label {
+        font-size: 0.7rem;
     }
     
     .runner-level-selector {
