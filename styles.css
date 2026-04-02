@@ -2038,6 +2038,54 @@ h2 {
     text-align: right;
 }
 
+/* AID Station Widget */
+.hero-aid-widget {
+    background: rgba(0, 188, 212, 0.1);
+    border: 1px solid rgba(0, 188, 212, 0.2);
+    min-height: 0;
+    max-width: none;
+    flex: 2 1 400px;
+}
+
+.hero-aid-widget .hero-widget-title {
+    color: rgba(0, 188, 212, 0.8);
+}
+
+.hero-aid-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    width: 100%;
+}
+
+.hero-aid-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 12px;
+    background: rgba(0, 188, 212, 0.15);
+    border-radius: 8px;
+    min-width: 90px;
+}
+
+.hero-aid-name {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-align: center;
+    line-height: 1.2;
+    max-width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hero-aid-time {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #00bcd4;
+}
+
 .hero-surface-name {
     font-size: 0.75rem;
     color: rgba(255, 255, 255, 0.6);

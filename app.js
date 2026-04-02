@@ -2812,6 +2812,33 @@ function updateHeroClimbWidget() {
     widget.style.display = 'flex';
 }
 
+// Update Hero AID Station Widget
+function updateHeroAidWidget() {
+    const widget = document.getElementById('heroAidWidget');
+    const listContainer = document.getElementById('heroAidList');
+    
+    if (!widget || !listContainer) {
+        return;
+    }
+    
+    // Check if we have AID stations and checkpoint times
+    if (!lastCachedCheckpoints || lastCachedCheckpoints.length === 0) {
+        widget.style.display = 'none';
+        return;
+    }
+    
+    // Build AID station HTML
+    const html = lastCachedCheckpoints.map(cp => `
+        <div class="hero-aid-item">
+            <span class="hero-aid-name">${cp.name}</span>
+            <span class="hero-aid-time">+${formatTime(cp.timeMinutes)}</span>
+        </div>
+    `).join('');
+    
+    listContainer.innerHTML = html;
+    widget.style.display = 'flex';
+}
+
 // Show hidden sections
 function showSections() {
     // On main page with Calculate button, don't auto-show sections
@@ -5748,31 +5775,13 @@ function updateHeroSection(totalTime) {
     // Update Course Shape
     updateCourseShape();
     
-    // Update Hero Insight Widgets (Surface & Climb Profile)
+    // Update Hero Insight Widgets (Surface, Climb Profile & AID Stations)
     updateHeroSurfaceWidget();
     updateHeroClimbWidget();
+    updateHeroAidWidget();
     
-    // Populate AID station checkpoints - prefer API checkpoints if available
-    if (heroCheckpoints && aidStations.length > 0) {
-        let checkpointsHtml = '';
-        
-        if (lastCachedCheckpoints && lastCachedCheckpoints.length > 0) {
-            // Use API-calculated checkpoint times (add + prefix for elapsed time)
-            checkpointsHtml = lastCachedCheckpoints.map(cp => `
-                <div class="hero-checkpoint">
-                    <span class="hero-checkpoint-name">${cp.name}</span>
-                    <span class="hero-checkpoint-time">+${formatTime(cp.timeMinutes)}</span>
-                </div>
-            `).join('');
-        } else if (lastCalculatedPaces) {
-            // Fallback to local calculation (shouldn't happen with API)
-            checkpointsHtml = calculateCheckpointTimes();
-        }
-        
-        heroCheckpoints.innerHTML = checkpointsHtml;
-        heroCheckpoints.style.display = checkpointsHtml ? 'flex' : 'none';
-    } else if (heroCheckpoints) {
-        heroCheckpoints.innerHTML = '';
+    // Hide old heroCheckpoints (now using heroAidWidget)
+    if (heroCheckpoints) {
         heroCheckpoints.style.display = 'none';
     }
     

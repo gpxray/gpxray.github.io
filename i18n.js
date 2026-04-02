@@ -118,6 +118,9 @@ const TRANSLATIONS = {
         'climb.flat': 'Flat',
         'climb.downhill': 'Downhill',
         
+        // AID Station
+        'aid.planTitle': 'AID Station Plan',
+        
         // Downhill Load tooltip
         'ddl.title': 'Descent Load (DDL/km)',
         'ddl.description': 'Measures downhill stress (steepness + time + surface).',
@@ -529,6 +532,9 @@ const TRANSLATIONS = {
         'climb.uphill': 'Bergauf',
         'climb.flat': 'Flach',
         'climb.downhill': 'Bergab',
+        
+        // AID Station
+        'aid.planTitle': 'Verpflegungsstationen',
         
         // Downhill Load tooltip
         'ddl.title': 'Abstiegsbelastung (DDL/km)',
