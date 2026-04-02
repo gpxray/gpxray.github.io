@@ -6405,8 +6405,9 @@ function setupExport() {
 function updateExportButtonsState() {
     const exportButtons = [
         'exportCsv', 'exportPdf', 'exportShareCard', 
-        'exportStoryCard', 'exportCrewCard', 'exportCrewPdf'
+        'exportCrewCard', 'exportCrewPdf'
     ];
+    // Note: exportStoryCard is NOT in this list - it shows early access prompt in demo mode
     
     exportButtons.forEach(id => {
         const btn = document.getElementById(id);
@@ -6421,6 +6422,14 @@ function updateExportButtonsState() {
             }
         }
     });
+    
+    // Story Card button is enabled in demo mode (shows early access prompt)
+    const storyBtn = document.getElementById('exportStoryCard');
+    if (storyBtn && isDemoMode) {
+        storyBtn.disabled = false;
+        storyBtn.title = '';
+        storyBtn.classList.remove('demo-disabled');
+    }
 }
 
 function exportToCsv() {
