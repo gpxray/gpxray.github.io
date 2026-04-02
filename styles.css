@@ -6091,6 +6091,34 @@ h2 {
     background: rgba(0, 212, 255, 0.3);
 }
 
+/* Mobile styles for AID stations input */
+@media (max-width: 480px) {
+    .hero-aid-input {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .hero-aid-km {
+        width: 70px;
+        flex-shrink: 0;
+    }
+    
+    .hero-aid-name {
+        flex: 1;
+        min-width: 120px;
+    }
+    
+    .hero-aid-stop {
+        width: 55px;
+        flex-shrink: 0;
+    }
+    
+    .hero-aid-add-btn {
+        width: 100%;
+        margin-top: 4px;
+    }
+}
+
 /* Calculate Button */
 .hero-calculate-btn {
     display: block;
