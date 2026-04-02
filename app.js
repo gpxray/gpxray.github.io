@@ -2651,17 +2651,11 @@ function updateSurfaceStatus(message) {
 // Display surface stats under map (replacing pie chart)
 // Show surface loading state
 function showSurfaceLoading() {
+    // Old surface stats section is now hidden - we use hero widget instead
     const statsContainer = document.getElementById('surfaceStats');
-    const loadingEl = document.getElementById('surfaceLoading');
-    const statsRow = document.getElementById('surfaceStatsRow');
-    const toggleLabel = document.getElementById('surfaceToggleLabel');
+    if (statsContainer) statsContainer.style.display = 'none';
     
-    if (statsContainer) statsContainer.style.display = 'block';
-    if (loadingEl) loadingEl.style.display = 'flex';
-    if (statsRow) statsRow.style.display = 'none';
-    if (toggleLabel) toggleLabel.style.display = 'none';
-    
-    // Also show loading in hero surface widget
+    // Show loading in hero surface widget
     showHeroSurfaceLoading();
 }
 
@@ -2678,50 +2672,11 @@ function showHeroSurfaceLoading() {
     if (toggle) toggle.style.display = 'none';
 }
 
-// Display surface stats under map
+// Display surface stats under map (legacy - now hidden, using hero widget instead)
 function displaySurfaceStats() {
+    // Hide the old surface stats section - we use hero widget now
     const statsContainer = document.getElementById('surfaceStats');
-    const statsRow = document.getElementById('surfaceStatsRow');
-    const loadingEl = document.getElementById('surfaceLoading');
-    const toggleLabel = document.getElementById('surfaceToggleLabel');
-    
-    if (!statsContainer || !statsRow) return;
-    
-    // Hide loading
-    if (loadingEl) loadingEl.style.display = 'none';
-    
-    const surfaceDistances = { road: 0, trail: 0, technical: 0, unknown: 0 };
-    let totalDistance = 0;
-    
-    for (const segment of segments) {
-        surfaceDistances[segment.surfaceType] += segment.distance;
-        totalDistance += segment.distance;
-    }
-    
-    if (totalDistance === 0) {
-        statsContainer.style.display = 'none';
-        return;
-    }
-    
-    // Build stats HTML
-    let html = '';
-    for (const [type, dist] of Object.entries(surfaceDistances)) {
-        if (dist > 0) {
-            const pct = ((dist / totalDistance) * 100).toFixed(0);
-            html += `
-                <span class="surface-stat-item">
-                    <span class="surface-color ${type}"></span>
-                    <span class="surface-pct">${pct}%</span>
-                    <span class="surface-name">${getSurfaceName(type)}</span>
-                </span>
-            `;
-        }
-    }
-    
-    statsRow.innerHTML = html;
-    statsRow.style.display = 'flex';
-    statsContainer.style.display = 'block';
-    if (toggleLabel) toggleLabel.style.display = 'flex';
+    if (statsContainer) statsContainer.style.display = 'none';
 }
 
 // Update Hero Surface Widget (in hero results section)
