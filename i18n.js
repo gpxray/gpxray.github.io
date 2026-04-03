@@ -189,6 +189,11 @@ const TRANSLATIONS = {
         'elevation.title': 'Course Load',
         'elevation.profile': 'Elevation Profile',
         'elevation.gradient': 'Gradient Profile',
+        'elevation.distanceKm': 'Distance (km)',
+        'elevation.distanceMi': 'Distance (mi)',
+        'elevation.elevationM': 'Elevation (m)',
+        'elevation.elevationFt': 'Elevation (ft)',
+        'elevation.gradientPercent': 'Gradient (%)',
         
         // Pace section
         'pace.title': 'Race Strategy',
@@ -626,6 +631,11 @@ const TRANSLATIONS = {
         'elevation.title': 'Streckenprofil',
         'elevation.profile': 'Höhenprofil',
         'elevation.gradient': 'Steigungsprofil',
+        'elevation.distanceKm': 'Distanz (km)',
+        'elevation.distanceMi': 'Distanz (mi)',
+        'elevation.elevationM': 'Höhe (m)',
+        'elevation.elevationFt': 'Höhe (ft)',
+        'elevation.gradientPercent': 'Steigung (%)',
         
         // Pace section
         'pace.title': 'Rennstrategie',

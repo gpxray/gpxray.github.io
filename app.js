@@ -3398,7 +3398,7 @@ function displayElevationChart() {
                 x: {
                     title: {
                         display: true,
-                        text: 'Distance (km)',
+                        text: useMetric ? t('elevation.distanceKm') : t('elevation.distanceMi'),
                         color: '#888'
                     },
                     ticks: {
@@ -3412,7 +3412,7 @@ function displayElevationChart() {
                 y: {
                     title: {
                         display: true,
-                        text: 'Elevation (m)',
+                        text: useMetric ? t('elevation.elevationM') : t('elevation.elevationFt'),
                         color: '#888'
                     },
                     ticks: {
@@ -3493,7 +3493,7 @@ function displayGradientChart() {
                 x: {
                     title: {
                         display: true,
-                        text: useMetric ? 'Distance (km)' : 'Distance (mi)',
+                        text: useMetric ? t('elevation.distanceKm') : t('elevation.distanceMi'),
                         color: '#888'
                     },
                     ticks: {
@@ -3507,7 +3507,7 @@ function displayGradientChart() {
                 y: {
                     title: {
                         display: true,
-                        text: 'Gradient (%)',
+                        text: t('elevation.gradientPercent'),
                         color: '#888'
                     },
                     ticks: {
