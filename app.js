@@ -3629,12 +3629,13 @@ function calculateNightAnnotations() {
         };
     });
     
-    // Add sunrise/sunset markers if they fall within race time
+    // Add sunrise/sunset markers based on day/night transitions during the race
     if (sunTimes.sunrise && sunTimes.sunset) {
-        // Find km where sunrise/sunset occurs by tracking actual elapsed time
-        let sunriseKm = null;
-        let sunsetKm = null;
+        // Track actual day/night state transitions
+        let sunriseKm = null;  // night → day transition
+        let sunsetKm = null;   // day → night transition
         let prevTimeToKm = 0;
+        let prevWasNight = null;
         
         for (let km = 0; km <= totalDist; km += sampleStep) {
             let timeToKm = 0;
@@ -3650,40 +3651,29 @@ function calculateNightAnnotations() {
                 }
             }
             
-            // Use raw clock time (can exceed 1440 for multi-day)
-            const rawClockTime = startTimeInMinutes + timeToKm;
-            const prevRawClockTime = startTimeInMinutes + prevTimeToKm;
+            // Check current night/day state using the same logic as isNightTime
+            const clockTime = (startTimeInMinutes + timeToKm) % 1440;
+            const effectiveSunrise = sunTimes.sunrise - TWILIGHT_BUFFER;
+            const effectiveSunset = sunTimes.sunset + TWILIGHT_BUFFER;
+            const isNight = clockTime < effectiveSunrise || clockTime > effectiveSunset;
             
-            // Check for sunrise crossing (can happen on day 1 or day 2)
-            if (sunriseKm === null && km > 0) {
-                // Sunrise on day 1
-                if (prevRawClockTime < sunTimes.sunrise && rawClockTime >= sunTimes.sunrise) {
+            // Detect state transitions
+            if (prevWasNight !== null && km > 0) {
+                if (prevWasNight && !isNight && sunriseKm === null) {
+                    // Transition from night to day = SUNRISE
                     sunriseKm = km;
                 }
-                // Sunrise on day 2 (add 1440 minutes)
-                const sunrise2 = sunTimes.sunrise + 1440;
-                if (prevRawClockTime < sunrise2 && rawClockTime >= sunrise2) {
-                    sunriseKm = km;
-                }
-            }
-            
-            // Check for sunset crossing
-            if (sunsetKm === null && km > 0) {
-                // Sunset on day 1
-                if (prevRawClockTime < sunTimes.sunset && rawClockTime >= sunTimes.sunset) {
-                    sunsetKm = km;
-                }
-                // Sunset on day 2 (add 1440 minutes)
-                const sunset2 = sunTimes.sunset + 1440;
-                if (prevRawClockTime < sunset2 && rawClockTime >= sunset2) {
+                if (!prevWasNight && isNight && sunsetKm === null) {
+                    // Transition from day to night = SUNSET
                     sunsetKm = km;
                 }
             }
             
+            prevWasNight = isNight;
             prevTimeToKm = timeToKm;
         }
         
-        // Add sunrise line - bright yellow, prominent
+        // Add sunrise line - bright yellow, prominent (night → day)
         if (sunriseKm !== null && sunriseKm > 0 && sunriseKm < totalDist) {
             annotations['sunrise'] = {
                 type: 'line',
@@ -3703,7 +3693,7 @@ function calculateNightAnnotations() {
             };
         }
         
-        // Add sunset line - orange, prominent
+        // Add sunset line - orange, prominent (day → night)
         if (sunsetKm !== null && sunsetKm > 0 && sunsetKm < totalDist) {
             annotations['sunset'] = {
                 type: 'line',
