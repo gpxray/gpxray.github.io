@@ -7970,7 +7970,7 @@ async function exportCrewCard() {
         const footerLogoSize = stationCount <= 6 ? '18px' : '14px';
         const hasCrewStations = stationData.some(s => s.crewAllowed);
         const legendSize = stationCount <= 6 ? '11px' : '10px';
-        const crewLegend = hasCrewStations ? `<div style="font-size: ${legendSize}; opacity: 0.7; margin-top: 4px;">${t('crew.legend')}</div>` : '';
+        const crewLegend = hasCrewStations ? `<div style="font-size: ${legendSize}; opacity: 0.9; margin-top: 6px; display: flex; align-items: center; justify-content: center; gap: 6px;"><span style="background: rgba(76,175,80,0.5); padding: 2px 6px; border-radius: 4px; color: #90EE90; font-size: ${legendSize};">👥 Crew</span> = ${t('crew.legendText')}</div>` : '';
 
         card.innerHTML = `
             <div style="text-align: center; margin-bottom: ${headerPadding};">
