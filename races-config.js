@@ -13,7 +13,7 @@ const RACE_CONFIGS = {
         date: '2026-06-19',
         location: 'Garmisch-Partenkirchen, Germany',
         website: 'https://www.zugspitz-ultratrail.com',
-        logo: null, // Optional: 'races/zut-logo.png'
+        logo: 'https://res.cloudinary.com/utmb-world/image/upload/q_auto/f_auto/c_fill,g_auto/if_w_gt_1920/c_scale,w_1920/if_end/v1/zugspitz/LOGO/Zugspitz_Ultra_Trail_by_UTMB_logo_Negatve_white_6befdf758b',
         tagline: 'Run where the mountains touch the sky',
         accessCode: 'ZUGSPITZ26', // Access code for race page
         
