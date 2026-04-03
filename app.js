@@ -7100,7 +7100,7 @@ async function exportShareCard() {
             aidStationsList += `
                 <div style="display: flex; align-items: center; padding: ${rowPadding}; background: rgba(76,175,80,0.2); border-radius: 8px; margin-top: 4px;">
                     <span style="color: #4CAF50; min-width: 55px; font-size: ${kmSize}; font-weight: bold;">🏁 ${distance.toFixed(1)}</span>
-                    <span style="flex: 1; margin: 0 6px; font-size: ${nameSize}; font-weight: 700; color: #4CAF50;">FINISH</span>
+                    <span style="flex: 1; margin: 0 6px; font-size: ${nameSize}; font-weight: 700; color: #4CAF50;">${t('lockscreen.finish')}</span>
                     <span style="color: #4CAF50; font-size: ${timeSize}; font-weight: 700; margin-right: 10px;">${totalTime.split('(')[0].trim()}</span>
                     <span style="font-weight: bold; color: #4CAF50; min-width: 75px; text-align: right; font-size: ${clockSize};">${finishClockTime}</span>
                 </div>
@@ -7110,7 +7110,7 @@ async function exportShareCard() {
             aidStationsList = `
                 <div style="display: flex; align-items: center; padding: 14px 0; background: rgba(76,175,80,0.2); border-radius: 8px;">
                     <span style="color: #4CAF50; min-width: 55px; font-size: 20px; font-weight: bold;">🏁 ${distance.toFixed(1)}</span>
-                    <span style="flex: 1; margin: 0 6px; font-size: 18px; font-weight: 700; color: #4CAF50;">FINISH</span>
+                    <span style="flex: 1; margin: 0 6px; font-size: 18px; font-weight: 700; color: #4CAF50;">${t('lockscreen.finish')}</span>
                     <span style="color: #4CAF50; font-size: 16px; font-weight: 700; margin-right: 10px;">${totalTime.split('(')[0].trim()}</span>
                     <span style="font-weight: bold; color: #4CAF50; min-width: 75px; text-align: right; font-size: 20px;">${finishClockTime}</span>
                 </div>
@@ -7130,7 +7130,7 @@ async function exportShareCard() {
             const color = isOver ? '#f44336' : '#4CAF50';
             cutoffHtml = `
                 <div style="text-align: center; margin: 10px 0; font-size: 16px; font-weight: 600; color: ${color};">
-                    ${icon} Cutoff: ${cutoff}
+                    ${icon} ${t('lockscreen.cutoff')}: ${cutoff}
                 </div>
             `;
         }
@@ -7160,7 +7160,7 @@ async function exportShareCard() {
                     <img src="img/gpxray-icon-mountain.png" style="height: 32px; width: auto;">
                     <span style="font-family: 'Sora', sans-serif; font-weight: 600; font-size: 28px; color: #00E5FF; letter-spacing: 0.01em;">GPXray</span>
                 </div>
-                <div style="font-size: 14px; color: #aaa; text-transform: uppercase; letter-spacing: 2px; font-weight: 500;">Race Strategy</div>
+                <div style="font-size: 14px; color: #aaa; text-transform: uppercase; letter-spacing: 2px; font-weight: 500;">${t('lockscreen.subtitle')}</div>
             </div>
             
             <div style="background: rgba(0,212,255,0.15); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
@@ -7173,11 +7173,11 @@ async function exportShareCard() {
                     </div>
                     <div>
                         <div style="font-size: 32px; font-weight: bold;">+${gpxData.elevationGain.toFixed(0)}</div>
-                        <div style="font-size: 14px; color: #aaa; font-weight: 500;">m gain</div>
+                        <div style="font-size: 14px; color: #aaa; font-weight: 500;">${t('lockscreen.mGain')}</div>
                     </div>
                     <div>
                         <div style="font-size: 32px; font-weight: bold;">-${gpxData.elevationLoss.toFixed(0)}</div>
-                        <div style="font-size: 14px; color: #aaa; font-weight: 500;">m loss</div>
+                        <div style="font-size: 14px; color: #aaa; font-weight: 500;">${t('lockscreen.mLoss')}</div>
                     </div>
                 </div>
             </div>
@@ -7186,12 +7186,12 @@ async function exportShareCard() {
             
             ${aidStationsList ? `
                 <div style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 15px; margin-bottom: 20px;">
-                    <div style="font-size: 16px; color: #aaa; margin-bottom: 12px; text-align: center; font-weight: 600;">⏱️ RACE SCHEDULE</div>
+                    <div style="font-size: 16px; color: #aaa; margin-bottom: 12px; text-align: center; font-weight: 600;">⏱️ ${t('lockscreen.raceSchedule')}</div>
                     <div style="display: flex; align-items: center; padding: 6px 0; border-bottom: 2px solid rgba(255,255,255,0.2); margin-bottom: 8px;">
                         <span style="color: #888; min-width: 55px; font-size: 12px; font-weight: 600;">${unitLabel.toUpperCase()}</span>
-                        <span style="flex: 1; margin: 0 6px; font-size: 12px; color: #888; font-weight: 600;">STATION</span>
-                        <span style="color: #888; font-size: 12px; margin-right: 10px; font-weight: 600;">RACE</span>
-                        <span style="color: #888; min-width: 75px; text-align: right; font-size: 12px; font-weight: 600;">CLOCK</span>
+                        <span style="flex: 1; margin: 0 6px; font-size: 12px; color: #888; font-weight: 600;">${t('lockscreen.station')}</span>
+                        <span style="color: #888; font-size: 12px; margin-right: 10px; font-weight: 600;">${t('lockscreen.race')}</span>
+                        <span style="color: #888; min-width: 75px; text-align: right; font-size: 12px; font-weight: 600;">${t('lockscreen.clock')}</span>
                     </div>
                     ${aidStationsList}
                 </div>

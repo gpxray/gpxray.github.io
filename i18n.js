@@ -356,6 +356,17 @@ const TRANSLATIONS = {
         'crew.shareTitle': 'Crew Schedule - {0}',
         'crew.shareText': "Here's my race schedule for {0}! Meet me at these AID stations 👟\n\nPlan your race with https://gpxray.run",
         
+        // Lockscreen Card export
+        'lockscreen.subtitle': 'RACE STRATEGY',
+        'lockscreen.mGain': 'm gain',
+        'lockscreen.mLoss': 'm loss',
+        'lockscreen.cutoff': 'Cutoff',
+        'lockscreen.raceSchedule': 'RACE SCHEDULE',
+        'lockscreen.station': 'STATION',
+        'lockscreen.race': 'RACE',
+        'lockscreen.clock': 'CLOCK',
+        'lockscreen.finish': 'FINISH',
+        
         // Share card preview
         'share.previewLabel': 'On your Share Card:',
         'share.rerollHint': 'Get different statement',
@@ -822,6 +833,17 @@ const TRANSLATIONS = {
         'crew.legendText': 'Crew erlaubt',
         'crew.shareTitle': 'Crew Zeitplan - {0}',
         'crew.shareText': "Hier ist mein Rennplan für {0}! Triff mich an diesen Verpflegungsstationen 👟\n\nPlane dein Rennen mit https://gpxray.run",
+        
+        // Lockscreen Card export
+        'lockscreen.subtitle': 'RENNSTRATEGIE',
+        'lockscreen.mGain': 'Hm Anstieg',
+        'lockscreen.mLoss': 'Hm Abstieg',
+        'lockscreen.cutoff': 'Cutoff',
+        'lockscreen.raceSchedule': 'RENN ZEITPLAN',
+        'lockscreen.station': 'STATION',
+        'lockscreen.race': 'ZEIT',
+        'lockscreen.clock': 'UHRZEIT',
+        'lockscreen.finish': 'ZIEL',
         
         // Share card preview
         'share.previewLabel': 'Auf deiner Share Card:',
