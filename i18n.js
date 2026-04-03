@@ -126,6 +126,13 @@ const TRANSLATIONS = {
         'climb.flat': 'Flat',
         'climb.downhill': 'Downhill',
         
+        // Night Running
+        'night.title': 'Night Running',
+        'night.distance': 'Distance at night',
+        'night.sections': 'Night sections',
+        'night.headlamp': 'Headlamp needed',
+        'night.penalty': 'Night pace penalty',
+        
         // AID Station
         'aid.planTitle': 'AID Station Plan',
         
@@ -603,6 +610,13 @@ const TRANSLATIONS = {
         'climb.uphill': 'Bergauf',
         'climb.flat': 'Flach',
         'climb.downhill': 'Bergab',
+        
+        // Night Running
+        'night.title': 'Nachtlauf',
+        'night.distance': 'Distanz bei Nacht',
+        'night.sections': 'Nachtabschnitte',
+        'night.headlamp': 'Stirnlampe benötigt',
+        'night.penalty': 'Nacht-Tempoaufschlag',
         
         // AID Station
         'aid.planTitle': 'Verpflegungsstationen',

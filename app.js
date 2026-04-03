@@ -5318,6 +5318,112 @@ function updateHeroSunTimes() {
     heroSunTimes.style.display = 'inline-flex';
 }
 
+// Update Hero Night Running Widget
+function updateHeroNightWidget(startTimeInMinutes, totalRaceTime, paces) {
+    const widget = document.getElementById('heroNightWidget');
+    const statsContainer = document.getElementById('heroNightStats');
+    
+    if (!widget || !statsContainer) return;
+    
+    // Need sun times and race data
+    if (!sunTimes || !gpxData || segments.length === 0 || sunTimes.midnightSun) {
+        widget.style.display = 'none';
+        return;
+    }
+    
+    // Calculate night sections by traversing the course
+    const nightSections = [];
+    let currentNightSection = null;
+    let cumulativeTime = 0;
+    let totalNightDistance = 0;
+    
+    const flatPace = paces?.flatPace || 6.5;
+    const uphillPace = paces?.uphillPace || 8.5;
+    const downhillPace = paces?.downhillPace || 5.5;
+    
+    for (let i = 0; i < segments.length; i++) {
+        const segment = segments[i];
+        const segmentMidKm = (segment.startDistance + segment.endDistance) / 2;
+        
+        // Calculate pace for this segment
+        const gradientMultiplier = getGradientPaceMultiplier(segment.grade, flatPace, uphillPace, downhillPace);
+        const segmentPace = flatPace * gradientMultiplier;
+        const segmentTime = segment.distance * segmentPace;
+        
+        // Clock time at segment start
+        const clockTimeAtSegment = startTimeInMinutes + cumulativeTime;
+        const isNight = isNightTime(clockTimeAtSegment % 1440); // mod 1440 for multi-day
+        
+        if (isNight) {
+            totalNightDistance += segment.distance;
+            if (!currentNightSection) {
+                currentNightSection = { startKm: segment.startDistance, endKm: segment.endDistance };
+            } else {
+                currentNightSection.endKm = segment.endDistance;
+            }
+        } else {
+            if (currentNightSection) {
+                nightSections.push(currentNightSection);
+                currentNightSection = null;
+            }
+        }
+        
+        cumulativeTime += segmentTime;
+    }
+    
+    // Close last night section if still open
+    if (currentNightSection) {
+        nightSections.push(currentNightSection);
+    }
+    
+    // If no night running, hide widget
+    if (totalNightDistance < 0.5) {
+        widget.style.display = 'none';
+        return;
+    }
+    
+    const totalDistance = gpxData.totalDistance;
+    const nightPct = Math.round((totalNightDistance / totalDistance) * 100);
+    
+    // Calculate dominant surface for penalty info
+    let trailDist = 0, techDist = 0, roadDist = 0;
+    segments.forEach(s => {
+        if (s.surfaceType === 'trail') trailDist += s.distance;
+        else if (s.surfaceType === 'technical') techDist += s.distance;
+        else if (s.surfaceType === 'road') roadDist += s.distance;
+    });
+    
+    let penaltyInfo = '+8%';
+    if (techDist > trailDist && techDist > roadDist) penaltyInfo = '+12%';
+    else if (roadDist > trailDist && roadDist > techDist) penaltyInfo = '+5%';
+    
+    // Format night sections as km ranges
+    const sectionStrings = nightSections.map(s => 
+        `${Math.round(s.startKm)}-${Math.round(s.endKm)} km`
+    );
+    
+    let html = `
+        <div class="hero-night-stat">
+            <span class="hero-night-stat-label">${t('night.distance')}</span>
+            <span class="hero-night-stat-value">${totalNightDistance.toFixed(1)} km (${nightPct}%)</span>
+        </div>
+        <div class="hero-night-stat">
+            <span class="hero-night-stat-label">${t('night.penalty')}</span>
+            <span class="hero-night-stat-value">${penaltyInfo}</span>
+        </div>
+    `;
+    
+    if (sectionStrings.length > 0 && sectionStrings.length <= 4) {
+        html += `<div class="hero-night-sections">${sectionStrings.join(' • ')}</div>`;
+    } else if (sectionStrings.length > 4) {
+        // Show first and last section only
+        html += `<div class="hero-night-sections">${sectionStrings[0]} ... ${sectionStrings[sectionStrings.length - 1]}</div>`;
+    }
+    
+    statsContainer.innerHTML = html;
+    widget.style.display = 'flex';
+}
+
 // Check if a given clock time (in minutes from midnight) is during night
 function isNightTime(clockMinutes) {
     if (!sunTimes || sunTimes.polarNight) return true;
@@ -6084,6 +6190,7 @@ function renderLegSummary(flatPace, uphillPace, downhillPace, applySurface, star
         
         // Apply night penalty if running at night
         const nightMultiplier = getNightPaceMultiplier(clockTimeAtLegStart, dominantSurface);
+        const isNightLeg = nightMultiplier > 1.0;
         
         // Apply fatigue multiplier and night penalty to leg running time
         const adjustedLegTime = legTime * fatigueMultiplier * nightMultiplier;
@@ -6093,10 +6200,11 @@ function renderLegSummary(flatPace, uphillPace, downhillPace, applySurface, star
         cumulativeTime += adjustedLegTime;
         
         const arrivalTime = formatClockTime(startTimeInMinutes + cumulativeTime);
+        const nightIcon = isNightLeg ? '<span class="leg-night-indicator" title="Night running">🌙</span>' : '';
         
         return `
-            <tr class="${leg.isFinish ? 'leg-finish' : ''}">
-                <td class="leg-name">${leg.name}</td>
+            <tr class="${leg.isFinish ? 'leg-finish' : ''}${isNightLeg ? ' leg-night' : ''}">
+                <td class="leg-name">${leg.name}${nightIcon}</td>
                 <td>${distance.toFixed(1)} km</td>
                 <td>⬆️${elevGain.toFixed(0)}m ⬇️${elevLoss.toFixed(0)}m</td>
                 <td>${formatTime(adjustedLegTime)}</td>
@@ -6259,6 +6367,7 @@ function updateHeroSection(totalTime) {
     updateHeroSurfaceWidget();
     updateHeroClimbWidget();
     updateHeroAidWidget();
+    updateHeroNightWidget(startTimeInMinutes, totalTime, { flatPace, uphillPace, downhillPace });
     
     // Hide old heroCheckpoints (now using heroAidWidget)
     if (heroCheckpoints) {
