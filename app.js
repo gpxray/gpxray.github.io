@@ -7730,10 +7730,7 @@ async function exportShareCard() {
         
         card.innerHTML = `
             <div style="text-align: center; margin-bottom: 15px;">
-                <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 6px;">
-                    <img src="${logoBase64}" style="height: 24px; width: auto; border-radius: 4px;">
-                    <span style="font-size: 16px; font-weight: 600; color: #00d4ff;">GPXray</span>
-                </div>
+                <div style="font-size: 16px; font-weight: 600; color: #00d4ff; margin-bottom: 4px;">GPXray</div>
                 <div style="font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 2px; font-weight: 500;">${t('lockscreen.subtitle')}</div>
             </div>
             
