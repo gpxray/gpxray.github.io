@@ -172,6 +172,8 @@ const TRANSLATIONS = {
         'stats.totalDistance': 'Total Distance',
         'stats.elevGain': 'Elevation Gain',
         'stats.elevLoss': 'Elevation Loss',
+        'stats.minElev': 'Min Elevation',
+        'stats.maxElev': 'Max Elevation',
         'stats.estimatedTime': 'Estimated Time',
         
         // Map section
@@ -607,6 +609,8 @@ const TRANSLATIONS = {
         'stats.totalDistance': 'Gesamtdistanz',
         'stats.elevGain': 'Höhenmeter Aufstieg',
         'stats.elevLoss': 'Höhenmeter Abstieg',
+        'stats.minElev': 'Min. Höhe',
+        'stats.maxElev': 'Max. Höhe',
         'stats.estimatedTime': 'Geschätzte Zeit',
         
         // Map section
