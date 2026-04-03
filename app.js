@@ -3691,6 +3691,21 @@ function calculateNightAnnotations(labels) {
             prevTimeToKm = timeToKm;
         }
         
+        // Debug: log the detected transition points
+        console.log('Night annotations debugging:', {
+            sunriseKm,
+            sunsetKm,
+            totalDist,
+            startTime: startTimeInput.value,
+            startTimeInMinutes,
+            sunTimes: { sunrise: sunTimes.sunrise, sunset: sunTimes.sunset },
+            effectiveSunrise: sunTimes.sunrise - TWILIGHT_BUFFER,
+            effectiveSunset: sunTimes.sunset + TWILIGHT_BUFFER,
+            labelsLength: labels.length,
+            firstLabel: labels[0],
+            lastLabel: labels[labels.length - 1]
+        });
+        
         // Add sunrise line - bright yellow, prominent (night → day)
         if (sunriseKm !== null && sunriseKm > 0 && sunriseKm < totalDist) {
             const sunriseLabel = findClosestLabel(labels, sunriseKm);
@@ -3715,6 +3730,7 @@ function calculateNightAnnotations(labels) {
         // Add sunset line - orange, prominent (day → night)
         if (sunsetKm !== null && sunsetKm > 0 && sunsetKm < totalDist) {
             const sunsetLabel = findClosestLabel(labels, sunsetKm);
+            console.log('Sunset annotation:', { sunsetKm, sunsetLabel });
             annotations['sunset'] = {
                 type: 'line',
                 xMin: sunsetLabel,
