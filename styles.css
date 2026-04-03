@@ -5227,8 +5227,8 @@ h2 {
 }
 
 .race-logo img {
-    max-height: 80px;
-    max-width: 200px;
+    max-height: 120px;
+    max-width: 300px;
     object-fit: contain;
 }
 
