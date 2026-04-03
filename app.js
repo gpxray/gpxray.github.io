@@ -3141,12 +3141,13 @@ function updateStoryButtonVisibility() {
     const previewSection = document.getElementById('statementPreviewSection');
     if (!storyBtn) return;
     
-    // Show button for RET races, dev environment, or in demo mode (for early access prompt)
+    // Show button for RET races, dev environment, early access users, or in demo mode (for early access prompt)
     const isRETRace = currentRouteName && 
         (currentRouteName.toLowerCase().includes('ret') || 
          currentRouteName.toLowerCase().includes('rureifel'));
+    const hasEarlyAccess = isEarlyAccessUnlocked();
     
-    if (IS_DEV || isRETRace || isDemoMode) {
+    if (IS_DEV || isRETRace || hasEarlyAccess || isDemoMode) {
         storyBtn.style.display = 'inline-flex';
         if (previewSection) {
             // Don't show preview section in demo mode (only show early access prompt)
