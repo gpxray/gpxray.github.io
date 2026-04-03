@@ -3455,8 +3455,8 @@ function displayElevationChart() {
         return 'rgba(76, 175, 80, 0.8)';
     });
     
-    // Calculate night annotations if sun times and paces are available
-    const nightAnnotations = calculateNightAnnotations();
+    // Calculate night annotations - pass labels for correct positioning on category axis
+    const nightAnnotations = calculateNightAnnotations(labels);
     
     elevationChart = new Chart(ctx, {
         type: 'line',
@@ -3538,10 +3538,29 @@ function displayElevationChart() {
     document.querySelector('.chart-container').style.height = '300px';
 }
 
+// Helper to find the closest label for a given km (for category axis positioning)
+function findClosestLabel(labels, targetKm) {
+    let closestLabel = labels[0];
+    let closestDiff = Math.abs(parseFloat(labels[0]) - targetKm);
+    
+    for (const label of labels) {
+        const diff = Math.abs(parseFloat(label) - targetKm);
+        if (diff < closestDiff) {
+            closestDiff = diff;
+            closestLabel = label;
+        }
+    }
+    return closestLabel;
+}
+
 // Calculate night overlay annotations for elevation chart
-function calculateNightAnnotations() {
+function calculateNightAnnotations(labels) {
     // Need sun times, paces, and start time
     if (!sunTimes || !gpxData || segments.length === 0 || sunTimes.midnightSun) {
+        return {};
+    }
+    
+    if (!labels || labels.length === 0) {
         return {};
     }
     
@@ -3604,17 +3623,16 @@ function calculateNightAnnotations() {
         nightSections.push(currentNightSection);
     }
     
-    // Convert to Chart.js annotation format
+    // Convert to Chart.js annotation format - use findClosestLabel for category axis
     const annotations = {};
     nightSections.forEach((section, index) => {
-        // Find the label indices for this section
-        const startIndex = Math.floor(section.startKm / totalDist * gpxData.points.length);
-        const endIndex = Math.ceil(section.endKm / totalDist * gpxData.points.length);
+        const startLabel = findClosestLabel(labels, section.startKm);
+        const endLabel = findClosestLabel(labels, section.endKm);
         
         annotations[`night${index}`] = {
             type: 'box',
-            xMin: section.startKm.toFixed(2),
-            xMax: section.endKm.toFixed(2),
+            xMin: startLabel,
+            xMax: endLabel,
             yMin: 'min',
             yMax: 'max',
             backgroundColor: 'rgba(63, 81, 181, 0.15)',
@@ -3675,10 +3693,11 @@ function calculateNightAnnotations() {
         
         // Add sunrise line - bright yellow, prominent (night → day)
         if (sunriseKm !== null && sunriseKm > 0 && sunriseKm < totalDist) {
+            const sunriseLabel = findClosestLabel(labels, sunriseKm);
             annotations['sunrise'] = {
                 type: 'line',
-                xMin: sunriseKm.toFixed(2),
-                xMax: sunriseKm.toFixed(2),
+                xMin: sunriseLabel,
+                xMax: sunriseLabel,
                 borderColor: 'rgba(255, 193, 7, 1)',
                 borderWidth: 3,
                 label: {
@@ -3695,10 +3714,11 @@ function calculateNightAnnotations() {
         
         // Add sunset line - orange, prominent (day → night)
         if (sunsetKm !== null && sunsetKm > 0 && sunsetKm < totalDist) {
+            const sunsetLabel = findClosestLabel(labels, sunsetKm);
             annotations['sunset'] = {
                 type: 'line',
-                xMin: sunsetKm.toFixed(2),
-                xMax: sunsetKm.toFixed(2),
+                xMin: sunsetLabel,
+                xMax: sunsetLabel,
                 borderColor: 'rgba(255, 152, 0, 1)',
                 borderWidth: 3,
                 label: {
