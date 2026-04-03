@@ -5950,9 +5950,11 @@ function updateHeroSection(totalTime) {
     
     if (!heroTime) return;
     
-    // Update finish time and remove preview state
-    heroTime.textContent = formatTime(totalTime);
-    heroTime.classList.remove('hero-time-preview');
+    // Only update finish time if totalTime is provided (skip on language change)
+    if (totalTime !== undefined && !isNaN(totalTime)) {
+        heroTime.textContent = formatTime(totalTime);
+        heroTime.classList.remove('hero-time-preview');
+    }
     
     // Update weather impact pill if available
     const weatherPill = document.getElementById('weatherImpactPill');

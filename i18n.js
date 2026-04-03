@@ -958,6 +958,9 @@ function setLanguage(lang) {
         if (typeof updateHeroSection === 'function') {
             updateHeroSection();
         }
+        if (typeof updateCourseShape === 'function') {
+            updateCourseShape();
+        }
         if (typeof generateSplitsTable === 'function') {
             generateSplitsTable();
         }
@@ -967,6 +970,15 @@ function setLanguage(lang) {
         }
         if (typeof displaySurfaceStats === 'function') {
             displaySurfaceStats();
+        }
+        if (typeof updatePaceInfoContent === 'function') {
+            updatePaceInfoContent();
+        }
+        if (typeof displayElevationChart === 'function') {
+            displayElevationChart();
+        }
+        if (typeof displayGradientChart === 'function') {
+            displayGradientChart();
         }
     }
 }
