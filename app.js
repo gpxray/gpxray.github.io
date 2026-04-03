@@ -7902,7 +7902,7 @@ async function exportStoryCard() {
         card.innerHTML = `
             <!-- Logo at Top -->
             <div style="text-align: center; padding-top: 20px;">
-                <img id="storyCardLogo" crossorigin="anonymous" src="img/gpxray-icon-256.png" style="height: 160px; width: 160px; border-radius: 28px;">
+                <img id="storyCardLogo" crossorigin="anonymous" src="img/gpxray-icon-256.png" style="height: 100px; width: 100px; border-radius: 18px;">
             </div>
             
             <!-- Witty Statement -->
