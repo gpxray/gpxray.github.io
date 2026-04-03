@@ -7625,19 +7625,8 @@ async function exportShareCard() {
             `;
         }
 
-        // Sun times
-        let sunTimesHtml = '';
-        if (sunTimes && !sunTimes.polarNight && !sunTimes.midnightSun) {
-            sunTimesHtml = `
-                <div style="display: flex; gap: 25px; justify-content: center; margin: 10px 0; font-size: 16px; font-weight: 600;">
-                    <span>🌅 ${formatSunTime(sunTimes.sunrise)}</span>
-                    <span>🌇 ${formatSunTime(sunTimes.sunset)}</span>
-                </div>
-            `;
-        }
-
-        // Combine cutoff with sun times
-        const timesSection = cutoffHtml + sunTimesHtml;
+        // timesSection now only contains cutoff (sun times moved to challenges box)
+        const timesSection = cutoffHtml;
 
         let routeName = currentRouteName || 'Race Strategy';
         if (routeName.length > 35) {
@@ -7670,6 +7659,12 @@ async function exportShareCard() {
         // Night and DDL in a row
         let nightDdlRow = '';
         const extraItems = [];
+        
+        // Add sunrise/sunset times first if available
+        if (sunTimes && !sunTimes.midnightSun && !sunTimes.polarNight) {
+            extraItems.push(`<span style="color: #ffcc00;">🌅 ${formatSunTime(sunTimes.sunrise)}</span>`);
+            extraItems.push(`<span style="color: #ff8844;">🌇 ${formatSunTime(sunTimes.sunset)}</span>`);
+        }
         
         // Night Running - show km ranges
         if (sunTimes && !sunTimes.midnightSun) {
