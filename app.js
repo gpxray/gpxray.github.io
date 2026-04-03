@@ -9023,13 +9023,8 @@ function setupRaceCreateStrategyButton() {
             // Parse GPX (this will trigger calculateRacePlan with correct aidStations)
             parseGPX(currentDistanceConfig._gpxContent);
             
-            // Override elevation gain with official race value if configured
-            if (currentDistanceConfig.elevation && gpxData) {
-                gpxData.elevationGain = currentDistanceConfig.elevation;
-                // Re-render with correct elevation
-                displayStats();
-                calculateRacePlan();
-            }
+            // Note: We use the GPX-calculated elevation for internal consistency
+            // (sum of leg gains will match total shown in header)
             
             // Set fixed race date and start time if configured
             if (currentDistanceConfig.raceDate || currentDistanceConfig.startTime) {
