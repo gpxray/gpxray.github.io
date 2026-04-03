@@ -7968,6 +7968,9 @@ async function exportCrewCard() {
         const headerDateSize = stationCount <= 6 ? '14px' : '12px';
         const footerPadding = stationCount <= 6 ? '15px' : '10px';
         const footerLogoSize = stationCount <= 6 ? '18px' : '14px';
+        const hasCrewStations = stationData.some(s => s.crewAllowed);
+        const legendSize = stationCount <= 6 ? '11px' : '10px';
+        const crewLegend = hasCrewStations ? `<div style="font-size: ${legendSize}; opacity: 0.7; margin-top: 4px;">${t('crew.legend')}</div>` : '';
 
         card.innerHTML = `
             <div style="text-align: center; margin-bottom: ${headerPadding};">
@@ -7976,6 +7979,7 @@ async function exportCrewCard() {
                 <div style="font-size: ${headerDateSize}; opacity: 0.9;">
                     ${formattedDate ? `📅 ${formattedDate} · ` : ''}🏃 ${t('crew.start')}: ${raceTime}
                 </div>
+                ${crewLegend}
             </div>
             
             <div style="flex: 1;">
