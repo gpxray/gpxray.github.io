@@ -351,6 +351,7 @@ const TRANSLATIONS = {
         'crew.kmToFinish': '{0}km to finish',
         'crew.kmPlusClimbToFinish': '{0}km + {1}m to finish',
         'crew.kmDescentToFinish': '{0}km ↘️ to finish',
+        'crew.crewAllowed': 'Crew',
         'crew.shareTitle': 'Crew Schedule - {0}',
         'crew.shareText': "Here's my race schedule for {0}! Meet me at these AID stations 👟\n\nPlan your race with https://gpxray.run",
         
@@ -816,6 +817,7 @@ const TRANSLATIONS = {
         'crew.kmToFinish': '{0}km bis Ziel',
         'crew.kmPlusClimbToFinish': '{0}km + {1}m bis Ziel',
         'crew.kmDescentToFinish': '{0}km ↘️ bis Ziel',
+        'crew.crewAllowed': 'Crew',
         'crew.shareTitle': 'Crew Zeitplan - {0}',
         'crew.shareText': "Hier ist mein Rennplan für {0}! Triff mich an diesen Verpflegungsstationen 👟\n\nPlane dein Rennen mit https://gpxray.run",
         

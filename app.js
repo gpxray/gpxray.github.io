@@ -7736,7 +7736,8 @@ async function exportCrewCard() {
                             percentComplete,
                             stationElevation,
                             cumulativeGain,
-                            stationKm
+                            stationKm,
+                            crewAllowed: station.crewAllowed || false
                         });
                         addedStations.add(aidName);
                     }
@@ -7905,12 +7906,13 @@ async function exportCrewCard() {
             const nextLegLine = station.nextLeg + timeToNextText;
             
             const iconMargin = stationCount <= 6 ? '12px' : (stationCount <= 8 ? '10px' : '8px');
+            const crewBadge = station.crewAllowed ? `<span style="background: rgba(76,175,80,0.3); padding: 1px 6px; border-radius: 4px; font-size: ${detailSize}; margin-left: 6px;">👥 ${t('crew.crewAllowed')}</span>` : '';
             
             return `
                 <div style="display: flex; align-items: center; padding: ${rowPadding}; background: rgba(255,255,255,0.1); border-radius: 10px; margin-bottom: ${rowGap};">
                     <div style="font-size: ${iconSize}; margin-right: ${iconMargin};">📍</div>
                     <div style="flex: 1; min-width: 0;">
-                        <div style="font-size: ${nameSize}; font-weight: 700; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${stationName}</div>
+                        <div style="font-size: ${nameSize}; font-weight: 700; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${stationName}${crewBadge}</div>
                         <div style="font-size: ${detailSize}; opacity: 0.8;">${detailLine1}</div>
                         <div style="font-size: ${detailSize}; opacity: 0.7;">${detailLine2}</div>
                         ${station.crewInsight ? `<div style="font-size: ${detailSize}; font-weight: 600; margin-top: 2px; color: #ffd700;">${station.crewInsight}</div>` : ''}

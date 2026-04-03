@@ -163,7 +163,7 @@ const RACE_CONFIGS = {
                 startTime: '10:15',
                 finishCutoff: '20:45',
                 aidStations: [
-                    { km: 7.3, name: 'VP1 Gut Kallerbend', stopMin: 2 }
+                    { km: 7.3, name: 'VP1 Gut Kallerbend', stopMin: 2, crewAllowed: true }
                 ],
                 // Surface: 70% trail, 22% road, 7% technical
                 surfaceProfile: [
@@ -195,8 +195,8 @@ const RACE_CONFIGS = {
                 startTime: '09:10',
                 finishCutoff: '20:45',
                 aidStations: [
-                    { km: 8.4, name: 'VP1 Bergstein', stopMin: 2 },
-                    { km: 15.0, name: 'VP2 Obermaubach', stopMin: 2 }
+                    { km: 8.4, name: 'VP1 Bergstein', stopMin: 2, crewAllowed: true },
+                    { km: 15.0, name: 'VP2 Obermaubach', stopMin: 2, crewAllowed: true }
                 ],
                 // Surface: 77% trail, 16% road, 2% technical
                 surfaceProfile: [
@@ -231,10 +231,10 @@ const RACE_CONFIGS = {
                 startTime: '10:25',
                 finishCutoff: '20:45',
                 aidStations: [
-                    { km: 16.3, name: 'VP1 Bergstein', stopMin: 3 },
-                    { km: 26.4, name: 'VP2 Obermaubach', stopMin: 3 },
+                    { km: 16.3, name: 'VP1 Bergstein', stopMin: 3, crewAllowed: true },
+                    { km: 26.4, name: 'VP2 Obermaubach', stopMin: 3, crewAllowed: true },
                     { km: 35.5, name: 'VP3 Rath/Wanderhütte', stopMin: 3 },
-                    { km: 40.9, name: 'VP4 Gut Kallerbend', stopMin: 3 }
+                    { km: 40.9, name: 'VP4 Gut Kallerbend', stopMin: 3, crewAllowed: true }
                 ],
                 // Surface: 68% trail, 13% road, 19% unknown
                 surfaceProfile: [
@@ -276,11 +276,11 @@ const RACE_CONFIGS = {
                 finishCutoff: '20:45',
                 aidStations: [
                     { km: 18.4, name: 'VP1 Heimbach/Meuchelberg', stopMin: 3 },
-                    { km: 31.6, name: 'VP2 Schmidt/Schöne Aussicht', stopMin: 4 },
-                    { km: 47.2, name: 'VP3 Bergstein', stopMin: 4 },
-                    { km: 57.3, name: 'VP4 Obermaubach', stopMin: 4 },
+                    { km: 31.6, name: 'VP2 Schmidt/Schöne Aussicht', stopMin: 4, crewAllowed: true },
+                    { km: 47.2, name: 'VP3 Bergstein', stopMin: 4, crewAllowed: true },
+                    { km: 57.3, name: 'VP4 Obermaubach', stopMin: 4, crewAllowed: true },
                     { km: 66.4, name: 'VP5 Rath/Wanderhütte', stopMin: 3 },
-                    { km: 71.8, name: 'VP6 Gut Kallerbend', stopMin: 3 }
+                    { km: 71.8, name: 'VP6 Gut Kallerbend', stopMin: 3, crewAllowed: true }
                 ],
                 // Surface: 55% trail, 13% road, 2% technical, 30% unknown (forest paths)
                 surfaceProfile: [
