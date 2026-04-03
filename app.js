@@ -2426,6 +2426,9 @@ async function fetchSurfaceData() {
         }
     }
     
+    // No cached data - show loading state and fetch from OSM
+    showSurfaceLoading();
+    
     // Set loading flag
     isSurfaceLoading = true;
     
