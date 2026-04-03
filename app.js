@@ -6998,7 +6998,8 @@ async function exportShareCard() {
                             dist: displayDist.toFixed(1), 
                             name: aidName, 
                             raceTime, 
-                            clockTime 
+                            clockTime,
+                            crewAllowed: matchingStation.crewAllowed || false
                         });
                         addedStations.add(aidName);
                     }
@@ -7060,26 +7061,16 @@ async function exportShareCard() {
                     }
                 }
                 
-                // Sum up elevation changes in this leg
-                let lastElev = null;
-                for (const point of gpxData.points) {
-                    if (point.distance >= prevKm && point.distance <= stationKm) {
-                        if (point.elevation !== null) {
-                            if (lastElev !== null) {
-                                const diff = point.elevation - lastElev;
-                                if (diff > 0) elevGain += diff;
-                                else elevLoss += Math.abs(diff);
-                            }
-                            lastElev = point.elevation;
-                        }
-                    }
-                }
+                // Sum up elevation changes in this leg using smoothed calculation
+                elevGain = calculateElevationGainBetween(prevKm, stationKm);
+                elevLoss = calculateElevationLossBetween(prevKm, stationKm);
                 
                 // Add station row
+                const crewBadge = station.crewAllowed ? ' 👥' : '';
                 aidStationsList += `
                     <div style="display: flex; align-items: center; padding: ${rowPadding}; border-bottom: 1px solid rgba(255,255,255,0.15);">
                         <span style="color: #00d4ff; min-width: 55px; font-size: ${kmSize}; font-weight: bold;">📍 ${station.dist}</span>
-                        <span style="flex: 1; margin: 0 6px; font-size: ${nameSize}; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${station.name}</span>
+                        <span style="flex: 1; margin: 0 6px; font-size: ${nameSize}; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${station.name}${crewBadge}</span>
                         <span style="color: #ddd; font-size: ${timeSize}; font-weight: 600; margin-right: 10px;">${station.raceTime}</span>
                         <span style="font-weight: bold; color: #4CAF50; min-width: 75px; text-align: right; font-size: ${clockSize};">${station.clockTime}</span>
                     </div>
@@ -7090,22 +7081,9 @@ async function exportShareCard() {
                     const nextKm = parseFloat(stationData[index + 1].dist);
                     const nextLegDist = (nextKm - stationKm).toFixed(1);
                     
-                    // Calculate next leg elevation
-                    let nextElevGain = 0;
-                    let nextElevLoss = 0;
-                    let nextLastElev = null;
-                    for (const point of gpxData.points) {
-                        if (point.distance >= stationKm && point.distance <= nextKm) {
-                            if (point.elevation !== null) {
-                                if (nextLastElev !== null) {
-                                    const diff = point.elevation - nextLastElev;
-                                    if (diff > 0) nextElevGain += diff;
-                                    else nextElevLoss += Math.abs(diff);
-                                }
-                                nextLastElev = point.elevation;
-                            }
-                        }
-                    }
+                    // Calculate next leg elevation using smoothed calculation
+                    const nextElevGain = calculateElevationGainBetween(stationKm, nextKm);
+                    const nextElevLoss = calculateElevationLossBetween(stationKm, nextKm);
                     
                     if (showLegInfo) {
                         aidStationsList += `
@@ -7126,22 +7104,9 @@ async function exportShareCard() {
                 const finishKm = distance;
                 const legToFinish = (finishKm - lastStationKm).toFixed(1);
                 
-                // Calculate elevation to finish
-                let finishElevGain = 0;
-                let finishElevLoss = 0;
-                let lastElev = null;
-                for (const point of gpxData.points) {
-                    if (point.distance >= lastStationKm) {
-                        if (point.elevation !== null) {
-                            if (lastElev !== null) {
-                                const diff = point.elevation - lastElev;
-                                if (diff > 0) finishElevGain += diff;
-                                else finishElevLoss += Math.abs(diff);
-                            }
-                            lastElev = point.elevation;
-                        }
-                    }
-                }
+                // Calculate elevation to finish using smoothed calculation
+                const finishElevGain = calculateElevationGainBetween(lastStationKm, finishKm);
+                const finishElevLoss = calculateElevationLossBetween(lastStationKm, finishKm);
                 
                 aidStationsList += `
                     <div style="text-align: center; padding: 6px 0; color: #999; font-size: ${legInfoSize}; font-weight: 500;">
