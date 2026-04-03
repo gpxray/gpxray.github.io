@@ -7624,11 +7624,12 @@ async function exportCrewCard() {
         const raceDate = dateInput?.value || '';
         const raceTime = timeInput?.value || '06:00';
 
-        // Format date nicely
+        // Format date nicely (locale-aware)
         let formattedDate = '';
         if (raceDate) {
             const d = new Date(raceDate);
-            formattedDate = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+            const locale = getLang() === 'de' ? 'de-DE' : 'en-US';
+            formattedDate = d.toLocaleDateString(locale, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
         }
 
         // Get finish clock time
@@ -7698,18 +7699,18 @@ async function exportCrewCard() {
                             isNight = hour < 6 || hour >= 20;
                         }
                         
-                        // Generate crew insight for previous leg
+                        // Generate crew insight for previous leg (translated)
                         let crewInsight = '';
                         if (legGain > 400) {
-                            crewInsight = `⛰️ After ${Math.round(legGain)}m climb`;
+                            crewInsight = `⛰️ ${t('crew.afterClimb').replace('{0}', Math.round(legGain))}`;
                         } else if (legLoss > 400) {
-                            crewInsight = `🦵 After ${Math.round(legLoss)}m descent`;
+                            crewInsight = `🦵 ${t('crew.afterDescent').replace('{0}', Math.round(legLoss))}`;
                         } else if (legDist > 15) {
-                            crewInsight = `🏃 Long ${legDist.toFixed(0)}km leg`;
+                            crewInsight = `🏃 ${t('crew.longLeg').replace('{0}', legDist.toFixed(0))}`;
                         }
                         
                         if (isNight) {
-                            crewInsight = crewInsight ? `${crewInsight} • 🌙 Night` : '🌙 Night arrival';
+                            crewInsight = crewInsight ? `${crewInsight} • 🌙 ${t('crew.night')}` : `🌙 ${t('crew.nightArrival')}`;
                         }
                         
                         // NEW: Calculate additional crew info
@@ -7768,13 +7769,13 @@ async function exportCrewCard() {
                 const nextDist = nextStation.stationKm - station.stationKm;
                 
                 if (nextGain > 400 && nextGain > nextLoss) {
-                    station.nextLeg = `↗️ ${Math.round(nextGain)}m climb ahead`;
+                    station.nextLeg = `↗️ ${t('crew.climbAhead').replace('{0}', Math.round(nextGain))}`;
                 } else if (nextLoss > 400 && nextLoss > nextGain) {
-                    station.nextLeg = `↘️ ${Math.round(nextLoss)}m descent ahead`;
+                    station.nextLeg = `↘️ ${t('crew.descentAhead').replace('{0}', Math.round(nextLoss))}`;
                 } else if (nextDist > 15) {
-                    station.nextLeg = `➡️ ${nextDist.toFixed(0)}km to next`;
+                    station.nextLeg = `➡️ ${t('crew.kmToNext').replace('{0}', nextDist.toFixed(0))}`;
                 } else {
-                    station.nextLeg = `➡️ ${nextDist.toFixed(1)}km to next`;
+                    station.nextLeg = `➡️ ${t('crew.kmToNext').replace('{0}', nextDist.toFixed(1))}`;
                 }
             } else {
                 // Last station before finish
@@ -7784,11 +7785,11 @@ async function exportCrewCard() {
                 const finishLoss = calculateElevationLossBetween(station.stationKm, finishKm);
                 
                 if (finishGain > 300 && finishGain > finishLoss) {
-                    station.nextLeg = `🏁 ${toFinish.toFixed(1)}km + ${Math.round(finishGain)}m to finish`;
+                    station.nextLeg = `🏁 ${t('crew.kmPlusClimbToFinish').replace('{0}', toFinish.toFixed(1)).replace('{1}', Math.round(finishGain))}`;
                 } else if (finishLoss > 300 && finishLoss > finishGain) {
-                    station.nextLeg = `🏁 ${toFinish.toFixed(1)}km ↘️ to finish`;
+                    station.nextLeg = `🏁 ${t('crew.kmDescentToFinish').replace('{0}', toFinish.toFixed(1))}`;
                 } else {
-                    station.nextLeg = `🏁 ${toFinish.toFixed(1)}km to finish`;
+                    station.nextLeg = `🏁 ${t('crew.kmToFinish').replace('{0}', toFinish.toFixed(1))}`;
                 }
             }
         }
@@ -7896,11 +7897,11 @@ async function exportCrewCard() {
             const timeDisplay = hasStop ? `${arrivalTime} - ${departureTime}` : arrivalTime;
             const timeFontSize = hasStop ? (stationCount <= 4 ? '20px' : (stationCount <= 6 ? '17px' : (stationCount <= 8 ? '15px' : '14px'))) : timeSize;
             
-            // Build detail lines with new info
-            const breakText = station.stopMin > 0 ? ` · ${station.stopMin}min break` : '';
+            // Build detail lines with new info (translated)
+            const breakText = station.stopMin > 0 ? ` · ${station.stopMin}${t('crew.minBreak')}` : '';
             const detailLine1 = `${station.dist} ${unitLabel} · ${station.percentComplete}%${breakText}`;
             const detailLine2 = `📍 ${station.stationElevation}m · D+ ${station.cumulativeGain}m`;
-            const timeToNextText = station.timeToNext ? ` · ~${station.timeToNext} to next` : '';
+            const timeToNextText = station.timeToNext ? ` · ~${station.timeToNext} ${t('crew.toNext')}` : '';
             const nextLegLine = station.nextLeg + timeToNextText;
             
             const iconMargin = stationCount <= 6 ? '12px' : (stationCount <= 8 ? '10px' : '8px');
@@ -7946,7 +7947,7 @@ async function exportCrewCard() {
             <div style="display: flex; align-items: center; padding: ${rowPadding}; background: rgba(76,175,80,0.4); border-radius: 10px; border: 2px solid rgba(76,175,80,0.8);">
                 <div style="font-size: ${iconSize}; margin-right: ${finishIconMargin};">🏁</div>
                 <div style="flex: 1; min-width: 0;">
-                    <div style="font-size: ${nameSize}; font-weight: 700; margin-bottom: 2px;">FINISH</div>
+                    <div style="font-size: ${nameSize}; font-weight: 700; margin-bottom: 2px;">${t('crew.finish')}</div>
                     <div style="font-size: ${detailSize}; opacity: 0.8;">${distance.toFixed(1)} ${unitLabel} · 100%</div>
                     <div style="font-size: ${detailSize}; opacity: 0.7;">Total D+ ${totalElevGain}m · ${totalTime.split('(')[0].trim()}</div>
                     ${crewCutoffHtml}
@@ -7960,10 +7961,10 @@ async function exportCrewCard() {
 
         card.innerHTML = `
             <div style="text-align: center; margin-bottom: ${headerPadding};">
-                <div style="font-size: 12px; text-transform: uppercase; letter-spacing: 3px; opacity: 0.8; margin-bottom: 8px;">👥 CREW SCHEDULE</div>
+                <div style="font-size: 12px; text-transform: uppercase; letter-spacing: 3px; opacity: 0.8; margin-bottom: 8px;">👥 ${t('crew.title')}</div>
                 <div style="font-size: ${titleSize}; font-weight: 800; margin-bottom: 8px; line-height: ${titleLineHeight}; padding: 0 10px;">${routeName}</div>
                 <div style="font-size: 14px; opacity: 0.9;">
-                    ${formattedDate ? `📅 ${formattedDate} · ` : ''}🏃 Start: ${raceTime}
+                    ${formattedDate ? `📅 ${formattedDate} · ` : ''}🏃 ${t('crew.start')}: ${raceTime}
                 </div>
             </div>
             
@@ -7996,11 +7997,11 @@ async function exportCrewCard() {
         const file = new File([blob], `${fileName}_crew_card.png`, { type: 'image/png' });
 
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            // Mobile - use native share
+            // Mobile - use native share (translated)
             try {
                 await navigator.share({
-                    title: `Crew Schedule - ${routeName}`,
-                    text: `Here's my race schedule for ${routeName}! Meet me at these AID stations 👟\n\nPlan your race with https://gpxray.run`,
+                    title: t('crew.shareTitle').replace('{0}', routeName),
+                    text: t('crew.shareText').replace('{0}', routeName),
                     files: [file]
                 });
             } catch (shareError) {
