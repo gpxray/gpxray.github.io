@@ -7813,6 +7813,87 @@ async function exportStoryCard() {
                 : `${weekday}, ${month} ${day}, ${year}`;
         }
 
+        // Gather Top Climbs info
+        const topClimbs = findTopClimbs(3);
+        let topClimbsHtml = '';
+        if (topClimbs.length > 0) {
+            const hardestClimb = topClimbs.reduce((max, c) => c.gain > max.gain ? c : max, topClimbs[0]);
+            topClimbsHtml = `
+                <div style="display: flex; align-items: center; gap: 10px; justify-content: center;">
+                    <span style="font-size: 18px;">⛰️</span>
+                    <span>${topClimbs.length} ${topClimbs.length === 1 ? 'major climb' : 'major climbs'} | Hardest: +${Math.round(hardestClimb.gain)}m @ km ${Math.round(hardestClimb.start)}</span>
+                </div>
+            `;
+        }
+
+        // Gather Night Running info
+        let nightHtml = '';
+        if (sunTimes && !sunTimes.midnightSun) {
+            const startTimeInput = document.getElementById('raceStartTime');
+            if (startTimeInput?.value) {
+                const [sh, sm] = startTimeInput.value.split(':').map(Number);
+                const startMins = sh * 60 + sm;
+                const flatPace = lastCalculatedPaces?.flat || 6.5;
+                const uphillPace = lastCalculatedPaces?.uphill || 8.5;
+                const downhillPace = lastCalculatedPaces?.downhill || 5.5;
+                
+                let totalNightDist = 0;
+                let cumTime = 0;
+                for (const seg of segments) {
+                    const gradMult = getGradientPaceMultiplier(seg.grade, flatPace, uphillPace, downhillPace);
+                    const segTime = seg.distance * flatPace * gradMult;
+                    const clockTime = (startMins + cumTime) % 1440;
+                    if (isNightTime(clockTime)) {
+                        totalNightDist += seg.distance;
+                    }
+                    cumTime += segTime;
+                }
+                
+                if (totalNightDist >= 0.5) {
+                    const nightPct = Math.round((totalNightDist / gpxData.totalDistance) * 100);
+                    nightHtml = `
+                        <div style="display: flex; align-items: center; gap: 10px; justify-content: center;">
+                            <span style="font-size: 18px;">🌙</span>
+                            <span>${totalNightDist.toFixed(0)} km at night (${nightPct}%) | 🔦 Headlamp needed</span>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        // Gather DDL (Downhill Load) info
+        let ddlHtml = '';
+        if (lastCachedDDL && gpxData) {
+            const ddlPerKm = Math.round(lastCachedDDL.ddlTotal / gpxData.totalDistance);
+            if (ddlPerKm > 150) {
+                let ddlText = `${ddlPerKm} DDL/km`;
+                if (lastCachedDDL.paceLossSeconds >= 10 && lastCachedDDL.fatigueOnsetKm) {
+                    ddlText += ` | Legs heavy after km ${Math.round(lastCachedDDL.fatigueOnsetKm)}`;
+                }
+                ddlHtml = `
+                    <div style="display: flex; align-items: center; gap: 10px; justify-content: center;">
+                        <span style="font-size: 18px;">🦵</span>
+                        <span>${ddlText}</span>
+                    </div>
+                `;
+            }
+        }
+
+        // Build insights section if any data exists
+        let insightsHtml = '';
+        if (topClimbsHtml || nightHtml || ddlHtml) {
+            insightsHtml = `
+                <div style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 16px 20px; width: 100%; max-width: 460px;">
+                    <div style="font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; text-align: center;">🎯 Key Challenges</div>
+                    <div style="display: flex; flex-direction: column; gap: 10px; font-size: 16px; color: #ccc;">
+                        ${topClimbsHtml}
+                        ${nightHtml}
+                        ${ddlHtml}
+                    </div>
+                </div>
+            `;
+        }
+
         // Create Instagram Story sized card (1080x1920)
         const card = document.createElement('div');
         card.id = 'storyCardContainer';
@@ -7830,36 +7911,37 @@ async function exportStoryCard() {
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            padding: 60px 40px;
+            padding: 40px 30px;
         `;
 
         card.innerHTML = `
             <!-- Logo at Top -->
-            <div style="text-align: center; padding-top: 20px;">
-                <img id="storyCardLogo" crossorigin="anonymous" src="img/gpxray-icon-256.png" style="height: 160px; width: 160px; border-radius: 28px;">
+            <div style="text-align: center; padding-top: 10px;">
+                <img id="storyCardLogo" crossorigin="anonymous" src="img/gpxray-icon-256.png" style="height: 120px; width: 120px; border-radius: 24px;">
             </div>
             
             <!-- Witty Statement -->
             <div style="text-align: center;">
-                <div style="font-size: 36px; font-weight: 600; font-style: italic; color: #00E5FF; line-height: 1.4; max-width: 440px;">
+                <div style="font-size: 32px; font-weight: 600; font-style: italic; color: #00E5FF; line-height: 1.3; max-width: 440px;">
                     ${wittyStatement}
                 </div>
             </div>
             
             <!-- Race Strategy Block -->
-            <div style="text-align: center;">
-                <div style="font-size: 18px; color: #888; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px;">👟 ${t('story.myStrategy')}</div>
-                <div style="font-size: 30px; font-weight: 700; margin-bottom: 12px; max-width: 400px;">${routeName}</div>
-                ${raceDateFormatted ? `<div style="font-size: 18px; color: #00E5FF; margin-bottom: 16px;">📅 ${raceDateFormatted}</div>` : ''}
-                <div style="font-size: 26px; font-weight: 500; color: #ddd; margin-bottom: 20px;">${distance.toFixed(0)}${unitLabel} | ${gpxData.elevationGain.toFixed(0)}m</div>
-                <div style="font-size: 20px; color: #aaa; margin-bottom: 8px;">${t('story.start')}: ${formatStartTime(startTime)}</div>
-                <div style="font-size: 20px; color: #aaa;">${t('story.target')}: ${targetTime}</div>
+            <div style="text-align: center; width: 100%;">
+                <div style="font-size: 16px; color: #888; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px;">👟 ${t('story.myStrategy')}</div>
+                <div style="font-size: 26px; font-weight: 700; margin-bottom: 8px; max-width: 400px;">${routeName}</div>
+                ${raceDateFormatted ? `<div style="font-size: 16px; color: #00E5FF; margin-bottom: 12px;">📅 ${raceDateFormatted}</div>` : ''}
+                <div style="font-size: 24px; font-weight: 500; color: #ddd; margin-bottom: 16px;">${distance.toFixed(0)}${unitLabel} | +${gpxData.elevationGain.toFixed(0)}m ↗</div>
+                <div style="font-size: 18px; color: #aaa; margin-bottom: 6px;">${t('story.start')}: ${formatStartTime(startTime)}</div>
+                <div style="font-size: 18px; color: #aaa; margin-bottom: 16px;">${t('story.target')}: ${targetTime}</div>
+                ${insightsHtml}
             </div>
             
             <!-- Footer Wordmark Only -->
-            <div style="text-align: center; padding-bottom: 20px;">
-                <div style="font-size: 14px; color: #666; margin-bottom: 8px;">${t('story.createdBy')}</div>
-                <div style="font-size: 28px; font-weight: 700; color: #00E5FF; letter-spacing: 1px;">GPXray</div>
+            <div style="text-align: center; padding-bottom: 10px;">
+                <div style="font-size: 12px; color: #666; margin-bottom: 6px;">${t('story.createdBy')}</div>
+                <div style="font-size: 24px; font-weight: 700; color: #00E5FF; letter-spacing: 1px;">GPXray</div>
             </div>
         `;
 
