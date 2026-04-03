@@ -226,6 +226,7 @@ const TRANSLATIONS = {
         
         // Splits section
         'splits.title': 'Splits Table',
+        'splits.strategyTitle': 'Strategy Details',
         'splits.km': 'KM',
         'splits.miles': 'Mile',
         'splits.terrain': 'Terrain',
@@ -330,6 +331,7 @@ const TRANSLATIONS = {
         'btn.joining': 'Joining...',
         'btn.joinWaitlist': 'Join Waitlist',
         'btn.shareStrategy': 'Create Share Card',
+        'btn.lockscreenCard': 'Lockscreen Card',
         
         // Share card preview
         'share.previewLabel': 'On your Share Card:',
@@ -668,6 +670,7 @@ const TRANSLATIONS = {
         
         // Splits section
         'splits.title': 'Splits-Tabelle',
+        'splits.strategyTitle': 'Strategie-Details',
         'splits.km': 'KM',
         'splits.miles': 'Meile',
         'splits.terrain': 'Terrain',
@@ -772,6 +775,7 @@ const TRANSLATIONS = {
         'btn.joining': 'Beitritt...',
         'btn.joinWaitlist': 'Warteliste beitreten',
         'btn.shareStrategy': 'Share Card erstellen',
+        'btn.lockscreenCard': 'Sperrbildschirm-Karte',
         
         // Share card preview
         'share.previewLabel': 'Auf deiner Share Card:',
