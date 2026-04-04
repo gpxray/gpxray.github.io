@@ -5937,7 +5937,8 @@ async function calculateRacePlanFromAPI() {
             )
         };
     } else if (currentMode === 'target') {
-        // Calculate flat pace from target time client-side, then send as manual mode
+        // For target mode, we need iterative calculation - handled separately
+        // This branch shouldn't be reached directly
         const targetHours = parseInt(document.getElementById('targetHours')?.value) || 0;
         const targetMinutes = parseInt(document.getElementById('targetMinutes')?.value) || 0;
         const targetSeconds = parseInt(document.getElementById('targetSeconds')?.value) || 0;
@@ -5946,19 +5947,14 @@ async function calculateRacePlanFromAPI() {
         const uphillRatio = parseFloat(document.getElementById('uphillRatio')?.value) || 1.2;
         const downhillRatio = parseFloat(document.getElementById('downhillRatio')?.value) || 0.9;
         
-        // Find flat pace that achieves target time
+        // Use initial guess based on simple estimation
         const flatPace = findFlatPaceForTargetTime(targetTimeMinutes, uphillRatio, downhillRatio);
-        const uphillPace = flatPace * uphillRatio;
-        const downhillPace = flatPace * downhillRatio;
         
-        console.log(`Target time: ${targetTimeMinutes} min → Calculated flat pace: ${flatPace.toFixed(2)} min/km`);
-        
-        // Send as manual mode with calculated paces
         payload.mode = 'manual';
         payload.manualPaces = {
             flat: flatPace,
-            uphill: uphillPace,
-            downhill: downhillPace
+            uphill: flatPace * uphillRatio,
+            downhill: flatPace * downhillRatio
         };
     } else if (currentMode === 'itra') {
         payload.itraScore = parseInt(document.getElementById('itraScore')?.value) || 550;
@@ -5995,6 +5991,107 @@ async function calculateRacePlanFromAPI() {
         }
         throw error;
     }
+}
+
+// Iterative API call for target time mode - finds the paces that achieve target
+async function calculateRacePlanForTargetTime() {
+    const targetHours = parseInt(document.getElementById('targetHours')?.value) || 0;
+    const targetMinutes = parseInt(document.getElementById('targetMinutes')?.value) || 0;
+    const targetSeconds = parseInt(document.getElementById('targetSeconds')?.value) || 0;
+    const targetTimeMinutes = targetHours * 60 + targetMinutes + targetSeconds / 60;
+    
+    const uphillRatio = parseFloat(document.getElementById('uphillRatio')?.value) || 1.2;
+    const downhillRatio = parseFloat(document.getElementById('downhillRatio')?.value) || 0.9;
+    
+    // Build base payload
+    const surfaceToggle = document.getElementById('surfaceEnabled');
+    const applySurface = surfaceToggle ? surfaceToggle.checked : false;
+    const startTimeInput = document.getElementById('raceStartTime');
+    const startTime = startTimeInput ? startTimeInput.value : '09:00';
+    const levelSelect = document.getElementById('runnerLevel');
+    const runnerLevel = levelSelect ? levelSelect.value : 'intermediate';
+    
+    const apiSegments = segments.map(seg => ({
+        distance: seg.distance,
+        terrainType: seg.terrainType,
+        surfaceType: seg.surfaceType || 'trail',
+        startDistance: seg.startDistance,
+        endDistance: seg.endDistance,
+        elevationChange: seg.elevationChange || 0,
+        grade: seg.grade || 0
+    }));
+    
+    const apiAidStations = aidStations.map(station => ({
+        km: station.km,
+        name: station.name || 'VP',
+        stopMin: station.stopMin || 0
+    }));
+    
+    // Binary search to find the right flat pace
+    let minPace = 3.0;   // 3:00/km (very fast)
+    let maxPace = 15.0;  // 15:00/km (very slow)
+    let bestResult = null;
+    let bestPace = 6.0;
+    const tolerance = 1.0; // Within 1 minute of target
+    
+    console.log(`Target time: ${targetTimeMinutes.toFixed(0)} min (${targetHours}h ${targetMinutes}m)`);
+    
+    for (let iteration = 0; iteration < 10; iteration++) {
+        const testPace = (minPace + maxPace) / 2;
+        
+        const payload = {
+            segments: apiSegments,
+            runnerLevel: runnerLevel,
+            aidStations: apiAidStations,
+            applySurface: applySurface,
+            startTime: startTime,
+            totalDistance: gpxData.totalDistance,
+            elevationGain: gpxData.elevationGain || 0,
+            mode: 'manual',
+            manualPaces: {
+                flat: testPace,
+                uphill: testPace * uphillRatio,
+                downhill: testPace * downhillRatio
+            }
+        };
+        
+        try {
+            const response = await fetch(API_CONFIG.calculateEndpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            
+            if (!response.ok) throw new Error('API error');
+            
+            const result = await response.json();
+            const actualTime = result.totalTimeMinutes;
+            
+            console.log(`  Iteration ${iteration + 1}: pace ${testPace.toFixed(2)} → time ${actualTime.toFixed(1)} min`);
+            
+            if (Math.abs(actualTime - targetTimeMinutes) < tolerance) {
+                console.log(`  ✓ Found target pace: ${testPace.toFixed(2)} min/km`);
+                return result;
+            }
+            
+            bestResult = result;
+            bestPace = testPace;
+            
+            if (actualTime > targetTimeMinutes) {
+                // Too slow, need faster pace (lower number)
+                maxPace = testPace;
+            } else {
+                // Too fast, need slower pace (higher number)
+                minPace = testPace;
+            }
+        } catch (error) {
+            console.error('API call failed:', error);
+            break;
+        }
+    }
+    
+    console.log(`Using best found pace: ${bestPace.toFixed(2)} min/km`);
+    return bestResult;
 }
 
 // Display results from API response
@@ -6148,8 +6245,12 @@ function calculateRacePlan() {
         resultsSection.classList.add('loading');
     }
     
-    // API-only calculation (no local fallback - formulas are protected)
-    return calculateRacePlanFromAPI()
+    // Use iterative approach for target time mode, regular API for other modes
+    const apiCall = currentMode === 'target' 
+        ? calculateRacePlanForTargetTime() 
+        : calculateRacePlanFromAPI();
+    
+    return apiCall
         .then(result => {
             displayApiResults(result);
             if (resultsSection) {
