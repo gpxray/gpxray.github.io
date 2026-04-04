@@ -7048,10 +7048,28 @@ function findEatZones(minLength = 0.3, maxGrade = 10) {
         }
     }
     
-    // Check proximity to AID stations
-    for (const zone of merged) {
-        const zoneMid = (zone.start + zone.end) / 2;
-        zone.nearAid = aidStations.some(aid => Math.abs(aid.km - zoneMid) < 2);
+    // Mark only the closest zone for each AID station (not all zones within 2km)
+    merged.forEach(zone => zone.nearAid = false);
+    
+    for (const aid of aidStations) {
+        let closestZone = null;
+        let closestDist = Infinity;
+        
+        for (const zone of merged) {
+            // Check if AID is within or very close to the zone
+            const zoneMid = (zone.start + zone.end) / 2;
+            const dist = Math.abs(aid.km - zoneMid);
+            
+            // Only consider zones within 2km of the AID
+            if (dist < 2 && dist < closestDist) {
+                closestDist = dist;
+                closestZone = zone;
+            }
+        }
+        
+        if (closestZone) {
+            closestZone.nearAid = true;
+        }
     }
     
     // Sort by start KM (so runner can follow along the course)
