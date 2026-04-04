@@ -86,50 +86,73 @@ const HISTORY_KEY = 'gpxray_history'; // localStorage key for history
 const KM_TO_MILES = 0.621371;
 const MILES_TO_KM = 1.60934;
 
-// Gradient-based pace scaling (more accurate than binary uphill/downhill)
-// Based on research: ~6% slower per 1% uphill grade, ~3% faster per 1% downhill (up to a point)
+// Gradient-based pace scaling (data-driven from 4 real trail workouts)
+// Empirical multipliers based on 86 km-splits across varied terrain
+// Runner level scales the base multiplier (elite handles steep better than beginner)
 function getGradientPaceMultiplier(gradePercent, flatPace, uphillPace, downhillPace) {
+    // Calculate runner's efficiency factors (relative to intermediate baseline)
+    // Intermediate baseline: uphillRatio=1.4, downhillRatio=0.85
+    const uphillRatio = uphillPace / flatPace;
+    const downhillRatio = downhillPace / flatPace;
+    const uphillEfficiency = uphillRatio / 1.4;     // >1 = slower than baseline, <1 = faster
+    const downhillEfficiency = downhillRatio / 0.85; // >1 = slower than baseline, <1 = faster
+    
     // Grade is positive for uphill, negative for downhill
     if (Math.abs(gradePercent) < GRADE_THRESHOLD) {
-        // Flat terrain
         return 1.0;
     }
     
     if (gradePercent > 0) {
-        // Uphill: continuous scaling based on grade
-        // At 2% (threshold): use flat pace
-        // At ~15%: use full uphill pace (typical uphillRatio)
-        // Above 15%: even slower (hiking territory)
-        const uphillRatio = uphillPace / flatPace;
-        
-        if (gradePercent <= 15) {
-            // Linear interpolation from flat to uphill pace
-            const t = (gradePercent - GRADE_THRESHOLD) / (15 - GRADE_THRESHOLD);
-            return 1.0 + t * (uphillRatio - 1.0);
+        // Uphill: empirical multipliers from real workout data
+        let baseMultiplier;
+        if (gradePercent <= 5) {
+            // 2-5%: 1.0 to 1.2 (gentle uphill)
+            const t = (gradePercent - GRADE_THRESHOLD) / (5 - GRADE_THRESHOLD);
+            baseMultiplier = 1.0 + t * 0.2;
+        } else if (gradePercent <= 8) {
+            // 5-8%: 1.2 to 1.65 (moderate uphill)
+            const t = (gradePercent - 5) / 3;
+            baseMultiplier = 1.2 + t * 0.45;
+        } else if (gradePercent <= 12) {
+            // 8-12%: 1.65 to 1.8 (steep uphill)
+            const t = (gradePercent - 8) / 4;
+            baseMultiplier = 1.65 + t * 0.15;
+        } else if (gradePercent <= 15) {
+            // 12-15%: 1.8 to 2.2 (very steep)
+            const t = (gradePercent - 12) / 3;
+            baseMultiplier = 1.8 + t * 0.4;
         } else {
-            // Very steep: add extra penalty (~3% per additional 1% grade)
-            const extraGrade = gradePercent - 15;
-            return uphillRatio + (extraGrade * 0.03);
+            // >15%: 2.2+ hiking territory, extra 5% per grade point
+            baseMultiplier = 2.2 + (gradePercent - 15) * 0.05;
         }
+        
+        // Scale by runner efficiency (beginner=slower, elite=faster)
+        return baseMultiplier * uphillEfficiency;
+        
     } else {
-        // Downhill: more complex - faster for gentle, slower for very steep
+        // Downhill: empirical data shows steep descents are SLOWER (technical terrain!)
         const absGrade = Math.abs(gradePercent);
-        const downhillRatio = downhillPace / flatPace;
+        let baseMultiplier;
         
-        if (absGrade <= 10) {
-            // Gentle to moderate downhill: interpolate to faster pace
-            const t = (absGrade - GRADE_THRESHOLD) / (10 - GRADE_THRESHOLD);
-            return 1.0 - t * (1.0 - downhillRatio);
-        } else if (absGrade <= 20) {
-            // Steep downhill: starts getting slower (technical, braking)
-            const t = (absGrade - 10) / 10;
-            // From downhillRatio back towards 1.0 (flat pace)
-            return downhillRatio + t * (1.0 - downhillRatio);
+        if (absGrade <= 5) {
+            // -2 to -5%: 1.0 to 0.95 (easy descent, slightly faster)
+            const t = (absGrade - GRADE_THRESHOLD) / (5 - GRADE_THRESHOLD);
+            baseMultiplier = 1.0 - t * 0.05;
+        } else if (absGrade <= 10) {
+            // -5 to -10%: 0.95 to 1.0 (moderate descent, back to flat speed)
+            const t = (absGrade - 5) / 5;
+            baseMultiplier = 0.95 + t * 0.05;
+        } else if (absGrade <= 15) {
+            // -10 to -15%: 1.0 to 1.1 (steep descent, technical braking)
+            const t = (absGrade - 10) / 5;
+            baseMultiplier = 1.0 + t * 0.1;
         } else {
-            // Very steep: slower than flat (careful descent)
-            const extraGrade = absGrade - 20;
-            return 1.0 + (extraGrade * 0.02);
+            // <-15%: 1.1+ very technical, 2% slower per additional grade point
+            baseMultiplier = 1.1 + (absGrade - 15) * 0.02;
         }
+        
+        // Scale by runner efficiency (elite descends faster)
+        return baseMultiplier * downhillEfficiency;
     }
 }
 
