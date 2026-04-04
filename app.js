@@ -135,24 +135,24 @@ function getGradientPaceMultiplier(gradePercent, flatPace, uphillPace, downhillP
         let baseMultiplier;
         
         if (absGrade <= 5) {
-            // -2 to -5%: 0.95 to 0.88 (easy descent, noticeably faster)
+            // -2 to -5%: 0.95 to 0.90 (easy descent, faster)
             const t = (absGrade - GRADE_THRESHOLD) / (5 - GRADE_THRESHOLD);
-            baseMultiplier = 0.95 - t * 0.07;
+            baseMultiplier = 0.95 - t * 0.05;
         } else if (absGrade <= 10) {
-            // -5 to -10%: 0.88 to 0.82 (moderate descent, even faster)
+            // -5 to -10%: 0.90 to 0.85 (moderate descent, still faster)
             const t = (absGrade - 5) / 5;
-            baseMultiplier = 0.88 - t * 0.06;
+            baseMultiplier = 0.90 - t * 0.05;
         } else if (absGrade <= 15) {
-            // -10 to -15%: 0.82 to 0.80 (steep descent, near max speed)
+            // -10 to -15%: 0.85 to 0.88 (steep descent, slight technical slowdown)
             const t = (absGrade - 10) / 5;
-            baseMultiplier = 0.82 - t * 0.02;
+            baseMultiplier = 0.85 + t * 0.03;
         } else {
-            // <-15%: starts slowing due to technical terrain
-            // 0.80 at -15%, then +2% per grade point
-            baseMultiplier = 0.80 + (absGrade - 15) * 0.02;
+            // <-15%: technical terrain requires braking
+            // 0.88 at -15%, then +3% per grade point
+            baseMultiplier = 0.88 + (absGrade - 15) * 0.03;
         }
         
-        // Scale by runner efficiency (elite descends faster)
+        // Scale by runner efficiency (adjust via downhillRatio in UI)
         return baseMultiplier * downhillEfficiency;
     }
 }
