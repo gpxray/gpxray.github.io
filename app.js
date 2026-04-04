@@ -8147,12 +8147,10 @@ function initStatementPreview() {
     updateStatementPreview();
 }
 
-// Format start time nicely
+// Format start time nicely (24h format)
 function formatStartTime(time) {
     const [h, m] = time.split(':').map(Number);
-    const ampm = h >= 12 ? 'PM' : 'AM';
-    const hour12 = h % 12 || 12;
-    return `${hour12}:${m.toString().padStart(2, '0')} ${ampm}`;
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
 }
 
 // Crew Card Export - Simple card for sharing AID station schedule with supporters
