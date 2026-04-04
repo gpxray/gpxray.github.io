@@ -6382,6 +6382,41 @@ function generateSplitsTable(flatPace, uphillPace, downhillPace) {
     const surfaceToggle = document.getElementById('surfaceEnabled');
     const applySurface = surfaceToggle ? surfaceToggle.checked : false;
     
+    // Pre-calculate total time using gradient-based multipliers to get normalization factor
+    // This ensures the splits sum matches the API/hero total while preserving realistic distribution
+    let rawTotalTime = 0;
+    for (const segment of segments) {
+        let surfaceMultiplier = 1.0;
+        if (applySurface && segment.surfaceType) {
+            const surfaceFactors = {
+                'road': { flat: 1.0, uphill: 1.0, downhill: 1.0 },
+                'trail': { flat: 1.05, uphill: 1.08, downhill: 1.10 },
+                'technical': { flat: 1.12, uphill: 1.15, downhill: 1.20 },
+                'rocky': { flat: 1.15, uphill: 1.18, downhill: 1.25 },
+                'sand': { flat: 1.25, uphill: 1.30, downhill: 1.15 }
+            };
+            surfaceMultiplier = surfaceFactors[segment.surfaceType]?.[segment.terrainType] || 1.0;
+        }
+        const gradientMultiplier = getGradientPaceMultiplier(segment.grade, flatPace, uphillPace, downhillPace);
+        rawTotalTime += segment.distance * flatPace * gradientMultiplier * surfaceMultiplier;
+    }
+    rawTotalTime *= fatigueMultiplier;
+    
+    // Get the API total time (what's shown in hero)
+    const heroTimeEl = document.getElementById('heroTime');
+    let apiTotalMinutes = rawTotalTime; // fallback
+    if (heroTimeEl && heroTimeEl.textContent) {
+        const match = heroTimeEl.textContent.match(/(\d+):(\d+):(\d+)/);
+        if (match) {
+            apiTotalMinutes = parseInt(match[1]) * 60 + parseInt(match[2]) + parseInt(match[3]) / 60;
+        }
+    }
+    
+    // Calculate normalization factor so splits sum matches hero time
+    const totalStopTime = aidStations.reduce((sum, s) => sum + (s.stopMin || 0), 0);
+    const apiRunningTime = apiTotalMinutes - totalStopTime;
+    const normalizationFactor = apiRunningTime > 0 && rawTotalTime > 0 ? apiRunningTime / rawTotalTime : 1.0;
+    
     let cumulativeTime = 0;
     
     // Track which AID stations have had their stop time added (to prevent double-counting)
@@ -6571,9 +6606,9 @@ function generateSplitsTable(flatPace, uphillPace, downhillPace) {
         // Calculate clock time at START of this unit (for display purposes)
         const clockTimeAtUnitStart = startTimeInMinutes + cumulativeTime;
         
-        // Apply fatigue multiplier to running time (matching API calculation)
-        // Note: Night penalty not applied to match API total time
-        const adjustedUnitTime = unitTime * fatigueMultiplier;
+        // Apply fatigue multiplier and normalization to match hero total
+        // Normalization preserves realistic gradient distribution while matching target time
+        const adjustedUnitTime = unitTime * fatigueMultiplier * normalizationFactor;
         cumulativeTime += adjustedUnitTime;
         
         // Get target pace for dominant terrain (display pace for selected unit)
