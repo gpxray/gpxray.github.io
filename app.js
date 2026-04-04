@@ -6828,17 +6828,21 @@ function updateHeroSection(totalTime) {
             }
         });
         
-        // Show "+X more" as text only (no modal)
+        // Store for modal
+        window.allFuelStops = recommendedFuelPoints;
+        
+        // Show "+X more" clickable to open modal
         let moreIndicator = heroFuelWindows.querySelector('.fuel-more');
         if (moreCount > 0) {
             if (!moreIndicator) {
                 moreIndicator = document.createElement('div');
                 moreIndicator.className = 'fuel-more';
+                moreIndicator.addEventListener('click', showAllFuelStops);
                 heroFuelWindows.appendChild(moreIndicator);
             }
             moreIndicator.textContent = `+ ${moreCount} more`;
             moreIndicator.style.display = 'block';
-            moreIndicator.style.cursor = 'default';
+            moreIndicator.style.cursor = 'pointer';
         } else if (moreIndicator) {
             moreIndicator.style.display = 'none';
         }
@@ -7155,6 +7159,54 @@ function findEatZones(minLength = 0.3, maxGrade = 10) {
     
     // Sort by start KM (so runner can follow along the course)
     return merged.sort((a, b) => a.start - b.start);
+}
+
+// Show all fuel stops in a modal
+function showAllFuelStops() {
+    if (!window.allFuelStops || window.allFuelStops.length === 0) return;
+    
+    // Create modal if doesn't exist
+    let modal = document.getElementById('fuelStopsModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'fuelStopsModal';
+        modal.className = 'fuel-stops-modal';
+        modal.innerHTML = `
+            <div class="fuel-stops-modal-content">
+                <button class="fuel-stops-modal-close">✕</button>
+                <h3>🍫 All Fuel Stops</h3>
+                <p class="fuel-stops-subtitle">Recommended every ~45 min at AID stations or flat terrain</p>
+                <div class="fuel-stops-list"></div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        // Close handlers
+        modal.querySelector('.fuel-stops-modal-close').addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.style.display = 'none';
+        });
+    }
+    
+    // Populate list
+    const list = modal.querySelector('.fuel-stops-list');
+    list.innerHTML = window.allFuelStops.map((point, idx) => {
+        const hours = Math.floor(point.estTimeMin / 60);
+        const mins = point.estTimeMin % 60;
+        const timeStr = hours > 0 ? `~${hours}h${mins.toString().padStart(2,'0')}` : `~${mins}min`;
+        return `
+            <div class="fuel-stop-row">
+                <span class="fuel-stop-icon">${point.isAid ? '🍫🚰' : '🍫'}</span>
+                <span class="fuel-stop-km">KM ${point.km}</span>
+                <span class="fuel-stop-type">${point.isAid ? 'AID' : 'Terrain'}</span>
+                <span class="fuel-stop-time">${timeStr}</span>
+            </div>
+        `;
+    }).join('');
+    
+    modal.style.display = 'flex';
 }
 
 // Update Course Shape - Race Intelligence
