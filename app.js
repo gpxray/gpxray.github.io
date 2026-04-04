@@ -6508,16 +6508,10 @@ function generateSplitsTable(flatPace, uphillPace, downhillPace) {
                     surfaceMultiplier = surfaceFactors[segment.surfaceType]?.[segment.terrainType] || 1.0;
                 }
                 
-                // Use simple terrain-based pace (matching API calculation)
-                // API uses terrainType to select flat/uphill/downhill pace directly
-                let basePace;
-                if (segment.terrainType === 'uphill') {
-                    basePace = uphillPace;
-                } else if (segment.terrainType === 'downhill') {
-                    basePace = downhillPace;
-                } else {
-                    basePace = flatPace;
-                }
+                // Use gradient-based pace multiplier for realistic km splits
+                // This gives more accurate per-km times based on actual grade
+                const gradientMultiplier = getGradientPaceMultiplier(segment.grade, flatPace, uphillPace, downhillPace);
+                const basePace = flatPace * gradientMultiplier;
                 
                 unitTime += overlapDistance * basePace * surfaceMultiplier;
             }
