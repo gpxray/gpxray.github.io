@@ -4292,6 +4292,11 @@ h2 {
     font-size: 0.9em;
 }
 
+.fuel-cell {
+    text-align: center;
+    font-size: 1rem;
+}
+
 /* Editable stop time cells */
 .editable-stop {
     cursor: pointer;

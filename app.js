@@ -6133,6 +6133,12 @@ function generateSplitsTable(flatPace, uphillPace, downhillPace) {
     // Get average pace for AID station time calculations
     const avgPace = (flatPace + uphillPace + downhillPace) / 3;
     
+    // Compute eat zones if not already cached (for nutrition column)
+    if (!window.allEatZones && typeof findEatZones === 'function') {
+        window.allEatZones = findEatZones(0.3, 10);
+    }
+    const eatZones = window.allEatZones || [];
+    
     // Calculate splits per unit (km or mile)
     for (let unit = 1; unit <= totalUnits; unit++) {
         // Convert unit boundaries to km for internal calculations
@@ -6302,6 +6308,14 @@ function generateSplitsTable(flatPace, uphillPace, downhillPace) {
         }
         const stopTime = hasAidStation ? (aidStation.stopMin || 0) : 0;
         
+        // Check if this km is in an eat zone (nutrition window)
+        const unitMidKm = useMetric ? (unit - 0.5) : ((unit - 0.5) * MILES_TO_KM);
+        const inEatZone = eatZones.some(zone => unitMidKm >= zone.start && unitMidKm <= zone.end);
+        const eatZoneNearAid = inEatZone && eatZones.some(zone => 
+            unitMidKm >= zone.start && unitMidKm <= zone.end && zone.nearAid
+        );
+        const fuelIcon = inEatZone ? (eatZoneNearAid ? '🍫🚰' : '🍫') : '';
+        
         // Calculate clock time (after adding stop time)
         const clockTimeMinutes = startTimeInMinutes + cumulativeTime;
         const clockTime = formatClockTime(clockTimeMinutes);
@@ -6335,6 +6349,7 @@ function generateSplitsTable(flatPace, uphillPace, downhillPace) {
             <td class="${surfaceClass}">${surfaceDisplay}</td>
             <td class="${hasAidStation ? 'aid-station-cell' : ''}">${aidStationText}</td>
             <td class="stop-time${hasAidStation ? ' editable-stop' : ''}"${hasAidStation ? ` data-station-index="${aidStations.findIndex(s => s.km === aidStation.km)}" data-station-km="${aidStation.km}"` : ''}>${stopTime > 0 ? '+' + stopTime + ' min' : '-'}</td>
+            <td class="fuel-cell">${fuelIcon}</td>
             <td>${formatPace(actualPace)} /${unitLabel}</td>
             <td>${formatTime(splitTime)}</td>
             <td>${formatTime(cumulativeTime)}</td>

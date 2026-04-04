@@ -389,6 +389,7 @@ const TRANSLATIONS = {
         'splits.surface': 'Surface',
         'splits.aid': 'AID',
         'splits.stop': 'Stop',
+        'splits.fuel': 'Fuel',
         'splits.clock': 'Clock',
         'splits.min': 'min',
         
@@ -878,6 +879,7 @@ const TRANSLATIONS = {
         'splits.surface': 'Untergrund',
         'splits.aid': 'VP',
         'splits.stop': 'Stopp',
+        'splits.fuel': 'Essen',
         'splits.clock': 'Uhrzeit',
         'splits.min': 'min',
         
