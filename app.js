@@ -6139,6 +6139,43 @@ function generateSplitsTable(flatPace, uphillPace, downhillPace) {
     }
     const eatZones = window.allEatZones || [];
     
+    // Calculate recommended fuel points (every ~45 min, picking best terrain)
+    // First pass: estimate time per km using average pace
+    const fuelIntervalMinutes = 45;
+    const recommendedFuelKms = new Set();
+    
+    // Add AID stations as natural fuel points
+    aidStations.forEach(aid => {
+        const aidKm = Math.round(aid.km);
+        recommendedFuelKms.add(aidKm);
+    });
+    
+    // Fill gaps >60 min between fuel points with eat zone recommendations
+    const sortedFuelKms = [...recommendedFuelKms].sort((a, b) => a - b);
+    const totalDistKm = gpxData.totalDistance;
+    
+    // Add fuel points approximately every 45 min in gaps
+    let lastFuelKm = 0;
+    for (let km = 1; km <= Math.ceil(totalDistKm); km++) {
+        const estTimeAtKm = km * avgPace; // rough estimate
+        const timeSinceLastFuel = (km - lastFuelKm) * avgPace;
+        
+        // If near a recommended point, update lastFuelKm
+        if (recommendedFuelKms.has(km)) {
+            lastFuelKm = km;
+            continue;
+        }
+        
+        // If >45 min since last fuel and we're in an eat zone, mark it
+        if (timeSinceLastFuel >= fuelIntervalMinutes) {
+            const inZone = eatZones.some(zone => km >= zone.start && km <= zone.end);
+            if (inZone) {
+                recommendedFuelKms.add(km);
+                lastFuelKm = km;
+            }
+        }
+    }
+    
     // Calculate splits per unit (km or mile)
     for (let unit = 1; unit <= totalUnits; unit++) {
         // Convert unit boundaries to km for internal calculations
@@ -6308,13 +6345,10 @@ function generateSplitsTable(flatPace, uphillPace, downhillPace) {
         }
         const stopTime = hasAidStation ? (aidStation.stopMin || 0) : 0;
         
-        // Check if this km is in an eat zone (nutrition window)
-        const unitMidKm = useMetric ? (unit - 0.5) : ((unit - 0.5) * MILES_TO_KM);
-        const inEatZone = eatZones.some(zone => unitMidKm >= zone.start && unitMidKm <= zone.end);
-        const eatZoneNearAid = inEatZone && eatZones.some(zone => 
-            unitMidKm >= zone.start && unitMidKm <= zone.end && zone.nearAid
-        );
-        const fuelIcon = inEatZone ? (eatZoneNearAid ? '🍫🚰' : '🍫') : '';
+        // Check if this km is a recommended fuel point
+        const unitKm = useMetric ? unit : Math.round(unit * MILES_TO_KM);
+        const isRecommendedFuel = recommendedFuelKms.has(unitKm);
+        const fuelIcon = isRecommendedFuel ? (hasAidStation ? '🍫🚰' : '🍫') : '';
         
         // Calculate clock time (after adding stop time)
         const clockTimeMinutes = startTimeInMinutes + cumulativeTime;
