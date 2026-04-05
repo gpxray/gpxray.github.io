@@ -3364,20 +3364,22 @@ function updateHeroAidWidget() {
     const widget = document.getElementById('heroAidWidget');
     const listContainer = document.getElementById('heroAidWidgetList');
     
+    console.log('updateHeroAidWidget CALLED:', { 
+        widgetExists: !!widget,
+        listExists: !!listContainer,
+        lastCachedCheckpoints: lastCachedCheckpoints?.length || 0,
+        aidStationsCount: aidStations?.length || 0
+    });
+    
     if (!widget || !listContainer) {
         console.log('updateHeroAidWidget: Missing elements');
         return;
     }
     
-    // Debug: log what data we have
-    console.log('updateHeroAidWidget:', { 
-        lastCachedCheckpoints: lastCachedCheckpoints,
-        aidStations: aidStations
-    });
-    
     // Check if we have AID stations and checkpoint times
     if (lastCachedCheckpoints && Array.isArray(lastCachedCheckpoints) && lastCachedCheckpoints.length > 0) {
         // Use API-calculated checkpoint times
+        console.log('updateHeroAidWidget: Using', lastCachedCheckpoints.length, 'checkpoints');
         console.log('Branch 1: Using lastCachedCheckpoints');
         const html = lastCachedCheckpoints.map(cp => `
             <div class="hero-aid-item">
