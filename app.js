@@ -6064,34 +6064,17 @@ async function calculateRacePlanFromAPI() {
         stopMin: station.stopMin || 0
     }));
     
-    // Debug: log what we're sending to API
-    console.log('Sending to API - aidStations:', aidStations.length, 'stations:', apiAidStations);
-    
     // Build request based on current mode
     const uphillRatioEl = document.getElementById('uphillRatio');
     const downhillRatioEl = document.getElementById('downhillRatio');
     const heroUphillEl = document.getElementById('heroUphillSlider');
     const heroDownhillEl = document.getElementById('heroDownhillSlider');
     
-    // Debug: log all slider values
-    console.log('%c🎿 TERRAIN SLIDER DEBUG', 'background: #ff6b6b; color: white; padding: 2px 8px; font-weight: bold;');
-    console.log('  uphillRatio input:', uphillRatioEl?.value);
-    console.log('  downhillRatio input:', downhillRatioEl?.value);
-    console.log('  heroUphill slider:', heroUphillEl?.value);
-    console.log('  heroDownhill slider:', heroDownhillEl?.value);
-    
     // Get ratios - prefer hero sliders if they exist and have been touched
     const uphillRatioValue = parseFloat(heroUphillEl?.value) || 
                              parseFloat(uphillRatioEl?.value) || 1.4;
     const downhillRatioValue = parseFloat(heroDownhillEl?.value) || 
                                parseFloat(downhillRatioEl?.value) || 0.85;
-    
-    console.log('%c📤 SENDING TO API', 'background: #4ecdc4; color: white; padding: 2px 8px; font-weight: bold;');
-    console.log('  uphillRatio:', uphillRatioValue);
-    console.log('  downhillRatio:', downhillRatioValue);
-    console.log('  totalDistance:', gpxData.totalDistance);
-    console.log('  segments count:', apiSegments.length);
-    console.log('  First 3 segments:', apiSegments.slice(0, 3));
     
     const payload = {
         segments: apiSegments,
@@ -6288,25 +6271,7 @@ async function calculateRacePlanForTargetTime() {
 
 // Display results from API response
 function displayApiResults(result) {
-    const { paces, terrain, totalTimeMinutes, fatigueMultiplier, checkpoints, stopTimeMinutes, ddl, finishClockTime, kmSplits, kmSplitsError } = result;
-    
-    // Debug: log API response
-    console.log('%c📥 API RESPONSE', 'background: #9b59b6; color: white; padding: 2px 8px; font-weight: bold;');
-    console.log('  paces:', paces);
-    console.log('  kmSplits:', kmSplits?.length || 0, 'splits');
-    if (kmSplitsError) {
-        console.log('%c❌ kmSplits ERROR', 'background: #e74c3c; color: white; padding: 2px 8px;', kmSplitsError);
-    }
-    if (kmSplits && kmSplits.length > 0) {
-        console.log('  First split:', kmSplits[0]);
-        if (kmSplits[0]?.debug) {
-            console.log('%c🔍 kmSplits DEBUG', 'background: #f39c12; color: white; padding: 2px 8px;', kmSplits[0].debug);
-        }
-        const downhillSplit = kmSplits.find(s => s.elevation < -30);
-        if (downhillSplit) {
-            console.log('  Sample downhill split:', downhillSplit);
-        }
-    }
+    const { paces, terrain, totalTimeMinutes, fatigueMultiplier, checkpoints, stopTimeMinutes, ddl, finishClockTime, kmSplits } = result;
     
     // Cache API results for use in other functions
     lastCachedCheckpoints = checkpoints;
@@ -6614,15 +6579,11 @@ function generateSplitsTable(flatPace, uphillPace, downhillPace, apiTotalTime) {
     
     // If API provided km splits, use them directly (much cleaner!)
     if (lastCachedKmSplits && lastCachedKmSplits.length > 0) {
-        console.log('%c✅ USING API KM SPLITS', 'background: #2ecc71; color: white; padding: 2px 8px; font-weight: bold;', lastCachedKmSplits.length, 'splits');
-        console.log('  First 3 splits:', lastCachedKmSplits.slice(0, 3));
         renderApiKmSplits(lastCachedKmSplits, splitsBody);
         return;
     }
     
     // Fallback: calculate splits locally (legacy path)
-    console.log('Using local km split calculation (API splits not available)');
-    
     const points = gpxData.points;
     
     // Determine unit system and total distance
@@ -6689,14 +6650,6 @@ function generateSplitsTable(flatPace, uphillPace, downhillPace, apiTotalTime) {
     const totalStopTime = aidStations.reduce((sum, s) => sum + (s.stopMin || 0), 0);
     const apiRunningTime = apiTotalMinutes - totalStopTime;
     const normalizationFactor = apiRunningTime > 0 && rawTotalTime > 0 ? apiRunningTime / rawTotalTime : 1.0;
-    
-    console.log('Splits normalization:', {
-        rawTotalTime: rawTotalTime.toFixed(1),
-        apiTotalMinutes: apiTotalMinutes.toFixed(1),
-        totalStopTime,
-        apiRunningTime: apiRunningTime.toFixed(1),
-        normalizationFactor: normalizationFactor.toFixed(3)
-    });
     
     let cumulativeTime = 0;
     
