@@ -6257,6 +6257,130 @@ h2 {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Hero Terrain Style Section */
+.hero-terrain-section {
+    margin-top: 15px;
+}
+
+.hero-terrain-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px 14px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.hero-terrain-toggle:hover {
+    background: rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #fff;
+}
+
+.hero-terrain-toggle.expanded {
+    border-color: #00d4ff;
+    color: #00d4ff;
+}
+
+.hero-terrain-arrow {
+    font-size: 0.7rem;
+    transition: transform 0.2s ease;
+}
+
+.hero-terrain-toggle.expanded .hero-terrain-arrow {
+    transform: rotate(180deg);
+}
+
+.hero-terrain-content {
+    margin-top: 12px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+.terrain-style-hint {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.hero-terrain-sliders {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.hero-terrain-slider-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.hero-terrain-slider-group label {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+}
+
+.hero-slider-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.hero-slider-row .slider-emoji {
+    font-size: 1.1rem;
+    min-width: 24px;
+    text-align: center;
+}
+
+.hero-slider-row input[type="range"] {
+    flex: 1;
+    height: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: linear-gradient(to right, #ff6b6b 0%, #4ecdc4 50%, #45b7d1 100%);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.hero-slider-row input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: #fff;
+    border-radius: 50%;
+    border: 2px solid #00d4ff;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hero-slider-row input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: #fff;
+    border-radius: 50%;
+    border: 2px solid #00d4ff;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hero-terrain-hint {
+    font-size: 0.75rem;
+    color: #00d4ff;
+    font-weight: 500;
+}
+
 .hero-aid-toggle {
     display: flex;
     align-items: center;

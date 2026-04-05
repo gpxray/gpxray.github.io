@@ -369,58 +369,95 @@ function setupHeroSurfaceToggle() {
 
 // Terrain Style Sliders - self-assessment for uphill/downhill ability
 function setupTerrainSliders() {
-    const uphillSlider = document.getElementById('uphillSlider');
-    const downhillSlider = document.getElementById('downhillSlider');
     const uphillRatio = document.getElementById('uphillRatio');
     const downhillRatio = document.getElementById('downhillRatio');
-    const uphillHint = document.getElementById('uphillHint');
-    const downhillHint = document.getElementById('downhillHint');
     
-    if (!uphillSlider || !downhillSlider) return;
-    
-    // Uphill labels (slider goes 1.2 strong -> 1.6 struggles, but reversed visually)
+    // Uphill labels
     const getUphillLabel = (value) => {
         const v = parseFloat(value);
-        if (v <= 1.25) return '💪 Strong climber (+25% pace)';
-        if (v <= 1.35) return '🏃 Good climber (+35% pace)';
-        if (v <= 1.45) return '⚡ Balanced (+40% pace)';
-        if (v <= 1.55) return '🥾 Prefers flat (+50% pace)';
-        return '😓 Struggles uphill (+60% pace)';
+        if (v <= 1.25) return '💪 Strong climber (+25%)';
+        if (v <= 1.35) return '🏃 Good climber (+35%)';
+        if (v <= 1.45) return '⚡ Balanced (+40%)';
+        if (v <= 1.55) return '🥾 Prefers flat (+50%)';
+        return '😓 Struggles uphill (+60%)';
     };
     
-    // Downhill labels (slider goes 0.80 aggressive -> 0.95 cautious)
+    // Downhill labels
     const getDownhillLabel = (value) => {
         const v = parseFloat(value);
-        if (v <= 0.82) return '🏃 Aggressive descender (-20% pace)';
-        if (v <= 0.87) return '⚡ Good descender (-15% pace)';
-        if (v <= 0.91) return '🚶 Balanced (-10% pace)';
-        return '🛡️ Cautious, protects knees (-5% pace)';
+        if (v <= 0.82) return '🏃 Aggressive (-20%)';
+        if (v <= 0.87) return '⚡ Good descender (-15%)';
+        if (v <= 0.91) return '🚶 Balanced (-10%)';
+        return '🛡️ Cautious (-5%)';
     };
     
-    // Sync uphill slider to hidden input
-    uphillSlider.addEventListener('input', () => {
-        // Reverse the value for intuitive slider (left=struggle, right=strong)
-        const reversedValue = (2.8 - parseFloat(uphillSlider.value)).toFixed(2);
-        uphillRatio.value = reversedValue;
-        uphillHint.textContent = getUphillLabel(reversedValue);
-    });
+    // Setup a pair of sliders (original or hero)
+    const setupSliderPair = (uphillSliderId, downhillSliderId, uphillHintId, downhillHintId) => {
+        const uphillSlider = document.getElementById(uphillSliderId);
+        const downhillSlider = document.getElementById(downhillSliderId);
+        const uphillHint = document.getElementById(uphillHintId);
+        const downhillHint = document.getElementById(downhillHintId);
+        
+        if (!uphillSlider || !downhillSlider) return;
+        
+        // Sync uphill slider to hidden ratio input
+        uphillSlider.addEventListener('input', () => {
+            // Slider goes left (1.2) to right (1.6)
+            // Higher values = struggles more, so left is strong, right is struggles
+            const value = parseFloat(uphillSlider.value);
+            if (uphillRatio) uphillRatio.value = value.toFixed(2);
+            if (uphillHint) uphillHint.textContent = getUphillLabel(value);
+            // Sync other slider if exists
+            syncOtherSlider('heroUphillSlider', 'uphillSlider', uphillSliderId, value);
+        });
+        
+        // Sync downhill slider to hidden ratio input
+        downhillSlider.addEventListener('input', () => {
+            // Slider goes left (0.80) to right (0.95)
+            // Lower values = faster downhill (aggressive), so left is aggressive
+            const value = parseFloat(downhillSlider.value);
+            if (downhillRatio) downhillRatio.value = value.toFixed(2);
+            if (downhillHint) downhillHint.textContent = getDownhillLabel(value);
+            // Sync other slider if exists
+            syncOtherSlider('heroDownhillSlider', 'downhillSlider', downhillSliderId, value);
+        });
+        
+        // Initialize
+        const initUphill = parseFloat(uphillRatio?.value) || 1.4;
+        uphillSlider.value = initUphill;
+        if (uphillHint) uphillHint.textContent = getUphillLabel(initUphill);
+        
+        const initDownhill = parseFloat(downhillRatio?.value) || 0.85;
+        downhillSlider.value = initDownhill;
+        if (downhillHint) downhillHint.textContent = getDownhillLabel(initDownhill);
+    };
     
-    // Sync downhill slider to hidden input
-    downhillSlider.addEventListener('input', () => {
-        // Reverse for intuitive slider (left=cautious, right=aggressive)
-        const reversedValue = (1.75 - parseFloat(downhillSlider.value)).toFixed(2);
-        downhillRatio.value = reversedValue;
-        downhillHint.textContent = getDownhillLabel(reversedValue);
-    });
+    // Helper to sync between hero and original sliders
+    const syncOtherSlider = (id1, id2, currentId, value) => {
+        const otherId = currentId === id1 ? id2 : id1;
+        const otherSlider = document.getElementById(otherId);
+        if (otherSlider && otherSlider.value !== value.toString()) {
+            otherSlider.value = value;
+        }
+    };
     
-    // Initialize labels
-    const initUphillValue = parseFloat(uphillRatio.value) || 1.4;
-    uphillSlider.value = (2.8 - initUphillValue).toFixed(2);
-    uphillHint.textContent = getUphillLabel(initUphillValue);
+    // Setup original sliders (in target mode)
+    setupSliderPair('uphillSlider', 'downhillSlider', 'uphillHint', 'downhillHint');
     
-    const initDownhillValue = parseFloat(downhillRatio.value) || 0.85;
-    downhillSlider.value = (1.75 - initDownhillValue).toFixed(2);
-    downhillHint.textContent = getDownhillLabel(initDownhillValue);
+    // Setup hero sliders
+    setupSliderPair('heroUphillSlider', 'heroDownhillSlider', 'heroUphillHint', 'heroDownhillHint');
+    
+    // Setup hero terrain toggle
+    const terrainToggle = document.getElementById('heroTerrainToggle');
+    const terrainContent = document.getElementById('heroTerrainContent');
+    
+    if (terrainToggle && terrainContent) {
+        terrainToggle.addEventListener('click', () => {
+            const isExpanded = terrainContent.style.display !== 'none';
+            terrainContent.style.display = isExpanded ? 'none' : 'block';
+            terrainToggle.classList.toggle('expanded', !isExpanded);
+        });
+    }
 }
 
 // Target Time Input styling
