@@ -6297,6 +6297,10 @@ function displayApiResults(result) {
         console.log('%c❌ kmSplits ERROR', 'background: #e74c3c; color: white; padding: 2px 8px;', kmSplitsError);
     }
     if (kmSplits && kmSplits.length > 0) {
+        console.log('  First split:', kmSplits[0]);
+        if (kmSplits[0]?.debug) {
+            console.log('%c🔍 kmSplits DEBUG', 'background: #f39c12; color: white; padding: 2px 8px;', kmSplits[0].debug);
+        }
         const downhillSplit = kmSplits.find(s => s.elevation < -30);
         if (downhillSplit) {
             console.log('  Sample downhill split:', downhillSplit);

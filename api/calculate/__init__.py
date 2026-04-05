@@ -213,15 +213,32 @@ def calculate_km_splits(segments: list, paces: dict, apply_surface: bool,
                         fatigue: float, aid_stations: list, start_minutes: int,
                         total_distance: float) -> list:
     """Calculate per-km split times with gradient-based pacing"""
-    import logging
-    logging.info(f"calculate_km_splits: total_distance={total_distance}, segments={len(segments)}, paces={paces}")
-    
     km_splits = []
     total_kms = int(math.ceil(total_distance))
-    logging.info(f"calculate_km_splits: total_kms={total_kms}")
+    
+    # Return debug info if something seems wrong
+    if total_kms == 0 or len(segments) == 0:
+        return [{
+            'debug': True,
+            'total_distance': total_distance,
+            'total_kms': total_kms,
+            'segments_count': len(segments),
+            'paces': paces
+        }]
     
     cumulative_time = 0
     processed_stops = set()
+    
+    # Debug: check first few segments
+    debug_segments = []
+    for i, seg in enumerate(segments[:3]):
+        debug_segments.append({
+            'idx': i,
+            'startDistance': seg.get('startDistance'),
+            'endDistance': seg.get('endDistance'),
+            'distance': seg.get('distance'),
+            'terrainType': seg.get('terrainType')
+        })
     
     for km in range(1, total_kms + 1):
         km_start = km - 1
@@ -233,6 +250,7 @@ def calculate_km_splits(segments: list, paces: dict, apply_surface: bool,
         dominant_terrain = {'flat': 0, 'uphill': 0, 'downhill': 0}
         dominant_surface = 'trail'
         max_surface_dist = 0
+        overlapping_segments = 0  # Debug counter
         
         for segment in segments:
             seg_start = segment.get('startDistance', 0)
@@ -245,6 +263,7 @@ def calculate_km_splits(segments: list, paces: dict, apply_surface: bool,
                 overlap_dist = overlap_end - overlap_start
                 
                 if overlap_dist > 0:
+                    overlapping_segments += 1
                     # Calculate time for this segment portion
                     result = calculate_segment_time(segment, paces, apply_surface)
                     segment_pace = result['pace']
@@ -295,7 +314,7 @@ def calculate_km_splits(segments: list, paces: dict, apply_surface: bool,
         km_distance = km_end - km_start
         pace = km_time / km_distance if km_distance > 0 else 0
         
-        km_splits.append({
+        split_data = {
             'km': km,
             'splitMinutes': km_time,
             'cumulativeMinutes': cumulative_with_stops,
@@ -304,7 +323,16 @@ def calculate_km_splits(segments: list, paces: dict, apply_surface: bool,
             'terrain': terrain,
             'surface': dominant_surface,
             'clockTime': f"{clock_hours:02d}:{clock_mins:02d}"
-        })
+        }
+        
+        # Add debug info to first split
+        if km == 1:
+            split_data['debug'] = {
+                'overlapping_segments': overlapping_segments,
+                'sample_segments': debug_segments
+            }
+        
+        km_splits.append(split_data)
     
     return km_splits
 
