@@ -3393,6 +3393,7 @@ function updateHeroAidWidget() {
         
         listContainer.innerHTML = html;
         widget.style.display = 'flex';
+        console.log('heroAidWidget display set to flex, computed:', window.getComputedStyle(widget).display);
     } else if (typeof aidStations !== 'undefined' && aidStations && Array.isArray(aidStations) && aidStations.length > 0) {
         // Fallback: show AID stations without times (they'll get times after recalculation)
         console.log('Branch 2: Using aidStations fallback');
