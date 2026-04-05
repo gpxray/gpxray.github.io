@@ -213,18 +213,22 @@ def calculate_km_splits(segments: list, paces: dict, apply_surface: bool,
                         fatigue: float, aid_stations: list, start_minutes: int,
                         total_distance: float) -> list:
     """Calculate per-km split times with gradient-based pacing"""
-    km_splits = []
+    # ALWAYS return at least one debug split to prove function was called
+    km_splits = [{
+        'km': 0,
+        'debug_entry': True,
+        'total_distance': total_distance,
+        'total_kms': int(math.ceil(total_distance)),
+        'segments_count': len(segments),
+        'paces': str(paces),
+        'first_segment': str(segments[0]) if segments else 'NO SEGMENTS'
+    }]
+    
     total_kms = int(math.ceil(total_distance))
     
-    # Return debug info if something seems wrong
+    # Return early debug if no data
     if total_kms == 0 or len(segments) == 0:
-        return [{
-            'debug': True,
-            'total_distance': total_distance,
-            'total_kms': total_kms,
-            'segments_count': len(segments),
-            'paces': paces
-        }]
+        return km_splits
     
     cumulative_time = 0
     processed_stops = set()
