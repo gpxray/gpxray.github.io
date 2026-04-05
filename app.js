@@ -6068,6 +6068,27 @@ async function calculateRacePlanFromAPI() {
     console.log('Sending to API - aidStations:', aidStations.length, 'stations:', apiAidStations);
     
     // Build request based on current mode
+    const uphillRatioEl = document.getElementById('uphillRatio');
+    const downhillRatioEl = document.getElementById('downhillRatio');
+    const heroUphillEl = document.getElementById('heroUphillSlider');
+    const heroDownhillEl = document.getElementById('heroDownhillSlider');
+    
+    // Debug: log all slider values
+    console.log('Terrain Style Debug:', {
+        uphillRatio: uphillRatioEl?.value,
+        downhillRatio: downhillRatioEl?.value,
+        heroUphill: heroUphillEl?.value,
+        heroDownhill: heroDownhillEl?.value
+    });
+    
+    // Get ratios - prefer hero sliders if they exist and have been touched
+    const uphillRatioValue = parseFloat(heroUphillEl?.value) || 
+                             parseFloat(uphillRatioEl?.value) || 1.4;
+    const downhillRatioValue = parseFloat(heroDownhillEl?.value) || 
+                               parseFloat(downhillRatioEl?.value) || 0.85;
+    
+    console.log('Using ratios:', { uphill: uphillRatioValue, downhill: downhillRatioValue });
+    
     const payload = {
         segments: apiSegments,
         runnerLevel: runnerLevel,
@@ -6077,11 +6098,9 @@ async function calculateRacePlanFromAPI() {
         totalDistance: gpxData.totalDistance,
         elevationGain: gpxData.elevationGain || 0,
         mode: currentMode,
-        // Always include terrain style ratios from sliders (hero or original)
-        uphillRatio: parseFloat(document.getElementById('uphillRatio')?.value) || 
-                     parseFloat(document.getElementById('heroUphillSlider')?.value) || 1.4,
-        downhillRatio: parseFloat(document.getElementById('downhillRatio')?.value) || 
-                       parseFloat(document.getElementById('heroDownhillSlider')?.value) || 0.85
+        // Always include terrain style ratios from sliders
+        uphillRatio: uphillRatioValue,
+        downhillRatio: downhillRatioValue
     };
     
     // Add mode-specific data
