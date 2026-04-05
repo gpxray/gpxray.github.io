@@ -904,23 +904,33 @@
                 </div>
                 
                 <div class="pace-ratios">
-                    <p class="ratio-description">Adjust pace multipliers relative to flat pace (1.0 = same as flat):</p>
+                    <p class="ratio-description">How do you handle terrain? This adjusts your pace predictions:</p>
                     <div class="ratio-inputs">
-                        <div class="ratio-group">
+                        <div class="ratio-group slider-style">
                             <label>
                                 <span class="terrain-icon uphill-icon">⬆️</span>
-                                Uphill Multiplier
+                                Uphill Style
                             </label>
-                            <input type="number" id="uphillRatio" value="1.2" min="1.0" max="2.0" step="0.05">
-                            <span class="ratio-hint">Slower (1.2 = 20% slower)</span>
+                            <div class="slider-container">
+                                <span class="slider-label-left">😓 Struggle</span>
+                                <input type="range" id="uphillSlider" min="1.2" max="1.6" step="0.05" value="1.4">
+                                <span class="slider-label-right">💪 Strong</span>
+                            </div>
+                            <input type="number" id="uphillRatio" value="1.4" min="1.0" max="2.0" step="0.05" style="display: none;">
+                            <span class="ratio-hint" id="uphillHint">Balanced climber</span>
                         </div>
-                        <div class="ratio-group">
+                        <div class="ratio-group slider-style">
                             <label>
                                 <span class="terrain-icon downhill-icon">⬇️</span>
-                                Downhill Multiplier
+                                Downhill Style
                             </label>
-                            <input type="number" id="downhillRatio" value="0.9" min="0.5" max="1.0" step="0.05">
-                            <span class="ratio-hint">Faster (0.9 = 10% faster)</span>
+                            <div class="slider-container">
+                                <span class="slider-label-left">🚶 Cautious</span>
+                                <input type="range" id="downhillSlider" min="0.80" max="0.95" step="0.01" value="0.85">
+                                <span class="slider-label-right">🏃 Aggressive</span>
+                            </div>
+                            <input type="number" id="downhillRatio" value="0.85" min="0.5" max="1.0" step="0.05" style="display: none;">
+                            <span class="ratio-hint" id="downhillHint">Balanced descender</span>
                         </div>
                     </div>
                 </div>

@@ -3586,6 +3586,74 @@ h2 {
     color: #666;
 }
 
+/* Slider style for terrain self-assessment */
+.ratio-group.slider-style {
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+}
+
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 10px 0;
+}
+
+.slider-label-left,
+.slider-label-right {
+    font-size: 0.85rem;
+    color: #888;
+    white-space: nowrap;
+    min-width: 80px;
+}
+
+.slider-label-left {
+    text-align: right;
+}
+
+.slider-label-right {
+    text-align: left;
+}
+
+.slider-container input[type="range"] {
+    flex: 1;
+    height: 8px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: linear-gradient(to right, #ff6b6b 0%, #4ecdc4 50%, #45b7d1 100%);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.slider-container input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    background: #fff;
+    border-radius: 50%;
+    border: 3px solid #00d4ff;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.slider-container input[type="range"]::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    background: #fff;
+    border-radius: 50%;
+    border: 3px solid #00d4ff;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.ratio-group.slider-style .ratio-hint {
+    font-size: 0.9rem;
+    color: #00d4ff;
+    font-weight: 500;
+}
+
 /* ITRA Index Mode Styles */
 .itra-effort-display {
     background: rgba(255, 165, 0, 0.1);
