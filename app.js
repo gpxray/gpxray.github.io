@@ -19,6 +19,7 @@ let lastCalculatedPaces = null; // Store last calculated paces for re-rendering
 let lastCachedDDL = null; // Store DDL from API - formulas protected on server
 let lastCachedCheckpoints = null; // Store checkpoints from API
 let lastCachedFatigue = 1.0; // Store fatigue multiplier from API
+let lastCachedKmSplits = null; // Store km splits from API (gradient-based)
 let preStoredSurfaceData = null; // Pre-computed surface data from race config
 let raceWeatherData = null; // Weather data for race day (for weather adjustment)
 let currentStatementIndex = 0; // Current index for statement reroll
@@ -6160,16 +6161,18 @@ async function calculateRacePlanForTargetTime() {
 
 // Display results from API response
 function displayApiResults(result) {
-    const { paces, terrain, totalTimeMinutes, fatigueMultiplier, checkpoints, stopTimeMinutes, ddl, finishClockTime } = result;
+    const { paces, terrain, totalTimeMinutes, fatigueMultiplier, checkpoints, stopTimeMinutes, ddl, finishClockTime, kmSplits } = result;
     
-    // Debug: log API checkpoints
+    // Debug: log API response
     console.log('API returned checkpoints:', checkpoints);
+    console.log('API returned kmSplits:', kmSplits?.length || 0, 'splits');
     console.log('Current aidStations:', aidStations);
     
     // Cache API results for use in other functions
     lastCachedCheckpoints = checkpoints;
     lastCachedFatigue = fatigueMultiplier;
     lastCalculatedPaces = { flat: paces.flat, uphill: paces.uphill, downhill: paces.downhill };
+    lastCachedKmSplits = kmSplits || null;  // Cache API km splits
     
     // Update the pace info tooltip with actual calculated values
     updatePaceInfoContent();
@@ -6337,6 +6340,118 @@ function calculateRacePlanLocal() {
     showNotification('Warming up the servers... Please try again in a moment! ☕', 'error');
 }
 
+// Render km splits from API response
+function renderApiKmSplits(kmSplits, splitsBody) {
+    const startTimeInput = document.getElementById('raceStartTime');
+    const startTimeValue = startTimeInput ? startTimeInput.value : '09:00';
+    const [startHours, startMinutes] = startTimeValue.split(':').map(Number);
+    const startTimeInMinutes = startHours * 60 + startMinutes;
+    
+    // Compute eat zones for nutrition column
+    if (!window.allEatZones && typeof findEatZones === 'function') {
+        window.allEatZones = findEatZones(0.3, 10);
+    }
+    const eatZones = window.allEatZones || [];
+    
+    // Build recommended fuel points
+    const fuelIntervalMinutes = 45;
+    const recommendedFuelKms = new Set();
+    aidStations.forEach(aid => recommendedFuelKms.add(Math.round(aid.km)));
+    
+    // Fill gaps with eat zone recommendations
+    let lastFuelKm = 0;
+    const avgPace = (lastCalculatedPaces?.flat || 6) * 1.2;
+    for (let km = 1; km <= kmSplits.length; km++) {
+        if (recommendedFuelKms.has(km)) {
+            lastFuelKm = km;
+            continue;
+        }
+        const timeSinceLastFuel = (km - lastFuelKm) * avgPace;
+        if (timeSinceLastFuel >= fuelIntervalMinutes) {
+            const inZone = eatZones.some(zone => km >= zone.start && km <= zone.end);
+            const isFlatOrDown = isTerrainFlatOrDownhill(km);
+            if (inZone && isFlatOrDown) {
+                recommendedFuelKms.add(km);
+                lastFuelKm = km;
+            }
+        }
+    }
+    
+    // Render each km split
+    kmSplits.forEach((split, index) => {
+        const km = split.km;
+        const splitTime = split.splitMinutes;
+        const cumulativeTime = split.cumulativeMinutes;
+        const pace = split.pace;
+        const elevation = split.elevation;
+        const terrain = split.terrain;
+        const surface = split.surface || 'trail';
+        const clockTime = split.clockTime;
+        
+        // Check for AID stations at this km
+        const aidAtKm = aidStations.find(s => Math.round(s.km) === km);
+        const stopTime = aidAtKm?.stopMin || 0;
+        
+        // Night detection
+        const clockMinutes = startTimeInMinutes + cumulativeTime;
+        const isNightSplit = isNightTime(clockMinutes % (24 * 60));
+        
+        // Fuel recommendation
+        const hasFuel = recommendedFuelKms.has(km) && !aidAtKm;
+        const fuelHtml = hasFuel 
+            ? `<span class="fuel-icon" title="Recommended fuel point (~${Math.round(cumulativeTime)} min in)">🍫</span>`
+            : '-';
+        
+        // Format times
+        const splitFormatted = formatTime(splitTime);
+        const cumFormatted = formatTime(cumulativeTime);
+        const paceFormatted = formatPace(pace);
+        
+        // Terrain label
+        const terrainLabels = {
+            'flat': '<span class="terrain-flat">Flat</span>',
+            'uphill': '<span class="terrain-uphill">Uphill</span>',
+            'downhill': '<span class="terrain-downhill">Downhill</span>'
+        };
+        const terrainHtml = terrainLabels[terrain] || terrain;
+        
+        // Surface label with proper capitalization
+        const surfaceLabels = {
+            'road': 'Road',
+            'trail': 'Trail', 
+            'technical': 'Technical',
+            'rocky': 'Rocky',
+            'sand': 'Sand'
+        };
+        const surfaceHtml = surfaceLabels[surface] || surface;
+        
+        // Elevation formatting
+        const elevHtml = elevation >= 0 ? `+${elevation} m` : `${elevation} m`;
+        
+        // Create row
+        const row = document.createElement('tr');
+        if (isNightSplit) {
+            row.classList.add('night-section');
+        }
+        
+        row.innerHTML = `
+            <td>${isNightSplit ? '🌙 ' : ''}${km}</td>
+            <td>${elevHtml}</td>
+            <td>${terrainHtml}</td>
+            <td>${surfaceHtml}</td>
+            <td>${aidAtKm ? aidAtKm.name : '-'}</td>
+            <td>${stopTime > 0 ? '+' + stopTime + ' min' : '-'}</td>
+            <td>${fuelHtml}</td>
+            <td>${paceFormatted}</td>
+            <td>${splitFormatted}</td>
+            <td>${cumFormatted}</td>
+            <td>${clockTime}</td>
+        `;
+        
+        splitsBody.appendChild(row);
+    });
+}
+
 // Generate kilometer splits table
 function generateSplitsTable(flatPace, uphillPace, downhillPace, apiTotalTime) {
     // Use stored paces if not provided
@@ -6356,6 +6471,16 @@ function generateSplitsTable(flatPace, uphillPace, downhillPace, apiTotalTime) {
     
     const splitsBody = document.getElementById('splitsBody');
     splitsBody.innerHTML = '';
+    
+    // If API provided km splits, use them directly (much cleaner!)
+    if (lastCachedKmSplits && lastCachedKmSplits.length > 0) {
+        console.log('Using API-provided km splits:', lastCachedKmSplits.length);
+        renderApiKmSplits(lastCachedKmSplits, splitsBody);
+        return;
+    }
+    
+    // Fallback: calculate splits locally (legacy path)
+    console.log('Using local km split calculation (API splits not available)');
     
     const points = gpxData.points;
     
