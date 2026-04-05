@@ -6089,6 +6089,8 @@ async function calculateRacePlanFromAPI() {
     console.log('%c📤 SENDING TO API', 'background: #4ecdc4; color: white; padding: 2px 8px; font-weight: bold;');
     console.log('  uphillRatio:', uphillRatioValue);
     console.log('  downhillRatio:', downhillRatioValue);
+    console.log('  totalDistance:', gpxData.totalDistance);
+    console.log('  segments count:', apiSegments.length);
     
     const payload = {
         segments: apiSegments,

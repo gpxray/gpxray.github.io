@@ -213,8 +213,12 @@ def calculate_km_splits(segments: list, paces: dict, apply_surface: bool,
                         fatigue: float, aid_stations: list, start_minutes: int,
                         total_distance: float) -> list:
     """Calculate per-km split times with gradient-based pacing"""
+    import logging
+    logging.info(f"calculate_km_splits: total_distance={total_distance}, segments={len(segments)}, paces={paces}")
+    
     km_splits = []
     total_kms = int(math.ceil(total_distance))
+    logging.info(f"calculate_km_splits: total_kms={total_kms}")
     
     cumulative_time = 0
     processed_stops = set()
