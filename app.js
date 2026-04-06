@@ -18,6 +18,7 @@ let isSurfaceLoading = false; // Whether surface data is being fetched
 let lastCalculatedPaces = null; // Store last calculated paces for re-rendering
 let lastCachedDDL = null; // Store DDL from API - formulas protected on server
 let lastCachedCheckpoints = null; // Store checkpoints from API
+let hoverMarker = null; // Marker for hover position on map (profile sync)
 let lastCachedFatigue = 1.0; // Store fatigue multiplier from API
 let lastCachedKmSplits = null; // Store km splits from API (gradient-based)
 let preStoredSurfaceData = null; // Pre-computed surface data from race config
@@ -3790,12 +3791,64 @@ function displayElevationChart() {
                         color: 'rgba(255, 255, 255, 0.1)'
                     }
                 }
+            },
+            onHover: function(event, elements) {
+                if (!map || !gpxData || !gpxData.points) return;
+                
+                if (elements && elements.length > 0) {
+                    const index = elements[0].index;
+                    const point = gpxData.points[index];
+                    if (point && point.lat && point.lon) {
+                        updateHoverMarker(point.lat, point.lon, point.distance, point.elevation);
+                    }
+                } else {
+                    hideHoverMarker();
+                }
             }
         }
     });
     
+    // Add mouseleave handler to hide marker when leaving chart
+    const chartCanvas = document.getElementById('elevationChart');
+    chartCanvas.addEventListener('mouseleave', hideHoverMarker);
+    
     // Make chart container responsive
     document.querySelector('.chart-container').style.height = '300px';
+}
+
+// Update hover marker position on map (sync with elevation profile)
+function updateHoverMarker(lat, lon, distance, elevation) {
+    if (!map) return;
+    
+    // Create custom icon for hover marker
+    const hoverIcon = L.divIcon({
+        className: 'hover-marker',
+        html: `<div class="hover-marker-dot"></div>
+               <div class="hover-marker-tooltip">
+                   <span class="hover-km">${distance.toFixed(1)} km</span>
+                   <span class="hover-elev">${elevation?.toFixed(0) || '?'} m</span>
+               </div>`,
+        iconSize: [20, 20],
+        iconAnchor: [10, 10]
+    });
+    
+    if (hoverMarker) {
+        hoverMarker.setLatLng([lat, lon]);
+        hoverMarker.setIcon(hoverIcon);
+    } else {
+        hoverMarker = L.marker([lat, lon], { 
+            icon: hoverIcon,
+            zIndexOffset: 1000 
+        }).addTo(map);
+    }
+}
+
+// Hide hover marker
+function hideHoverMarker() {
+    if (hoverMarker && map) {
+        map.removeLayer(hoverMarker);
+        hoverMarker = null;
+    }
 }
 
 // Helper to find the closest label for a given km (for category axis positioning)
