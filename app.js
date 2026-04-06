@@ -9103,7 +9103,7 @@ function getStatementCategory(finishHour, isNextDay, totalHours) {
 // Get statement keys for a category
 function getStatementKeys(category) {
     if (category === 'default') return ['story.default'];
-    return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(i => `story.${category}.${i}`);
+    return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(i => `story.${category}.${i}`);
 }
 
 // Get witty statement based on finish time (local fallback)
