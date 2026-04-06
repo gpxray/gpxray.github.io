@@ -8476,7 +8476,7 @@ async function exportShareCard() {
             if (allRows.length > 0) {
                 const lastRow = allRows[allRows.length - 1];
                 const cells = lastRow.querySelectorAll('td');
-                finishClockTime = cells[9]?.textContent || '';
+                finishClockTime = cells[10]?.textContent || ''; // Clock Time column
             }
         }
 
@@ -8872,7 +8872,7 @@ async function exportStoryCard() {
             if (allRows.length > 0) {
                 const lastRow = allRows[allRows.length - 1];
                 const cells = lastRow.querySelectorAll('td');
-                finishClockTime = cells[9]?.textContent || '';
+                finishClockTime = cells[10]?.textContent || ''; // Clock Time column
             }
         }
 
@@ -9158,7 +9158,7 @@ function getFinishTimeInfo() {
         if (allRows.length > 0) {
             const lastRow = allRows[allRows.length - 1];
             const cells = lastRow.querySelectorAll('td');
-            finishClockTime = cells[9]?.textContent || '';
+            finishClockTime = cells[10]?.textContent || ''; // Clock Time column
         }
     }
     
@@ -9237,7 +9237,7 @@ async function exportCrewCard() {
             if (allRows.length > 0) {
                 const lastRow = allRows[allRows.length - 1];
                 const cells = lastRow.querySelectorAll('td');
-                finishClockTime = cells[9]?.textContent || '';
+                finishClockTime = cells[10]?.textContent || ''; // Clock Time column
             }
         }
 
