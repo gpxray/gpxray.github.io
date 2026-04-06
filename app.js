@@ -7777,7 +7777,7 @@ function showAllFuelStops() {
         modal.innerHTML = `
             <div class="fuel-stops-modal-content">
                 <button class="fuel-stops-modal-close">✕</button>
-                <h3>🍫 All Fuel Stops</h3>
+                <h3>🍫 All Fuel Windows</h3>
                 <p class="fuel-stops-subtitle">Recommended every ~45 min at AID stations or flat terrain</p>
                 <div class="fuel-stops-list"></div>
             </div>
