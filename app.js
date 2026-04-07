@@ -3493,6 +3493,10 @@ function showSections() {
         const changeBtn = document.getElementById('changeRouteBtn');
         if (changeBtn) changeBtn.style.display = 'inline-flex';
         
+        // Show Save/Load Plan buttons immediately after GPX is loaded
+        const routeActions = document.getElementById('routeActions');
+        if (routeActions) routeActions.style.display = 'flex';
+        
         // Keep heroResults HIDDEN until Calculate is clicked
         // It contains insight widgets (Top Climbs, DDL, etc.) that need data
         
