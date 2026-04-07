@@ -6155,7 +6155,8 @@ h2 {
     margin-left: 8px;
 }
 
-.race-level-buttons.itra-override .race-level-btn {
+.race-level-buttons.itra-override .race-level-btn,
+.race-level-buttons.target-override .race-level-btn {
     opacity: 0.5;
     pointer-events: none;
 }

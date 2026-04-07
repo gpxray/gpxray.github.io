@@ -466,6 +466,9 @@ function setupTargetTimeInput() {
         if (!targetInput) return;
         
         const updateStyle = () => {
+            const raceLevelButtons = document.getElementById('raceLevelButtons');
+            const mainLevelButtons = document.getElementById('mainLevelButtons');
+            
             if (targetInput.value && targetInput.value.match(/^\d{1,2}:\d{2}$/)) {
                 targetInput.classList.add('has-value');
                 
@@ -473,8 +476,16 @@ function setupTargetTimeInput() {
                 if (activeItraScore !== null) {
                     clearItraOverride();
                 }
+                
+                // Dim runner level buttons (Target Time overrides level)
+                if (raceLevelButtons) raceLevelButtons.classList.add('target-override');
+                if (mainLevelButtons) mainLevelButtons.classList.add('target-override');
             } else {
                 targetInput.classList.remove('has-value');
+                
+                // Re-enable runner level buttons if no target time
+                if (raceLevelButtons) raceLevelButtons.classList.remove('target-override');
+                if (mainLevelButtons) mainLevelButtons.classList.remove('target-override');
             }
         };
         
@@ -798,16 +809,15 @@ function setupItraForElements(els) {
             }
         });
         
-        // Dim runner level buttons
-        if (levelButtons) {
-            levelButtons.classList.add('itra-override');
-        }
-        
-        // Also update the other page's buttons if visible
+        // Dim runner level buttons (and remove target-override if present)
         const raceLevelButtons = document.getElementById('raceLevelButtons');
         const mainLevelButtons = document.getElementById('mainLevelButtons');
-        if (raceLevelButtons) raceLevelButtons.classList.add('itra-override');
-        if (mainLevelButtons) mainLevelButtons.classList.add('itra-override');
+        [raceLevelButtons, mainLevelButtons].forEach(btns => {
+            if (btns) {
+                btns.classList.add('itra-override');
+                btns.classList.remove('target-override');
+            }
+        });
         
         // Sync other ITRA input
         const otherInput = itraInput.id === 'itraScoreInput' 
