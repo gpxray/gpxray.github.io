@@ -557,7 +557,7 @@ const TRANSLATIONS = {
         
         // Intro section
         'intro.headline': 'Plane deine Rennstrategie schon vor dem Start.',
-        'intro.text': 'Analysiere das Gelände, simuliere realistische Pace und erkenne, wo dein Rennen entschieden wird.',
+        'intro.text': 'Analysiere das Gelände, simuliere realistische Pace und finde die entscheidenden Stellen.',
         'intro.smartPace': 'Smart Pace',
         'intro.smartPacing': 'Smart Pacing',
         'intro.topClimbs': 'Top Anstiege',
@@ -572,7 +572,7 @@ const TRANSLATIONS = {
         'intro.crewCard': 'Crew-Karte',
         'intro.comingSoon': 'bald verfügbar',
         'intro.raceHeadline': 'Plane deine Rennstrategie schon vor dem Start.',
-        'intro.raceText': 'Analysiere das Gelände, simuliere realistische Pace und erkenne, wo dein Rennen entschieden wird.',
+        'intro.raceText': 'Analysiere das Gelände, simuliere realistische Pace und finde die entscheidenden Stellen.',
         
         // Feature pill tooltips
         'pill.smartPace.info': 'Triff jeden Split. Realistische Pace-Vorhersagen, die sich an Anstiege und Abfahrten anpassen — nie wieder einbrechen auf KM 25.',
