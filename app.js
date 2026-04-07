@@ -8627,8 +8627,8 @@ async function exportShareCard() {
                 const cells = row.querySelectorAll('td');
                 const distCell = cells[0]?.textContent?.trim() || '';
                 const aidName = cells[4]?.textContent || '';
-                const raceTime = cells[8]?.textContent || '';
-                const clockTime = cells[9]?.textContent || '';
+                const raceTime = cells[9]?.textContent || ''; // Race Time (cumulative) is column 9
+                const clockTime = cells[10]?.textContent || ''; // Clock Time is column 10
                 
                 if (aidName && aidName !== '-' && !addedStations.has(aidName)) {
                     // Parse distance and find matching AID station (tolerance-based matching)
@@ -9386,7 +9386,7 @@ async function exportCrewCard() {
                 const cells = row.querySelectorAll('td');
                 const distCell = cells[0]?.textContent?.trim() || '';
                 const aidName = cells[4]?.textContent || '';
-                const clockTime = cells[9]?.textContent || '';
+                const clockTime = cells[10]?.textContent || ''; // Clock Time is column 10
                 
                 if (aidName && aidName !== '-' && !addedStations.has(aidName)) {
                     // Parse distance and find matching AID station
