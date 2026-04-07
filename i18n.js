@@ -23,7 +23,8 @@ const TRANSLATIONS = {
         'intro.downhillLoad': 'Downhill Load',
         'intro.crewCard': 'Crew Card',
         'intro.comingSoon': 'coming soon',
-        'intro.raceText': 'Build your race strategy before race day. Analyze terrain, simulate realistic pace, and understand where your race is decided.',
+        'intro.raceHeadline': 'Build your race strategy before race day.',
+        'intro.raceText': 'Analyze terrain, simulate realistic pace, and understand where your race is decided.',
         
         // Feature pill tooltips
         'pill.smartPace.info': 'Hit every split on target. Realistic pace predictions that adapt to climbs and descents — no more blowing up on mile 15.',
@@ -568,7 +569,8 @@ const TRANSLATIONS = {
         'intro.downhillLoad': 'Abstiegsbelastung',
         'intro.crewCard': 'Crew-Karte',
         'intro.comingSoon': 'bald verfügbar',
-        'intro.raceText': 'Plane deine Rennstrategie schon vor dem Start. Analysiere das Gelände, simuliere realistische Pace und erkenne, wo dein Rennen entschieden wird.',
+        'intro.raceHeadline': 'Plane deine Rennstrategie schon vor dem Start.',
+        'intro.raceText': 'Analysiere das Gelände, simuliere realistische Pace und erkenne, wo dein Rennen entschieden wird.',
         
         // Feature pill tooltips
         'pill.smartPace.info': 'Triff jeden Split. Realistische Pace-Vorhersagen, die sich an Anstiege und Abfahrten anpassen — nie wieder einbrechen auf KM 25.',
