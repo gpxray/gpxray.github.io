@@ -6086,21 +6086,17 @@ h2 {
     gap: 6px;
 }
 
-/* Compact ITRA input in card */
+/* Compact inputs in Advanced Options card */
 .advanced-options-card .itra-input {
     width: 70px;
     padding: 5px 8px;
     font-size: 0.85rem;
 }
 
-.advanced-options-card .itra-apply-btn {
-    padding: 5px 10px;
-    font-size: 0.75rem;
-}
-
-.advanced-options-card .itra-clear-btn {
-    padding: 3px 6px;
-    font-size: 0.7rem;
+.advanced-options-card .itra-input.has-value {
+    background: rgba(0, 212, 255, 0.15);
+    border-color: #00d4ff;
+    color: #00d4ff;
 }
 
 .advanced-options-card .target-time-input {

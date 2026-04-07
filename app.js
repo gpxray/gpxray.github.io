@@ -737,8 +737,6 @@ function setupItraScore() {
     // Setup for race page elements
     setupItraForElements({
         input: document.getElementById('itraScoreInput'),
-        applyBtn: document.getElementById('itraApplyBtn'),
-        clearBtn: document.getElementById('itraClearBtn'),
         levelButtons: document.getElementById('raceLevelButtons'),
         infoToggle: document.getElementById('itraInfoToggle'),
         infoBox: document.getElementById('itraInfoBox')
@@ -747,8 +745,6 @@ function setupItraScore() {
     // Setup for main page elements
     setupItraForElements({
         input: document.getElementById('mainItraScoreInput'),
-        applyBtn: document.getElementById('mainItraApplyBtn'),
-        clearBtn: document.getElementById('mainItraClearBtn'),
         levelButtons: document.getElementById('mainLevelButtons'),
         infoToggle: document.getElementById('mainItraInfoToggle'),
         infoBox: document.getElementById('mainItraInfoBox')
@@ -756,8 +752,7 @@ function setupItraScore() {
 }
 
 function setupItraForElements(els) {
-    const { input: itraInput, applyBtn: itraApplyBtn, clearBtn: itraClearBtn, 
-            levelButtons, infoToggle: itraInfoToggle, infoBox: itraInfoBox } = els;
+    const { input: itraInput, levelButtons, infoToggle: itraInfoToggle, infoBox: itraInfoBox } = els;
     
     // Toggle info box visibility
     if (itraInfoToggle && itraInfoBox) {
@@ -767,10 +762,18 @@ function setupItraForElements(els) {
         });
     }
     
-    if (!itraInput || !itraApplyBtn) return;
+    if (!itraInput) return;
     
     const applyItraScore = () => {
         const score = parseInt(itraInput.value);
+        if (itraInput.value === '' || itraInput.value === null) {
+            // Clear ITRA if empty
+            if (activeItraScore !== null) {
+                clearItraOverride();
+            }
+            return;
+        }
+        
         if (isNaN(score) || score < 200 || score > 1000) {
             itraInput.classList.add('error');
             setTimeout(() => itraInput.classList.remove('error'), 500);
@@ -778,9 +781,7 @@ function setupItraForElements(els) {
         }
         
         activeItraScore = score;
-        itraApplyBtn.classList.add('active');
-        itraApplyBtn.textContent = typeof t === 'function' ? t('race.itraApplied') : 'Applied';
-        itraInput.readOnly = true;
+        itraInput.classList.add('has-value');
         
         // Dim runner level buttons
         if (levelButtons) {
@@ -793,9 +794,13 @@ function setupItraForElements(els) {
         if (raceLevelButtons) raceLevelButtons.classList.add('itra-override');
         if (mainLevelButtons) mainLevelButtons.classList.add('itra-override');
         
-        // Show clear button
-        if (itraClearBtn) {
-            itraClearBtn.style.display = 'inline-block';
+        // Sync other ITRA input
+        const otherInput = itraInput.id === 'itraScoreInput' 
+            ? document.getElementById('mainItraScoreInput')
+            : document.getElementById('itraScoreInput');
+        if (otherInput && otherInput.value !== itraInput.value) {
+            otherInput.value = itraInput.value;
+            otherInput.classList.add('has-value');
         }
         
         // Apply and recalculate (only auto-calc on race pages)
@@ -809,29 +814,15 @@ function setupItraForElements(els) {
         }
     };
     
-    itraApplyBtn.addEventListener('click', applyItraScore);
-    
-    // Update button text as user types
-    itraInput.addEventListener('input', () => {
-        if (activeItraScore !== null) return; // Don't update if already applied
-        const score = parseInt(itraInput.value);
-        if (!isNaN(score) && score >= 200 && score <= 1000) {
-            itraApplyBtn.textContent = `Use ${score}`;
-        } else {
-            itraApplyBtn.textContent = typeof t === 'function' ? t('race.itraApply') : 'Apply';
-        }
-    });
+    // Auto-apply on blur
+    itraInput.addEventListener('blur', applyItraScore);
     
     // Enter key to apply
     itraInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
-            applyItraScore();
+            itraInput.blur(); // Triggers blur handler
         }
     });
-    
-    if (itraClearBtn) {
-        itraClearBtn.addEventListener('click', clearItraOverride);
-    }
 }
 
 function clearItraOverride() {
@@ -840,35 +831,18 @@ function clearItraOverride() {
     
     // Clear race page elements
     const itraInput = document.getElementById('itraScoreInput');
-    const itraApplyBtn = document.getElementById('itraApplyBtn');
-    const itraClearBtn = document.getElementById('itraClearBtn');
     const raceLevelButtons = document.getElementById('raceLevelButtons');
     
     // Clear main page elements
     const mainItraInput = document.getElementById('mainItraScoreInput');
-    const mainItraApplyBtn = document.getElementById('mainItraApplyBtn');
-    const mainItraClearBtn = document.getElementById('mainItraClearBtn');
     const mainLevelButtons = document.getElementById('mainLevelButtons');
     
     // Reset inputs
     [itraInput, mainItraInput].forEach(inp => {
         if (inp) {
             inp.value = '';
-            inp.readOnly = false;
+            inp.classList.remove('has-value');
         }
-    });
-    
-    // Reset apply buttons
-    [itraApplyBtn, mainItraApplyBtn].forEach(btn => {
-        if (btn) {
-            btn.classList.remove('active');
-            btn.textContent = typeof t === 'function' ? t('race.itraApply') : 'Apply';
-        }
-    });
-    
-    // Hide clear buttons
-    [itraClearBtn, mainItraClearBtn].forEach(btn => {
-        if (btn) btn.style.display = 'none';
     });
     
     // Re-enable level buttons
