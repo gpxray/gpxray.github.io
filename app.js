@@ -7010,6 +7010,7 @@ function generateSplitsTable(flatPace, uphillPace, downhillPace, apiTotalTime) {
                 <td class="stop-time editable-stop" data-station-index="${stationIndex}" data-station-km="${station.km}">${stopTime > 0 ? '+' + stopTime + ' min' : '-'}</td>
                 <td><span class="fuel-icon" title="${station.name || 'AID'} — planned refuel stop">🍫🚰</span></td>
                 <td>-</td>
+                <td>-</td>
                 <td>${formatTime(timeToStation)}</td>
                 <td>${clockTime}</td>
             `;
