@@ -393,7 +393,11 @@
             <div class="route-name-display">
                 <span class="route-icon">🏞️</span>
                 <h2 id="routeName">Route</h2>
-                <button type="button" class="change-route-btn" id="changeRouteBtn" data-i18n="route.changeRoute">↻ Change</button>
+                <div class="route-actions" id="routeActions" style="display: none;">
+                    <button type="button" class="route-action-btn" id="routeSavePlanBtn">💾 Save</button>
+                    <button type="button" class="route-action-btn" id="routeLoadPlanBtn">📂 Load</button>
+                </div>
+                <button type="button" class="change-route-btn" id="changeRouteBtn" data-i18n="route.changeRoute">↻ Start Over</button>
             </div>
             
             <!-- Hero Result Section - immediate value -->
@@ -447,12 +451,6 @@
                     
                     <!-- Edit Strategy Button (positioned top-right) -->
                     <button type="button" class="edit-strategy-btn" id="editStrategyBtn" style="display: none;" data-i18n="race.editStrategy">✏️ Edit Strategy</button>
-                    
-                    <!-- Save/Load Plan Buttons (main page only) -->
-                    <div class="hero-plan-actions" id="heroPlanActions" style="display: none;">
-                        <button type="button" class="hero-plan-btn" id="heroSavePlanBtn">💾 Save</button>
-                        <button type="button" class="hero-plan-btn" id="heroLoadPlanBtn">📂 Load</button>
-                    </div>
                     
                     <!-- Race Strategy Box (main page version) -->
                     <div class="race-strategy-box main-page-strategy" id="heroRunnerLevel">

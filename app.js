@@ -3519,9 +3519,9 @@ function showAllSections() {
     if (heroResults) heroResults.style.display = 'block';
     
     // Show Save/Load Plan buttons on main page (not race pages)
-    const heroPlanActions = document.getElementById('heroPlanActions');
-    if (heroPlanActions && !detectRaceMode()) {
-        heroPlanActions.style.display = 'flex';
+    const routeActions = document.getElementById('routeActions');
+    if (routeActions && !detectRaceMode()) {
+        routeActions.style.display = 'flex';
     }
     
     // Fix rendering after containers become visible
@@ -4338,12 +4338,12 @@ function setupSaveLoad() {
     if (saveBtn) saveBtn.addEventListener('click', savePlan);
     if (loadBtn) loadBtn.addEventListener('click', loadPlan);
     
-    // Also wire up hero save/load buttons (main page)
-    const heroSaveBtn = document.getElementById('heroSavePlanBtn');
-    const heroLoadBtn = document.getElementById('heroLoadPlanBtn');
+    // Also wire up route header save/load buttons (main page)
+    const routeSaveBtn = document.getElementById('routeSavePlanBtn');
+    const routeLoadBtn = document.getElementById('routeLoadPlanBtn');
     
-    if (heroSaveBtn) heroSaveBtn.addEventListener('click', savePlan);
-    if (heroLoadBtn) heroLoadBtn.addEventListener('click', loadPlan);
+    if (routeSaveBtn) routeSaveBtn.addEventListener('click', savePlan);
+    if (routeLoadBtn) routeLoadBtn.addEventListener('click', loadPlan);
 }
 
 function savePlan() {
