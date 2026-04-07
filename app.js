@@ -10381,6 +10381,8 @@ function setClientWeatherCache(lat, lon, date, data) {
 // Weather forecast for race landing page
 async function fetchRaceWeather(config) {
     console.log('=== fetchRaceWeather CALLED ===', config.name);
+    // Disabled on race pages - takes up too much space in hero
+    return;
     const widget = document.getElementById('raceWeatherWidget');
     const content = document.getElementById('weatherContent');
     if (!widget || !content) return;
