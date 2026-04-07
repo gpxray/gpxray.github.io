@@ -866,6 +866,7 @@ def weather_endpoint(req: func.HttpRequest) -> func.HttpResponse:
         
         lat = float(lat)
         lon = float(lon)
+        force_refresh = req.params.get('refresh', '').lower() == 'true'
         
         # Validate date format
         try:
@@ -876,27 +877,34 @@ def weather_endpoint(req: func.HttpRequest) -> func.HttpResponse:
                 status_code=400, headers=headers
             )
         
-        # Check cache first
-        cached_data = get_cached_weather(lat, lon, date)
-        if cached_data:
-            return func.HttpResponse(
-                json.dumps({'data': cached_data, 'cached': True}),
-                status_code=200, headers=headers
-            )
+        # Check cache first (unless force refresh)
+        if not force_refresh:
+            cached_data = get_cached_weather(lat, lon, date)
+            if cached_data:
+                return func.HttpResponse(
+                    json.dumps({'data': cached_data, 'cached': True}),
+                    status_code=200, headers=headers
+                )
         
         # Fetch from Open-Meteo
         import urllib.request
         import urllib.error
         
-        # Build Open-Meteo URL for daily forecast (same format as frontend expects)
+        # Get API key from environment (paid customer tier for reliability)
+        api_key = os.environ.get('OPENMETEO_API_KEY', '')
+        
+        # Build Open-Meteo URL - use customer API if key available
+        base_url = "https://customer-api.open-meteo.com/v1/forecast" if api_key else "https://api.open-meteo.com/v1/forecast"
         url = (
-            f"https://api.open-meteo.com/v1/forecast?"
+            f"{base_url}?"
             f"latitude={lat}&longitude={lon}"
             f"&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weathercode,windspeed_10m_max"
-            f"&timezone=auto"
+            f"&timezone=auto&forecast_days=16"
         )
+        if api_key:
+            url += f"&apikey={api_key}"
         
-        logging.info(f"Fetching weather from Open-Meteo: lat={lat}, lon={lon}, date={date}")
+        logging.info(f"Fetching weather from Open-Meteo: lat={lat}, lon={lon}, date={date}, customer_api={bool(api_key)}")
         
         request = urllib.request.Request(url, headers={'User-Agent': 'GPXray/1.0'})
         with urllib.request.urlopen(request, timeout=10) as response:

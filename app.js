@@ -10255,8 +10255,15 @@ function getClientWeatherCache(lat, lon, date) {
     if (cached) {
         const { data, timestamp } = JSON.parse(cached);
         if (Date.now() - timestamp < WEATHER_CLIENT_CACHE_TTL) {
-            console.log('Weather client cache HIT:', key);
-            return data;
+            // Verify the requested date is actually in the cached data
+            if (data.daily && data.daily.time && data.daily.time.includes(date)) {
+                console.log('Weather client cache HIT:', key);
+                return data;
+            } else {
+                console.log('Weather client cache MISS - date not in data:', date);
+                localStorage.removeItem(key);
+                return null;
+            }
         }
         localStorage.removeItem(key); // Expired
     }
