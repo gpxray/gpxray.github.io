@@ -115,6 +115,16 @@ const TRANSLATIONS = {
         'weather.notAvailable': 'Forecast not yet available for',
         'weather.loading': 'Loading forecast...',
         'weather.adjustment': 'weather adjustment',
+        'weather.clear': 'Clear sky',
+        'weather.partlyCloudy': 'Partly cloudy',
+        'weather.foggy': 'Foggy',
+        'weather.drizzle': 'Drizzle',
+        'weather.rain': 'Rain',
+        'weather.snow': 'Snow',
+        'weather.rainShowers': 'Rain showers',
+        'weather.snowShowers': 'Snow showers',
+        'weather.thunderstorm': 'Thunderstorm',
+        'weather.variable': 'Variable',
         
         // Surface Analysis
         'surface.title': 'Surface Analysis',
@@ -640,6 +650,16 @@ const TRANSLATIONS = {
         'weather.notAvailable': 'Vorhersage noch nicht verfügbar für',
         'weather.loading': 'Lade Vorhersage...',
         'weather.adjustment': 'Wetteranpassung',
+        'weather.clear': 'Klarer Himmel',
+        'weather.partlyCloudy': 'Teilweise bewölkt',
+        'weather.foggy': 'Neblig',
+        'weather.drizzle': 'Nieselregen',
+        'weather.rain': 'Regen',
+        'weather.snow': 'Schnee',
+        'weather.rainShowers': 'Regenschauer',
+        'weather.snowShowers': 'Schneeschauer',
+        'weather.thunderstorm': 'Gewitter',
+        'weather.variable': 'Wechselhaft',
         
         // Surface Analysis
         'surface.title': 'Untergrundanalyse',

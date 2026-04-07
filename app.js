@@ -10412,16 +10412,16 @@ function getWeatherIcon(code) {
 }
 
 function getWeatherDescription(code) {
-    if (code === 0) return 'Clear sky';
-    if (code <= 3) return 'Partly cloudy';
-    if (code <= 48) return 'Foggy';
-    if (code <= 57) return 'Drizzle';
-    if (code <= 67) return 'Rain';
-    if (code <= 77) return 'Snow';
-    if (code <= 82) return 'Rain showers';
-    if (code <= 86) return 'Snow showers';
-    if (code >= 95) return 'Thunderstorm';
-    return 'Variable';
+    if (code === 0) return t('weather.clear');
+    if (code <= 3) return t('weather.partlyCloudy');
+    if (code <= 48) return t('weather.foggy');
+    if (code <= 57) return t('weather.drizzle');
+    if (code <= 67) return t('weather.rain');
+    if (code <= 77) return t('weather.snow');
+    if (code <= 82) return t('weather.rainShowers');
+    if (code <= 86) return t('weather.snowShowers');
+    if (code >= 95) return t('weather.thunderstorm');
+    return t('weather.variable');
 }
 
 // Weather adjustment algorithm based on research
