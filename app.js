@@ -7057,6 +7057,13 @@ function generateSplitsTable(flatPace, uphillPace, downhillPace, apiTotalTime) {
         splitsBody.appendChild(row);
     }
     
+    // Update hero finish clock with the actual calculated finish time (last clockTime from splits)
+    const heroFinishClock = document.getElementById('heroFinishClock');
+    if (heroFinishClock) {
+        const finalClockTime = formatClockTime(startTimeInMinutes + cumulativeTime);
+        heroFinishClock.textContent = finalClockTime;
+    }
+    
     // Generate leg summary if AID stations exist
     renderLegSummary(flatPace, uphillPace, downhillPace, applySurface, startTimeInMinutes, fatigueMultiplier, apiTotalMinutes);
     
