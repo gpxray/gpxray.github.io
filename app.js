@@ -3495,6 +3495,12 @@ function showAllSections() {
     const heroResults = document.getElementById('heroResults');
     if (heroResults) heroResults.style.display = 'block';
     
+    // Show Save/Load Plan buttons on main page (not race pages)
+    const heroPlanActions = document.getElementById('heroPlanActions');
+    if (heroPlanActions && !detectRaceMode()) {
+        heroPlanActions.style.display = 'flex';
+    }
+    
     // Fix rendering after containers become visible
     setTimeout(() => {
         // Leaflet map needs invalidateSize + re-fit bounds
@@ -4306,10 +4312,15 @@ function setupSaveLoad() {
     const saveBtn = document.getElementById('savePlanBtn');
     const loadBtn = document.getElementById('loadPlanBtn');
     
-    if (!saveBtn || !loadBtn) return;
+    if (saveBtn) saveBtn.addEventListener('click', savePlan);
+    if (loadBtn) loadBtn.addEventListener('click', loadPlan);
     
-    saveBtn.addEventListener('click', savePlan);
-    loadBtn.addEventListener('click', loadPlan);
+    // Also wire up hero save/load buttons (main page)
+    const heroSaveBtn = document.getElementById('heroSavePlanBtn');
+    const heroLoadBtn = document.getElementById('heroLoadPlanBtn');
+    
+    if (heroSaveBtn) heroSaveBtn.addEventListener('click', savePlan);
+    if (heroLoadBtn) heroLoadBtn.addEventListener('click', loadPlan);
 }
 
 function savePlan() {
