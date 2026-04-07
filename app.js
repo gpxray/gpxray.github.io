@@ -7058,7 +7058,7 @@ function generateSplitsTable(flatPace, uphillPace, downhillPace, apiTotalTime) {
     }
     
     // Generate leg summary if AID stations exist
-    renderLegSummary(flatPace, uphillPace, downhillPace, applySurface, startTimeInMinutes, fatigueMultiplier);
+    renderLegSummary(flatPace, uphillPace, downhillPace, applySurface, startTimeInMinutes, fatigueMultiplier, normalizationFactor);
     
     // Show splits section
     document.getElementById('splitsSection').style.display = 'block';
@@ -7131,7 +7131,7 @@ function setupEditableStopTimes() {
 }
 
 // Render leg summary table
-function renderLegSummary(flatPace, uphillPace, downhillPace, applySurface, startTimeInMinutes, fatigueMultiplier = 1.0) {
+function renderLegSummary(flatPace, uphillPace, downhillPace, applySurface, startTimeInMinutes, fatigueMultiplier = 1.0, normalizationFactor = 1.0) {
     const legSummary = document.getElementById('legSummary');
     const legSummaryBody = document.getElementById('legSummaryBody');
     
@@ -7239,8 +7239,8 @@ function renderLegSummary(flatPace, uphillPace, downhillPace, applySurface, star
         const nightMultiplier = getNightPaceMultiplier(clockTimeAtLegStart, dominantSurface);
         const isNightLeg = nightMultiplier > 1.0;
         
-        // Apply fatigue multiplier and night penalty to leg running time
-        const adjustedLegTime = legTime * fatigueMultiplier * nightMultiplier;
+        // Apply fatigue multiplier, night penalty, AND normalization factor to match splits table
+        const adjustedLegTime = legTime * fatigueMultiplier * nightMultiplier * normalizationFactor;
         
         // Add previous stop time to cumulative
         cumulativeTime += leg.stopMin;
