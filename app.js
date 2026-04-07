@@ -155,6 +155,29 @@ function getGradientPaceMultiplier(gradePercent, flatPace, uphillPace, downhillP
     }
 }
 
+// Toast notification helper
+function showToast(message, type = 'success') {
+    // Remove any existing toast
+    const existingToast = document.querySelector('.gpxray-toast');
+    if (existingToast) existingToast.remove();
+    
+    const toast = document.createElement('div');
+    toast.className = `gpxray-toast gpxray-toast-${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    // Trigger animation
+    requestAnimationFrame(() => {
+        toast.classList.add('show');
+    });
+    
+    // Auto-remove after 2.5 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 2500);
+}
+
 // Night pace penalty - running at night is slower due to reduced visibility
 // Returns multiplier (e.g., 1.08 = 8% slower)
 const NIGHT_PACE_PENALTY = 0.08; // 8% slower at night
@@ -4325,7 +4348,7 @@ function setupSaveLoad() {
 
 function savePlan() {
     if (!gpxData) {
-        alert('Please load a GPX file first.');
+        showToast('Please load a GPX file first', 'error');
         return;
     }
     
@@ -4355,13 +4378,13 @@ function savePlan() {
     };
     
     localStorage.setItem('gpxray_plan', JSON.stringify(plan));
-    alert('Plan saved to history! Click the History button to view all saved plans.');
+    showToast('💾 Saved locally');
 }
 
 function loadPlan() {
     const saved = localStorage.getItem('gpxray_plan');
     if (!saved) {
-        alert('No saved plan found.');
+        showToast('No saved plan found', 'error');
         return;
     }
     
@@ -4419,9 +4442,9 @@ function loadPlan() {
         setVal('uphillRatio', plan.uphillRatio);
         setVal('downhillRatio', plan.downhillRatio);
         
-        alert('Plan loaded successfully!');
+        showToast('📂 Plan loaded');
     } catch (e) {
-        alert('Error loading plan.');
+        showToast('Error loading plan', 'error');
         console.error(e);
     }
 }
