@@ -11,6 +11,9 @@ const TRANSLATIONS = {
         // Intro section
         'intro.text': 'Plan your trail race with precision. Upload a GPX file to analyze terrain, estimate pace, and create your race strategy.',
         'intro.smartPace': 'Smart Pace',
+        'intro.smartPacing': 'Smart Pacing',
+        'intro.topClimbs': 'Top Climbs',
+        'intro.weatherImpact': 'Weather Impact',
         'intro.surfaceAnalysis': 'Surface Analysis',
         'intro.aidStations': 'AID Stations',
         'intro.sunTimes': 'Sun Times',
@@ -20,10 +23,13 @@ const TRANSLATIONS = {
         'intro.downhillLoad': 'Downhill Load',
         'intro.crewCard': 'Crew Card',
         'intro.comingSoon': 'coming soon',
-        'intro.raceText': 'Create your personalized race strategy. Analyze terrain, estimate pace, and plan your AID station stops.',
+        'intro.raceText': 'Build your race strategy before race day. Analyze terrain, simulate realistic pace, and understand where your race is decided.',
         
         // Feature pill tooltips
         'pill.smartPace.info': 'Hit every split on target. Realistic pace predictions that adapt to climbs and descents — no more blowing up on mile 15.',
+        'pill.smartPacing.info': 'Hit every split on target. Realistic pace predictions that adapt to climbs and descents — no more blowing up on mile 15.',
+        'pill.topClimbs.info': 'Know what\'s coming. See the 5 biggest climbs with exact locations and elevation gain — so you can pace smart.',
+        'pill.weatherImpact.info': 'Race-day conditions matter. See how temperature, rain, and wind will affect your finish time.',
         'pill.surfaceAnalysis.info': 'Prepare for what\'s underfoot. Know where technical terrain will slow you — so you can plan your effort.',
         'pill.aidStations.info': 'Never bonk between stations. See how far and how hard each leg is — fuel and pace accordingly.',
         'pill.sunTimes.info': 'Race the light, not just the clock. Know when you\'ll need your headlamp so you pack smart and run confident.',
@@ -550,6 +556,9 @@ const TRANSLATIONS = {
         // Intro section
         'intro.text': 'Plane dein Trailrennen präzise. Lade eine GPX-Datei hoch, um Gelände zu analysieren, Tempo einzuschätzen und deine Rennstrategie zu erstellen.',
         'intro.smartPace': 'Smart Pace',
+        'intro.smartPacing': 'Smart Pacing',
+        'intro.topClimbs': 'Top Anstiege',
+        'intro.weatherImpact': 'Wetter-Einfluss',
         'intro.surfaceAnalysis': 'Untergrund-Analyse',
         'intro.aidStations': 'Verpflegungspunkte',
         'intro.sunTimes': 'Sonnenzeiten',
@@ -559,10 +568,13 @@ const TRANSLATIONS = {
         'intro.downhillLoad': 'Abstiegsbelastung',
         'intro.crewCard': 'Crew-Karte',
         'intro.comingSoon': 'bald verfügbar',
-        'intro.raceText': 'Erstelle deine persönliche Rennstrategie. Analysiere das Gelände, schätze dein Tempo ein und plane deine Verpflegungsstopps.',
+        'intro.raceText': 'Plane deine Rennstrategie schon vor dem Start. Analysiere das Gelände, simuliere realistische Pace und erkenne, wo dein Rennen entschieden wird.',
         
         // Feature pill tooltips
         'pill.smartPace.info': 'Triff jeden Split. Realistische Pace-Vorhersagen, die sich an Anstiege und Abfahrten anpassen — nie wieder einbrechen auf KM 25.',
+        'pill.smartPacing.info': 'Triff jeden Split. Realistische Pace-Vorhersagen, die sich an Anstiege und Abfahrten anpassen — nie wieder einbrechen auf KM 25.',
+        'pill.topClimbs.info': 'Wisse was kommt. Sieh die 5 größten Anstiege mit exakter Position und Höhenmetern — und teile dir die Kraft ein.',
+        'pill.weatherImpact.info': 'Wetterprognose fürs Rennen. Sieh wie Temperatur, Regen und Wind deine Zielzeit beeinflussen.',
         'pill.surfaceAnalysis.info': 'Wisse, was dich erwartet. Erkenne technisches Gelände im Voraus — und plane deine Kräfte ein.',
         'pill.aidStations.info': 'Nie wieder Hungerast zwischen den Stationen. Sieh wie weit und wie hart jede Etappe ist — und verpflege dich richtig.',
         'pill.sunTimes.info': 'Lauf dem Licht voraus. Wisse wann du die Stirnlampe brauchst — pack smart und lauf sicher.',
