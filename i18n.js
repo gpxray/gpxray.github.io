@@ -174,7 +174,7 @@ const TRANSLATIONS = {
         'ddl.modal.freshLegs': 'Fresh legs',
         'ddl.modal.noPaceLoss': 'No pace loss',
         'ddl.modal.lateFatigue': 'Late race fatigue',
-        'ddl.modal.dftExplain': 'DFT = your downhill fatigue threshold (depends on runner level). Change level above to personalize.',
+        'ddl.modal.dftExplain': '<strong>DFT = your downhill fatigue threshold</strong> (depends on runner level). Change level above to personalize.',
         'ddl.modal.showFormula': 'Show formula',
         'ddl.modal.disclaimer': 'This is a heuristic model, not medical advice.',
         
@@ -715,7 +715,7 @@ const TRANSLATIONS = {
         'ddl.modal.freshLegs': 'Frische Beine',
         'ddl.modal.noPaceLoss': 'Kein Tempoverlust',
         'ddl.modal.lateFatigue': 'Späte Ermüdung',
-        'ddl.modal.dftExplain': 'DFT = deine Abstiegs-Ermüdungsschwelle (abhängig vom Läufer-Level). Ändere das Level oben für personalisierte Werte.',
+        'ddl.modal.dftExplain': '<strong>DFT = deine Abstiegs-Ermüdungsschwelle</strong> (abhängig vom Läufer-Level). Ändere das Level oben für personalisierte Werte.',
         'ddl.modal.showFormula': 'Formel anzeigen',
         'ddl.modal.disclaimer': 'Dies ist ein heuristisches Modell, keine medizinische Beratung.',
         
