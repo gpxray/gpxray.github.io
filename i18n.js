@@ -153,11 +153,13 @@ const TRANSLATIONS = {
         
         // Downhill Load tooltip
         'ddl.title': 'Descent Load (DDL/km)',
-        'ddl.description': 'Measures downhill stress (steepness + time + surface).',
-        'ddl.paceEstimate': 'We use cumulative DDL to estimate <strong>downhill pace loss</strong>.',
-        'ddl.fatigueRatio': 'Fatigue ratio = cumulative DDL ÷ DFT',
-        'ddl.paceLoss': 'Pace loss on descents:',
-        'ddl.none': 'none',
+        'ddl.description': 'Average downhill stress per km (steepness × surface).',
+        'ddl.intensity': 'Course intensity:',
+        'ddl.easy': 'Easy terrain',
+        'ddl.moderate': 'Moderate descents',
+        'ddl.demanding': 'Demanding descents',
+        'ddl.extreme': 'Quad-buster!',
+        'ddl.paceLossNote': 'Pace loss depends on your runner level.',
         'ddl.howItWorks': 'How it works',
         
         // DDL insights
@@ -692,11 +694,13 @@ const TRANSLATIONS = {
         
         // Downhill Load tooltip
         'ddl.title': 'Abstiegsbelastung (DDL/km)',
-        'ddl.description': 'Misst Abstiegsstress (Steilheit + Zeit + Untergrund).',
-        'ddl.paceEstimate': 'Wir nutzen kumulierte DDL um <strong>Abstiegs-Tempoverlust</strong> zu schätzen.',
-        'ddl.fatigueRatio': 'Ermüdungsrate = kumulierte DDL ÷ DFT',
-        'ddl.paceLoss': 'Tempoverlust bei Abstiegen:',
-        'ddl.none': 'keiner',
+        'ddl.description': 'Durchschnittlicher Abstiegsstress pro km (Steilheit × Untergrund).',
+        'ddl.intensity': 'Strecken-Intensität:',
+        'ddl.easy': 'Leichtes Gelände',
+        'ddl.moderate': 'Moderate Abstiege',
+        'ddl.demanding': 'Anspruchsvolle Abstiege',
+        'ddl.extreme': 'Quad-Killer!',
+        'ddl.paceLossNote': 'Tempoverlust hängt von deinem Läufer-Level ab.',
         'ddl.howItWorks': 'So funktioniert es',
         
         // DDL insights
