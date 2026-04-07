@@ -468,6 +468,11 @@ function setupTargetTimeInput() {
         const updateStyle = () => {
             if (targetInput.value && targetInput.value.match(/^\d{1,2}:\d{2}$/)) {
                 targetInput.classList.add('has-value');
+                
+                // Clear ITRA when Target Time is entered (mutually exclusive)
+                if (activeItraScore !== null) {
+                    clearItraOverride();
+                }
             } else {
                 targetInput.classList.remove('has-value');
             }
@@ -782,6 +787,16 @@ function setupItraForElements(els) {
         
         activeItraScore = score;
         itraInput.classList.add('has-value');
+        
+        // Clear Target Time when ITRA is entered (mutually exclusive)
+        const raceTargetTime = document.getElementById('raceTargetTime');
+        const heroTargetTime = document.getElementById('heroTargetTime');
+        [raceTargetTime, heroTargetTime].forEach(inp => {
+            if (inp && inp.value) {
+                inp.value = '';
+                inp.classList.remove('has-value');
+            }
+        });
         
         // Dim runner level buttons
         if (levelButtons) {
