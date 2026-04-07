@@ -6980,6 +6980,19 @@ h2 {
     color: #fff;
 }
 
+/* Edit Strategy Button - Tablet (iPad) */
+@media (max-width: 900px) {
+    .edit-strategy-btn {
+        position: static;
+        top: auto;
+        right: auto;
+        display: inline-flex;
+        justify-content: center;
+        margin-top: 10px;
+        margin-bottom: 5px;
+    }
+}
+
 /* Toast Notifications */
 .gpxray-toast {
     position: fixed;
