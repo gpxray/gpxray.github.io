@@ -4567,6 +4567,12 @@ function setupFeedback() {
             const lang = typeof getLang === 'function' ? getLang() : 'en';
             const isDE = lang === 'de';
             
+            // Update feedback button text to show prize
+            const feedbackBtnSpan = feedbackBtn?.querySelector('span');
+            if (feedbackBtnSpan) {
+                feedbackBtnSpan.textContent = isDE ? '🎁 Feedback & Verlosung' : '🎁 Feedback & Win';
+            }
+            
             // Check if raffle is still open
             const now = new Date();
             const deadline = prize.deadline ? new Date(prize.deadline) : null;
