@@ -9485,15 +9485,12 @@ async function exportGpxWithWaypoints() {
             ];
             allFuelStops.forEach((fuel, index) => {
                 const point = findPointAtDistance(fuel.km);
-                const hours = Math.floor(fuel.estTimeMin / 60);
-                const mins = fuel.estTimeMin % 60;
-                const timeText = hours > 0 ? `${hours}h${mins.toString().padStart(2,'0')}` : `${mins}min`;
                 const eatNum = index + 1;
                 waypoints.push({
                     lat: point.lat,
                     lon: point.lon,
-                    name: `EAT${eatNum} ~${timeText}`,
-                    desc: `⏱️ ~${timeText} ${fuelMessages[index % fuelMessages.length]}`,
+                    name: `EAT${eatNum} Fuel up!`,
+                    desc: fuelMessages[index % fuelMessages.length],
                     cmt: fuelMessages[index % fuelMessages.length],
                     sym: 'Restaurant'
                 });
