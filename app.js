@@ -9416,7 +9416,7 @@ async function exportGpxWithWaypoints() {
         waypoints.push({
             lat: points[0].lat,
             lon: points[0].lon,
-            name: '🏁 START',
+            name: 'START - Go easy!',
             desc: currentRouteName || 'Race Start',
             cmt: 'Good luck! Start easy, finish strong.',
             sym: 'Flag, Green'
@@ -9427,10 +9427,11 @@ async function exportGpxWithWaypoints() {
             aidStations.forEach((aid, index) => {
                 const point = findPointAtDistance(aid.km);
                 const time = getTimeAtKm(aid.km);
+                const shortName = aid.name ? aid.name.substring(0, 15) : `KM${Math.round(aid.km)}`;
                 waypoints.push({
                     lat: point.lat,
                     lon: point.lon,
-                    name: `🚰 VP${index + 1} ${aid.name || `KM ${aid.km}`}`,
+                    name: `AID ${shortName}${time ? ' @' + time : ''}`,
                     desc: `AID at KM ${aid.km.toFixed(1)}${time ? ` | ETA: ${time}` : ''}${aid.stopMin ? ` | Stop: ${aid.stopMin}min` : ''}`,
                     cmt: 'Refill water! Eat something solid.',
                     sym: 'Water Source'
@@ -9454,7 +9455,7 @@ async function exportGpxWithWaypoints() {
                 waypoints.push({
                     lat: point.lat,
                     lon: point.lon,
-                    name: `⛰️ Climb #${index + 1}`,
+                    name: `CLIMB +${Math.round(climb.gain)}m - Hike!`,
                     desc: `KM ${climb.start.toFixed(1)}-${climb.end.toFixed(1)} | +${Math.round(climb.gain)}m`,
                     cmt: climbTip,
                     sym: 'Summit'
@@ -9480,7 +9481,7 @@ async function exportGpxWithWaypoints() {
                 waypoints.push({
                     lat: point.lat,
                     lon: point.lon,
-                    name: fuel.isAid ? `🍫 EAT @ ${fuel.aidName || 'AID'}` : `🍫 EAT @ KM ${fuel.km}`,
+                    name: `EAT NOW! KM${Math.round(fuel.km)}`,
                     desc: `Fuel window at KM ${fuel.km} | ETA: ${timeText}`,
                     cmt: fuelMessages[index % fuelMessages.length],
                     sym: 'Restaurant'
@@ -9494,7 +9495,7 @@ async function exportGpxWithWaypoints() {
         waypoints.push({
             lat: lastPoint.lat,
             lon: lastPoint.lon,
-            name: '🏁 FINISH',
+            name: 'FINISH - You did it!',
             desc: `${gpxData.totalDistance.toFixed(1)} km${totalTime ? ` | Target: ${totalTime}` : ''}`,
             cmt: 'You made it! Celebrate!',
             sym: 'Flag, Red'
