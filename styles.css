@@ -5892,10 +5892,10 @@ h2 {
 
 .race-setup-label {
     display: block;
-    font-size: 1.1rem;
-    font-weight: 500;
-    color: #fff;
-    margin-bottom: 14px;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #00d4ff;
+    margin-bottom: 16px;
 }
 
 .race-level-buttons {
