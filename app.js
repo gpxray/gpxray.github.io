@@ -9748,6 +9748,15 @@ async function exportGpxWithWaypointsWithOptions(options = {}) {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
         
+        // Track GPX export
+        trackEvent('export_gpx_watch', { 
+            race_name: currentRouteName || 'unknown',
+            include_aid_stations: includeAidStations,
+            include_climbs: includeClimbs,
+            include_eat_stops: includeEatStops,
+            waypoint_count: waypoints.length
+        });
+        
         if (btn) {
             btn.textContent = t('btn.downloaded');
             setTimeout(() => {
