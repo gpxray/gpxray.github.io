@@ -596,6 +596,24 @@ header h1 {
     text-decoration: underline;
 }
 
+.feedback-privacy-notice {
+    margin-top: 15px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.75rem;
+    color: #888;
+    text-align: center;
+}
+
+.feedback-privacy-notice a {
+    color: #00d4ff;
+    text-decoration: none;
+}
+
+.feedback-privacy-notice a:hover {
+    text-decoration: underline;
+}
+
 /* Pricing question in feedback */
 .feedback-pricing {
     border-top: 1px solid rgba(255, 255, 255, 0.1);

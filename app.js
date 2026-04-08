@@ -1994,7 +1994,8 @@ function setupFooter() {
     
     document.getElementById('privacyLink')?.addEventListener('click', (e) => {
         e.preventDefault();
-        alert('Privacy Policy\n\n✅ 100% Local Processing\nYour GPX files are processed entirely in your browser. No data is uploaded to any server.\n\n✅ Analytics (with consent)\nIf you accept cookies, we use Google Analytics to understand which features are most useful.\n\n✅ No Account Required\nUse GPXray without creating an account or providing any personal information.');
+        // Open privacy page in new tab
+        window.open('privacy.html', '_blank');
     });
     
     document.getElementById('impressumLink')?.addEventListener('click', (e) => {
@@ -4550,6 +4551,20 @@ function setupFeedback() {
     
     setupPricingButtons('pricingPerRace', 'feedbackPricingPerRace');
     setupPricingButtons('pricingPerYear', 'feedbackPricingPerYear');
+    
+    // Show privacy notice on feedback form
+    const privacyNotice = document.getElementById('feedbackPrivacyNotice');
+    const privacyNoticeText = document.getElementById('privacyNoticeText');
+    if (privacyNotice) {
+        const lang = typeof getLang === 'function' ? getLang() : 'en';
+        const isDE = lang === 'de';
+        privacyNotice.style.display = 'block';
+        if (privacyNoticeText) {
+            privacyNoticeText.innerHTML = isDE 
+                ? 'Weitere Informationen zur Datenverarbeitung findest du in unserer <a href="privacy.html?lang=de" target="_blank">Datenschutzerklärung</a>.' 
+                : 'For more information on data processing, please see our <a href="privacy.html" target="_blank">Privacy Policy</a>';
+        }
+    }
     
     // Open panel function
     const openPanel = () => {
