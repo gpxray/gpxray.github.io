@@ -143,6 +143,17 @@ const RACE_CONFIGS = {
         // tagline removed for compact view
         // accessCode removed - race page is now public
         
+        // Feedback prize giveaway
+        feedbackPrize: {
+            enabled: true,
+            title: 'Win a free RET 2027 start!',
+            titleDE: 'Gewinne einen RET 2027 Startplatz!',
+            description: 'Submit feedback to enter the raffle. Winner chooses any distance!',
+            descriptionDE: 'Feedback abgeben und an der Verlosung teilnehmen. Gewinner wählt die Distanz!',
+            deadline: '2026-04-30T17:00:00+02:00',
+            drawDate: '2026-04-30T21:00:00+02:00'
+        },
+        
         // Branding colors
         branding: {
             primary: '#2d5a27',    // Forest green

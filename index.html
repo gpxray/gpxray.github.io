@@ -254,6 +254,15 @@
                 <h3>💬 <span data-i18n="feedback.title">Send Feedback</span></h3>
                 <button type="button" class="feedback-close" id="feedbackClose">✕</button>
             </div>
+            <!-- Prize banner (shown for races with feedbackPrize) -->
+            <div class="feedback-prize-banner" id="feedbackPrizeBanner" style="display: none;">
+                <div class="prize-icon">🎁</div>
+                <div class="prize-text">
+                    <div class="prize-title" id="prizeTitle">Win a free start!</div>
+                    <div class="prize-desc" id="prizeDesc">Submit with email to enter raffle</div>
+                    <div class="prize-deadline" id="prizeDeadline">⏰ Deadline: April 30, 2026 17:00</div>
+                </div>
+            </div>
             <form class="feedback-form" id="feedbackForm">
                 <div class="feedback-field">
                     <label for="feedbackLike" data-i18n="feedback.like">What do you like about GPXray?</label>
@@ -293,8 +302,17 @@
                     <input type="hidden" id="feedbackPricingPerYear" name="pricingPerYear">
                 </div>
                 <div class="feedback-field">
-                    <label for="feedbackEmail" data-i18n="feedback.email">Email (optional, for follow-up)</label>
+                    <label for="feedbackEmail" id="feedbackEmailLabel" data-i18n="feedback.email">Email (optional, for follow-up)</label>
                     <input type="email" id="feedbackEmail" name="email" placeholder="your@email.com">
+                    <span class="email-usage-hint" id="emailUsageHint"></span>
+                </div>
+                <!-- Raffle opt-in checkbox (shown only when feedbackPrize active) -->
+                <div class="feedback-field raffle-optin" id="raffleOptinField" style="display: none;">
+                    <label class="raffle-checkbox-label">
+                        <input type="checkbox" id="raffleOptin" name="raffleOptin">
+                        <span class="raffle-checkbox-text" id="raffleOptinText"></span>
+                    </label>
+                    <span class="raffle-email-required" id="raffleEmailRequired" style="display: none;"></span>
                 </div>
                 <div class="feedback-actions">
                     <button type="submit" class="feedback-submit">📨 <span data-i18n="feedback.send">Send Feedback</span></button>

@@ -4552,6 +4552,99 @@ function setupFeedback() {
     setupPricingButtons('pricingPerRace', 'feedbackPricingPerRace');
     setupPricingButtons('pricingPerYear', 'feedbackPricingPerYear');
     
+    // Check for race-specific prize giveaway
+    const prizeBanner = document.getElementById('feedbackPrizeBanner');
+    const prizeTitle = document.getElementById('prizeTitle');
+    const prizeDesc = document.getElementById('prizeDesc');
+    
+    if (prizeBanner && typeof detectRaceMode === 'function' && typeof getRaceConfig === 'function') {
+        const raceId = detectRaceMode();
+        const raceConfig = raceId ? getRaceConfig(raceId) : null;
+        const prize = raceConfig?.feedbackPrize;
+        
+        if (prize?.enabled) {
+            const lang = typeof getLang === 'function' ? getLang() : 'en';
+            const isDE = lang === 'de';
+            
+            // Check if raffle is still open
+            const now = new Date();
+            const deadline = prize.deadline ? new Date(prize.deadline) : null;
+            const isRaffleOpen = !deadline || now < deadline;
+            
+            prizeTitle.textContent = isDE ? prize.titleDE : prize.title;
+            prizeDesc.textContent = isDE ? prize.descriptionDE : prize.description;
+            prizeBanner.style.display = 'flex';
+            
+            // Show deadline
+            const prizeDeadline = document.getElementById('prizeDeadline');
+            if (prizeDeadline && deadline) {
+                if (isRaffleOpen) {
+                    prizeDeadline.textContent = isDE 
+                        ? `⏰ Einsendeschluss: 30. April 2026, 17:00 Uhr` 
+                        : `⏰ Deadline: April 30, 2026 5:00 PM`;
+                } else {
+                    prizeDeadline.textContent = isDE 
+                        ? `❌ Verlosung beendet` 
+                        : `❌ Raffle closed`;
+                    prizeDeadline.classList.add('raffle-closed-msg');
+                }
+            }
+            
+            // Update email field label and hint
+            const emailLabel = document.getElementById('feedbackEmailLabel');
+            const emailHint = document.getElementById('emailUsageHint');
+            if (emailLabel) {
+                emailLabel.textContent = isDE 
+                    ? 'E-Mail (optional, für Rückfragen)' 
+                    : 'Email (optional, for follow-up)';
+            }
+            if (emailHint) {
+                emailHint.textContent = isDE 
+                    ? 'Kurzfristige Rückfragen oder Gewinnbenachrichtigung.' 
+                    : 'Used for short follow-ups or prize notification.';
+            }
+            
+            // Show raffle opt-in checkbox (only if raffle is open)
+            const raffleOptinField = document.getElementById('raffleOptinField');
+            const raffleOptinText = document.getElementById('raffleOptinText');
+            const raffleOptin = document.getElementById('raffleOptin');
+            
+            if (raffleOptinField && isRaffleOpen) {
+                raffleOptinField.style.display = 'block';
+                if (raffleOptinText) {
+                    raffleOptinText.innerHTML = isDE 
+                        ? 'Ich willige ein, dass meine E-Mail-Adresse ausschließlich zur Durchführung der Verlosung und für eine einmalige Rückfrage verarbeitet wird. <strong>Keine Nutzung zu Marketingzwecken.</strong> <a href="raffle-terms.html?lang=de" target="_blank">Teilnahmebedingungen</a>' 
+                        : 'I consent to my email address being processed solely for conducting the prize draw and for a possible one-time follow-up. <strong>No marketing use.</strong> <a href="raffle-terms.html" target="_blank">Terms</a>';
+                }
+            }
+            
+            // Setup checkbox validation
+            const emailInput = document.getElementById('feedbackEmail');
+            const raffleEmailRequired = document.getElementById('raffleEmailRequired');
+            
+            if (raffleOptin && emailInput && raffleEmailRequired) {
+                raffleOptin.addEventListener('change', () => {
+                    if (raffleOptin.checked && !emailInput.value.trim()) {
+                        raffleEmailRequired.style.display = 'block';
+                        raffleEmailRequired.textContent = isDE 
+                            ? '⚠️ E-Mail für Verlosung erforderlich' 
+                            : '⚠️ Email required for raffle';
+                    } else {
+                        raffleEmailRequired.style.display = 'none';
+                    }
+                });
+                
+                emailInput.addEventListener('input', () => {
+                    if (emailInput.value.trim()) {
+                        raffleEmailRequired.style.display = 'none';
+                    } else if (raffleOptin.checked) {
+                        raffleEmailRequired.style.display = 'block';
+                    }
+                });
+            }
+        }
+    }
+    
     // Show privacy notice on feedback form
     const privacyNotice = document.getElementById('feedbackPrivacyNotice');
     const privacyNoticeText = document.getElementById('privacyNoticeText');
@@ -4597,6 +4690,21 @@ function setupFeedback() {
     feedbackForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
         
+        // Check if raffle checkbox is checked but no email
+        const raffleOptin = document.getElementById('raffleOptin');
+        const emailInput = document.getElementById('feedbackEmail');
+        if (raffleOptin?.checked && !emailInput?.value.trim()) {
+            const raffleEmailRequired = document.getElementById('raffleEmailRequired');
+            if (raffleEmailRequired) {
+                const lang = typeof getLang === 'function' ? getLang() : 'en';
+                raffleEmailRequired.style.display = 'block';
+                raffleEmailRequired.textContent = lang === 'de' 
+                    ? '⚠️ E-Mail für Verlosung erforderlich' 
+                    : '⚠️ Email required for raffle';
+            }
+            return;
+        }
+        
         const formData = new FormData(feedbackForm);
         const data = {
             like: formData.get('like'),
@@ -4605,6 +4713,7 @@ function setupFeedback() {
             pricingPerRace: formData.get('pricingPerRace') || 'not selected',
             pricingPerYear: formData.get('pricingPerYear') || 'not selected',
             email: formData.get('email'),
+            raffleOptin: raffleOptin?.checked ? 'yes' : 'no',
             url: window.location.href,
             timestamp: new Date().toISOString()
         };
