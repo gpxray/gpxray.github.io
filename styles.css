@@ -1728,14 +1728,31 @@ h2 {
 @media (max-width: 600px) {
     .route-name-display {
         flex-wrap: wrap;
+        gap: 8px;
     }
     
     .route-name-display h2 {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         white-space: normal;
         word-break: break-word;
         overflow: visible;
         text-overflow: unset;
+        flex: 1 1 calc(100% - 50px); /* Take most of row, leave space for icon */
+        order: 1;
+    }
+    
+    .route-icon {
+        order: 0;
+    }
+    
+    .route-actions {
+        order: 2;
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .change-route-btn {
+        order: 3;
     }
 }
 
