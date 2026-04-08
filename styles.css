@@ -5691,22 +5691,35 @@ h2 {
 /* Mobile: Compact race header */
 @media (max-width: 500px) {
     .race-landing-header {
+        flex-direction: row;
         gap: 12px;
-        padding: 12px 16px;
+        padding: 10px 14px;
     }
     
     .race-logo img {
-        max-height: 50px;
-        max-width: 70px;
-        padding: 6px;
+        max-height: 45px;
+        max-width: 60px;
+        padding: 4px;
+        border-radius: 6px;
+    }
+    
+    .race-info {
+        text-align: left;
     }
     
     .race-name {
-        font-size: 1.1rem;
+        font-size: 1rem;
+        margin-bottom: 2px;
     }
     
     .race-details {
-        font-size: 0.8rem;
+        flex-direction: row;
+        gap: 8px;
+        font-size: 0.75rem;
+    }
+    
+    .race-details span {
+        display: inline;
     }
 }
 
