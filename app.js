@@ -9373,7 +9373,7 @@ async function exportGpxWithWaypoints() {
     
     const btn = document.getElementById('exportGpxWaypoints');
     if (btn) {
-        btn.textContent = '⏳ Generating...';
+        btn.textContent = t('btn.generating');
         btn.disabled = true;
     }
     
@@ -9546,9 +9546,9 @@ async function exportGpxWithWaypoints() {
         URL.revokeObjectURL(url);
         
         if (btn) {
-            btn.textContent = '✅ Downloaded!';
+            btn.textContent = t('btn.downloaded');
             setTimeout(() => {
-                btn.textContent = '📍 Export GPX for Watch';
+                btn.innerHTML = `⌚ <span data-i18n="btn.exportGpx">${t('btn.exportGpx')}</span>`;
                 btn.disabled = false;
             }, 2000);
         }
@@ -9557,7 +9557,7 @@ async function exportGpxWithWaypoints() {
         console.error('Error exporting GPX:', error);
         alert('Failed to export GPX file.');
         if (btn) {
-            btn.textContent = '📍 Export GPX for Watch';
+            btn.innerHTML = `⌚ <span data-i18n="btn.exportGpx">${t('btn.exportGpx')}</span>`;
             btn.disabled = false;
         }
     }
