@@ -5618,6 +5618,23 @@ h2 {
     margin: 6px 0;
 }
 
+/* Mobile: Compact intro */
+@media (max-width: 500px) {
+    .race-landing-intro-headline {
+        font-size: 1.1rem;
+        margin-bottom: 6px;
+    }
+    
+    .race-landing-features {
+        margin-bottom: 14px;
+    }
+    
+    .race-landing-features li {
+        font-size: 0.9rem;
+        margin: 4px 0;
+    }
+}
+
 .race-landing .feature-pills {
     justify-content: center;
 }
@@ -5669,6 +5686,28 @@ h2 {
 
 .race-details span {
     display: block;
+}
+
+/* Mobile: Compact race header */
+@media (max-width: 500px) {
+    .race-landing-header {
+        gap: 12px;
+        padding: 12px 16px;
+    }
+    
+    .race-logo img {
+        max-height: 50px;
+        max-width: 70px;
+        padding: 6px;
+    }
+    
+    .race-name {
+        font-size: 1.1rem;
+    }
+    
+    .race-details {
+        font-size: 0.8rem;
+    }
 }
 
 .race-details span::before {
