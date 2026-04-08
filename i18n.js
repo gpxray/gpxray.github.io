@@ -370,6 +370,7 @@ const TRANSLATIONS = {
         'btn.joinWaitlist': 'Join Waitlist',
         'btn.shareStrategy': 'Create Share Card',
         'btn.lockscreenCard': 'Lockscreen Card',
+        'btn.feedback': 'Share your feedback',
         
         // Crew Card export
         'crew.title': 'CREW SCHEDULE',
@@ -922,6 +923,7 @@ const TRANSLATIONS = {
         'btn.joinWaitlist': 'Warteliste beitreten',
         'btn.shareStrategy': 'Share Card erstellen',
         'btn.lockscreenCard': 'Sperrbildschirm-Karte',
+        'btn.feedback': 'Feedback teilen',
         
         // Crew Card export
         'crew.title': 'CREW ZEITPLAN',

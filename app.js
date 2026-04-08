@@ -3607,6 +3607,12 @@ function updateStoryButtonVisibility() {
             previewSection.style.display = 'none';
         }
     }
+    
+    // Show feedback reminder
+    const feedbackReminder = document.getElementById('feedbackReminder');
+    if (feedbackReminder) {
+        feedbackReminder.style.display = 'block';
+    }
 }
 
 // Setup chart selector for elevation/gradient toggle
