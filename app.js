@@ -9462,9 +9462,9 @@ async function exportGpxWithWaypoints() {
             });
         }
         
-        // 4. Fuel windows (if available)
-        const fuelWindows = document.querySelectorAll('#heroFuelWindows .fuel-window-item');
-        if (fuelWindows && fuelWindows.length > 0) {
+        // 4. Fuel windows - use stored data (more reliable than DOM)
+        const allFuelStops = window.allFuelStops || [];
+        if (allFuelStops.length > 0) {
             const fuelMessages = [
                 'Time to eat! Take a gel or bar now.',
                 'Fuel up! Drink and eat something.',
@@ -9472,23 +9472,19 @@ async function exportGpxWithWaypoints() {
                 'Nutrition check! Gel or real food.',
                 'Eat something! Dont wait until hungry.'
             ];
-            fuelWindows.forEach((item, index) => {
-                const kmText = item.querySelector('.fuel-window-km')?.textContent;
-                const timeText = item.querySelector('.fuel-window-time')?.textContent;
-                if (kmText) {
-                    const km = parseFloat(kmText.replace('KM ', ''));
-                    if (!isNaN(km)) {
-                        const point = findPointAtDistance(km);
-                        waypoints.push({
-                            lat: point.lat,
-                            lon: point.lon,
-                            name: `🍫 EAT NOW - KM ${km}`,
-                            desc: timeText ? `Estimated: ${timeText}` : 'Fuel window',
-                            cmt: fuelMessages[index % fuelMessages.length],
-                            sym: 'Food Source'
-                        });
-                    }
-                }
+            allFuelStops.forEach((fuel, index) => {
+                const point = findPointAtDistance(fuel.km);
+                const hours = Math.floor(fuel.estTimeMin / 60);
+                const mins = fuel.estTimeMin % 60;
+                const timeText = hours > 0 ? `~${hours}h${mins.toString().padStart(2,'0')}` : `~${mins}min`;
+                waypoints.push({
+                    lat: point.lat,
+                    lon: point.lon,
+                    name: fuel.isAid ? `🍫 EAT @ ${fuel.aidName || 'AID'}` : `🍫 EAT @ KM ${fuel.km}`,
+                    desc: `Fuel window at KM ${fuel.km} | ETA: ${timeText}`,
+                    cmt: fuelMessages[index % fuelMessages.length],
+                    sym: 'Restaurant'
+                });
             });
         }
         
