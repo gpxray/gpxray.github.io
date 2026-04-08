@@ -4567,10 +4567,17 @@ function setupFeedback() {
             const lang = typeof getLang === 'function' ? getLang() : 'en';
             const isDE = lang === 'de';
             
-            // Update feedback button text to show prize
+            // Update feedback button text to show prize (header button)
             const feedbackBtnSpan = feedbackBtn?.querySelector('span');
             if (feedbackBtnSpan) {
                 feedbackBtnSpan.textContent = isDE ? '🎁 Feedback & Verlosung' : '🎁 Feedback & Win';
+            }
+            
+            // Update feedback reminder button text (in export section)
+            const feedbackReminderBtn = document.getElementById('feedbackReminderBtn');
+            const feedbackReminderSpan = feedbackReminderBtn?.querySelector('span');
+            if (feedbackReminderSpan) {
+                feedbackReminderSpan.textContent = isDE ? '🎁 Feedback & Verlosung' : '🎁 Feedback & Win';
             }
             
             // Check if raffle is still open
