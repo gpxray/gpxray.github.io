@@ -1442,6 +1442,9 @@ header h1 {
     padding: 30px;
     max-width: 420px;
     width: 90%;
+    max-height: calc(100vh - 40px);
+    max-height: calc(100dvh - 40px); /* Dynamic viewport height for mobile */
+    overflow-y: auto;
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
@@ -1667,6 +1670,88 @@ header h1 {
 .profile-marker-option input[type="radio"],
 .profile-marker-option input[type="checkbox"] {
     accent-color: #00d4ff;
+}
+
+/* Mobile optimizations for export modals */
+@media (max-width: 600px) {
+    .gpx-export-modal {
+        padding: 20px;
+        max-height: calc(100vh - 20px);
+        max-height: calc(100dvh - 20px);
+    }
+    
+    .gpx-export-modal-icon {
+        font-size: 2rem;
+        margin-bottom: 5px;
+    }
+    
+    .gpx-export-modal h3 {
+        font-size: 1.2rem;
+        margin-bottom: 4px;
+    }
+    
+    .gpx-export-modal-subtitle {
+        font-size: 0.85rem;
+        margin-bottom: 12px;
+    }
+    
+    .gpx-export-option {
+        padding: 10px 12px;
+        gap: 10px;
+    }
+    
+    .gpx-option-icon {
+        font-size: 1.2rem;
+    }
+    
+    .gpx-option-text strong {
+        font-size: 0.9rem;
+    }
+    
+    .gpx-option-text small {
+        font-size: 0.75rem;
+    }
+    
+    .gpx-export-options {
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+    
+    .gpx-export-hint {
+        font-size: 0.75rem;
+        margin-bottom: 12px;
+    }
+    
+    .lockscreen-size-selector {
+        gap: 8px;
+        padding: 8px 10px;
+        margin-bottom: 12px;
+    }
+    
+    .lockscreen-size-selector label {
+        font-size: 0.85rem;
+    }
+    
+    .size-btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+    
+    .lockscreen-profile-options {
+        margin: -5px 0 8px 30px;
+        padding: 6px 10px;
+    }
+    
+    .profile-marker-option {
+        font-size: 0.8rem;
+        padding: 4px 0;
+    }
+    
+    .gpx-export-cancel,
+    .gpx-export-confirm {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
 }
 
 /* Toast Notifications */
