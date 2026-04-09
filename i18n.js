@@ -405,7 +405,7 @@ const TRANSLATIONS = {
         'lockscreenExport.small': 'Small',
         'lockscreenExport.medium': 'Medium',
         'lockscreenExport.large': 'Large',
-        'lockscreenExport.hint': '💡 Tip: Profile + Schedule OR Challenges + Schedule work best. Selecting all may overflow.',
+        'lockscreenExport.hint': '💡 Profile and Challenges are exclusive — pick one visual style for your card.',
         'lockscreenExport.export': 'Create Card',
         
         // Crew Card export
@@ -993,7 +993,7 @@ const TRANSLATIONS = {
         'lockscreenExport.small': 'Klein',
         'lockscreenExport.medium': 'Mittel',
         'lockscreenExport.large': 'Groß',
-        'lockscreenExport.hint': '💡 Tipp: Profil + Zeitplan ODER Herausforderungen + Zeitplan funktioniert am besten. Alles auswählen kann überlaufen.'
+        'lockscreenExport.hint': '💡 Profil und Herausforderungen sind exklusiv — wähle einen visuellen Stil für deine Karte.'
         'lockscreenExport.export': 'Karte erstellen',
         
         // Crew Card export

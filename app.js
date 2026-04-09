@@ -9912,6 +9912,7 @@ function setupLockscreenExportModal() {
     const confirmBtn = document.getElementById('lockscreenExportConfirm');
     const sizeButtons = document.querySelectorAll('.size-btn');
     const profileCheckbox = document.getElementById('lockscreenShowProfile');
+    const challengesCheckbox = document.getElementById('lockscreenShowChallenges');
     const profileOptions = document.getElementById('lockscreenProfileOptions');
     
     // Close modal handlers
@@ -9919,10 +9920,24 @@ function setupLockscreenExportModal() {
     closeBtn?.addEventListener('click', hideLockscreenExportModal);
     cancelBtn?.addEventListener('click', hideLockscreenExportModal);
     
-    // Profile checkbox toggle - show/hide sub-options
+    // Profile checkbox toggle - show/hide sub-options AND uncheck Challenges (mutually exclusive)
     profileCheckbox?.addEventListener('change', () => {
         if (profileOptions) {
             profileOptions.style.display = profileCheckbox.checked ? 'block' : 'none';
+        }
+        // Mutually exclusive: uncheck Challenges when Profile is checked
+        if (profileCheckbox.checked && challengesCheckbox) {
+            challengesCheckbox.checked = false;
+        }
+    });
+    
+    // Challenges checkbox - uncheck Profile when checked (mutually exclusive)
+    challengesCheckbox?.addEventListener('change', () => {
+        if (challengesCheckbox.checked && profileCheckbox) {
+            profileCheckbox.checked = false;
+            if (profileOptions) {
+                profileOptions.style.display = 'none';
+            }
         }
     });
     
