@@ -8,6 +8,14 @@ venv/
 # API folder - deployed to Azure only, not GitHub
 api/
 
+# Tools and scripts - local only
+tools/
+analyze_workouts.py
+*.py
+
+# GPX inbox - race files
+inbox/
+
 # Deployment artifacts
 deploy.zip
 api-deploy.zip
