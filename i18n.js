@@ -405,7 +405,7 @@ const TRANSLATIONS = {
         'lockscreenExport.small': 'Small',
         'lockscreenExport.medium': 'Medium',
         'lockscreenExport.large': 'Large',
-        'lockscreenExport.hint': '💡 Profile and Challenges are exclusive — pick one visual style for your card.',
+        'lockscreenExport.hint': '💡 Profile shows climb zones (orange) + AID markers (green). Challenges = text-only climbs list.',
         'lockscreenExport.export': 'Create Card',
         
         // Crew Card export
@@ -993,7 +993,7 @@ const TRANSLATIONS = {
         'lockscreenExport.small': 'Klein',
         'lockscreenExport.medium': 'Mittel',
         'lockscreenExport.large': 'Groß',
-        'lockscreenExport.hint': '💡 Profil und Herausforderungen sind exklusiv — wähle einen visuellen Stil für deine Karte.',
+        'lockscreenExport.hint': '💡 Profil zeigt Anstiege (orange) + Verpflegung (grün). Herausforderungen = nur Text-Liste.',
         'lockscreenExport.export': 'Karte erstellen',
         
         // Crew Card export

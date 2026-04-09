@@ -1664,7 +1664,8 @@ header h1 {
     color: #fff;
 }
 
-.profile-marker-option input[type="radio"] {
+.profile-marker-option input[type="radio"],
+.profile-marker-option input[type="checkbox"] {
     accent-color: #00d4ff;
 }
 
