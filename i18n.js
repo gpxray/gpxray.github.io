@@ -388,6 +388,22 @@ const TRANSLATIONS = {
         'gpxExport.eatStopsDesc': 'Terrain-based fuel spots between aid stations',
         'gpxExport.hint': '💡 Some watches show climbs automatically. Uncheck if yours does too.',
         
+        // Lockscreen Card Export Options Modal
+        'lockscreenExport.title': 'Customize Lockscreen Card',
+        'lockscreenExport.subtitle': 'Choose what to include on your card:',
+        'lockscreenExport.schedule': 'AID Station Schedule',
+        'lockscreenExport.scheduleDesc': 'Expected arrival times at each station',
+        'lockscreenExport.challenges': 'Key Challenges',
+        'lockscreenExport.challengesDesc': 'Major climbs, night sections, leg fatigue',
+        'lockscreenExport.stats': 'Race Stats',
+        'lockscreenExport.statsDesc': 'Distance, elevation gain/loss',
+        'lockscreenExport.fontSize': 'Font Size:',
+        'lockscreenExport.small': 'Small',
+        'lockscreenExport.medium': 'Medium',
+        'lockscreenExport.large': 'Large',
+        'lockscreenExport.hint': '💡 Large font = fewer stations fit. Use Small for 8+ AID stations.',
+        'lockscreenExport.export': 'Create Card',
+        
         // Crew Card export
         'crew.title': 'CREW SCHEDULE',
         'crew.finish': 'FINISH',
@@ -955,6 +971,22 @@ const TRANSLATIONS = {
         'gpxExport.eatStops': 'Essen-Erinnerungen',
         'gpxExport.eatStopsDesc': 'Terrain-basierte Spots zwischen Stationen',
         'gpxExport.hint': '💡 Manche Uhren zeigen Anstiege automatisch. Deaktiviere wenn deine das auch tut.',
+        
+        // Lockscreen Card Export Options Modal
+        'lockscreenExport.title': 'Sperrbildschirm-Karte anpassen',
+        'lockscreenExport.subtitle': 'Was soll auf der Karte enthalten sein?',
+        'lockscreenExport.schedule': 'Verpflegungsplan',
+        'lockscreenExport.scheduleDesc': 'Erwartete Ankunftszeiten an jeder Station',
+        'lockscreenExport.challenges': 'Schlüsselherausforderungen',
+        'lockscreenExport.challengesDesc': 'Große Anstiege, Nachtetappen, Beinermüdung',
+        'lockscreenExport.stats': 'Renndaten',
+        'lockscreenExport.statsDesc': 'Distanz, Höhengewinn/-verlust',
+        'lockscreenExport.fontSize': 'Schriftgröße:',
+        'lockscreenExport.small': 'Klein',
+        'lockscreenExport.medium': 'Mittel',
+        'lockscreenExport.large': 'Groß',
+        'lockscreenExport.hint': '💡 Große Schrift = weniger Stationen passen. Nutze Klein für 8+ Stationen.',
+        'lockscreenExport.export': 'Karte erstellen',
         
         // Crew Card export
         'crew.title': 'CREW ZEITPLAN',

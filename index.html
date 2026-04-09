@@ -1457,6 +1457,62 @@
         </div>
     </div>
 
+    <!-- Lockscreen Card Options Modal -->
+    <div class="gpx-export-overlay" id="lockscreenExportOverlay"></div>
+    <div class="gpx-export-modal" id="lockscreenExportModal">
+        <div class="gpx-export-modal-content">
+            <button class="gpx-export-modal-close" id="lockscreenExportModalClose">✕</button>
+            <div class="gpx-export-modal-icon">📱</div>
+            <h3 data-i18n="lockscreenExport.title">Customize Lockscreen Card</h3>
+            <p class="gpx-export-modal-subtitle" data-i18n="lockscreenExport.subtitle">Choose what to include on your card:</p>
+            
+            <div class="gpx-export-options">
+                <label class="gpx-export-option">
+                    <input type="checkbox" id="lockscreenShowSchedule" checked>
+                    <span class="gpx-option-icon">⏱️</span>
+                    <span class="gpx-option-text">
+                        <strong data-i18n="lockscreenExport.schedule">AID Station Schedule</strong>
+                        <small data-i18n="lockscreenExport.scheduleDesc">Expected arrival times at each station</small>
+                    </span>
+                </label>
+                
+                <label class="gpx-export-option">
+                    <input type="checkbox" id="lockscreenShowChallenges" checked>
+                    <span class="gpx-option-icon">🎯</span>
+                    <span class="gpx-option-text">
+                        <strong data-i18n="lockscreenExport.challenges">Key Challenges</strong>
+                        <small data-i18n="lockscreenExport.challengesDesc">Major climbs, night sections, leg fatigue</small>
+                    </span>
+                </label>
+                
+                <label class="gpx-export-option">
+                    <input type="checkbox" id="lockscreenShowStats" checked>
+                    <span class="gpx-option-icon">📊</span>
+                    <span class="gpx-option-text">
+                        <strong data-i18n="lockscreenExport.stats">Race Stats</strong>
+                        <small data-i18n="lockscreenExport.statsDesc">Distance, elevation gain/loss</small>
+                    </span>
+                </label>
+            </div>
+            
+            <div class="lockscreen-size-selector">
+                <label data-i18n="lockscreenExport.fontSize">Font Size:</label>
+                <div class="size-buttons">
+                    <button type="button" class="size-btn" data-size="small" data-i18n="lockscreenExport.small">Small</button>
+                    <button type="button" class="size-btn selected" data-size="medium" data-i18n="lockscreenExport.medium">Medium</button>
+                    <button type="button" class="size-btn" data-size="large" data-i18n="lockscreenExport.large">Large</button>
+                </div>
+            </div>
+            
+            <p class="gpx-export-hint" data-i18n="lockscreenExport.hint">💡 Large font = fewer stations fit. Use Small for 8+ AID stations.</p>
+            
+            <div class="gpx-export-buttons">
+                <button class="gpx-export-cancel" id="lockscreenExportCancel" data-i18n="btn.cancel">Cancel</button>
+                <button class="gpx-export-confirm" id="lockscreenExportConfirm">📱 <span data-i18n="lockscreenExport.export">Create Card</span></button>
+            </div>
+        </div>
+    </div>
+
     <!-- Cookie Consent Banner -->
     <div class="cookie-banner" id="cookieBanner">
         <div class="cookie-content">

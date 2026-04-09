@@ -343,6 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupCookieConsent();
     setupEarlyAccess();
     setupGpxExportModal();
+    setupLockscreenExportModal();
     updateEarlyAccessUI();
     setupRunnerLevel();
     setupItraScore();
@@ -8888,8 +8889,15 @@ async function exportToPdf() {
     }
 }
 
-// Share Card Export (Phone format image)
+// Share Card Export (Phone format image) - shows modal first
 async function exportShareCard() {
+    showLockscreenExportModal();
+}
+
+// Share Card Export with options
+async function exportShareCardWithOptions(options = {}) {
+    const { showSchedule = true, showChallenges = true, showStats = true, fontSize = 'medium' } = options;
+    
     if (!gpxData || segments.length === 0) {
         alert('Please load a GPX file and calculate your race strategy first.');
         return;
@@ -8976,10 +8984,11 @@ async function exportShareCard() {
                 }
             });
             
-            // Dynamic sizing based on station count
+            // Dynamic sizing based on station count AND user fontSize preference
             const stationCount = stationData.length;
             let rowPadding, kmSize, nameSize, timeSize, clockSize, legInfoSize, showLegInfo;
             
+            // Base sizing on station count
             if (stationCount <= 4) {
                 // Large mode
                 rowPadding = '14px 0';
@@ -9008,6 +9017,26 @@ async function exportShareCard() {
                 legInfoSize = '11px';
                 showLegInfo = false; // Hide leg info to save space
             }
+            
+            // Apply user fontSize preference (overrides auto-sizing)
+            if (fontSize === 'large') {
+                rowPadding = '14px 0';
+                kmSize = '22px';
+                nameSize = '20px';
+                timeSize = '18px';
+                clockSize = '22px';
+                legInfoSize = '14px';
+                showLegInfo = stationCount <= 5; // Only show leg info if few stations
+            } else if (fontSize === 'small') {
+                rowPadding = '6px 0';
+                kmSize = '14px';
+                nameSize = '12px';
+                timeSize = '11px';
+                clockSize = '14px';
+                legInfoSize = '10px';
+                showLegInfo = false;
+            }
+            // fontSize === 'medium' uses the auto-calculated sizes above
             
             // Calculate leg info and build HTML
             let prevKm = 0;
@@ -9222,12 +9251,8 @@ async function exportShareCard() {
         // Base64 encoded GPXray logo for html2canvas compatibility
         const logoBase64 = 'data:image/png;base64,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';
         
-        card.innerHTML = `
-            <div style="text-align: center; margin-bottom: 15px;">
-                <div style="font-size: 16px; font-weight: 600; color: #00d4ff; margin-bottom: 4px;">GPXray</div>
-                <div style="font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 2px; font-weight: 500;">${t('lockscreen.subtitle')}</div>
-            </div>
-            
+        // Build stats section conditionally
+        const statsSection = showStats ? `
             <div style="background: rgba(0,212,255,0.15); border-radius: 10px; padding: 12px 15px; margin-bottom: 15px;">
                 <div style="font-size: 18px; font-weight: bold; text-align: center; margin-bottom: 8px;">${routeName}</div>
                 <div style="display: flex; justify-content: center; gap: 20px; font-size: 14px; color: #ccc;">
@@ -9236,23 +9261,42 @@ async function exportShareCard() {
                     <span>-${gpxData.elevationLoss.toFixed(0)}m</span>
                 </div>
             </div>
+        ` : `
+            <div style="background: rgba(0,212,255,0.15); border-radius: 10px; padding: 12px 15px; margin-bottom: 15px;">
+                <div style="font-size: 18px; font-weight: bold; text-align: center;">${routeName}</div>
+            </div>
+        `;
+        
+        // Build challenges section conditionally
+        const challengesSectionHtml = showChallenges ? challengesHtml : '';
+        
+        // Build schedule section conditionally
+        const scheduleSectionHtml = showSchedule && aidStationsList ? `
+            <div style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 15px; margin-bottom: 20px;">
+                <div style="font-size: 16px; color: #aaa; margin-bottom: 12px; text-align: center; font-weight: 600;">⏱️ ${t('lockscreen.raceSchedule')}</div>
+                <div style="display: flex; align-items: center; padding: 6px 0; border-bottom: 2px solid rgba(255,255,255,0.2); margin-bottom: 8px;">
+                    <span style="color: #888; min-width: 55px; font-size: 12px; font-weight: 600;">${unitLabel.toUpperCase()}</span>
+                    <span style="flex: 1; margin: 0 6px; font-size: 12px; color: #888; font-weight: 600;">${t('lockscreen.station')}</span>
+                    <span style="color: #888; font-size: 12px; margin-right: 10px; font-weight: 600;">${t('lockscreen.race')}</span>
+                    <span style="color: #888; min-width: 75px; text-align: right; font-size: 12px; font-weight: 600;">${t('lockscreen.clock')}</span>
+                </div>
+                ${aidStationsList}
+            </div>
+        ` : '';
+        
+        card.innerHTML = `
+            <div style="text-align: center; margin-bottom: 15px;">
+                <div style="font-size: 16px; font-weight: 600; color: #00d4ff; margin-bottom: 4px;">GPXray</div>
+                <div style="font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 2px; font-weight: 500;">${t('lockscreen.subtitle')}</div>
+            </div>
+            
+            ${statsSection}
             
             ${timesSection ? `<div style="text-align: center; margin-bottom: 15px;">${timesSection}</div>` : ''}
             
-            ${challengesHtml}
+            ${challengesSectionHtml}
             
-            ${aidStationsList ? `
-                <div style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 15px; margin-bottom: 20px;">
-                    <div style="font-size: 16px; color: #aaa; margin-bottom: 12px; text-align: center; font-weight: 600;">⏱️ ${t('lockscreen.raceSchedule')}</div>
-                    <div style="display: flex; align-items: center; padding: 6px 0; border-bottom: 2px solid rgba(255,255,255,0.2); margin-bottom: 8px;">
-                        <span style="color: #888; min-width: 55px; font-size: 12px; font-weight: 600;">${unitLabel.toUpperCase()}</span>
-                        <span style="flex: 1; margin: 0 6px; font-size: 12px; color: #888; font-weight: 600;">${t('lockscreen.station')}</span>
-                        <span style="color: #888; font-size: 12px; margin-right: 10px; font-weight: 600;">${t('lockscreen.race')}</span>
-                        <span style="color: #888; min-width: 75px; text-align: right; font-size: 12px; font-weight: 600;">${t('lockscreen.clock')}</span>
-                    </div>
-                    ${aidStationsList}
-                </div>
-            ` : ''}
+            ${scheduleSectionHtml}
             
             <div style="position: absolute; bottom: 20px; left: 0; right: 0; text-align: center;">
                 <div style="font-size: 11px; color: #555;">gpxray.run</div>
@@ -9702,6 +9746,71 @@ function setupGpxExportModal() {
             includeAidStations,
             includeClimbs,
             includeEatStops
+        });
+    });
+}
+
+// Show Lockscreen Export Options Modal
+function showLockscreenExportModal() {
+    if (!gpxData || segments.length === 0) {
+        alert('Please load a GPX file and calculate your race strategy first.');
+        return;
+    }
+    
+    const overlay = document.getElementById('lockscreenExportOverlay');
+    const modal = document.getElementById('lockscreenExportModal');
+    
+    if (overlay && modal) {
+        overlay.classList.add('visible');
+        modal.classList.add('visible');
+    }
+}
+
+// Hide Lockscreen Export Options Modal
+function hideLockscreenExportModal() {
+    const overlay = document.getElementById('lockscreenExportOverlay');
+    const modal = document.getElementById('lockscreenExportModal');
+    
+    if (overlay && modal) {
+        overlay.classList.remove('visible');
+        modal.classList.remove('visible');
+    }
+}
+
+// Setup Lockscreen Export Modal event listeners
+function setupLockscreenExportModal() {
+    const overlay = document.getElementById('lockscreenExportOverlay');
+    const closeBtn = document.getElementById('lockscreenExportModalClose');
+    const cancelBtn = document.getElementById('lockscreenExportCancel');
+    const confirmBtn = document.getElementById('lockscreenExportConfirm');
+    const sizeButtons = document.querySelectorAll('.size-btn');
+    
+    // Close modal handlers
+    overlay?.addEventListener('click', hideLockscreenExportModal);
+    closeBtn?.addEventListener('click', hideLockscreenExportModal);
+    cancelBtn?.addEventListener('click', hideLockscreenExportModal);
+    
+    // Size button selection
+    sizeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            sizeButtons.forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+        });
+    });
+    
+    // Confirm export with selected options
+    confirmBtn?.addEventListener('click', () => {
+        const showSchedule = document.getElementById('lockscreenShowSchedule')?.checked ?? true;
+        const showChallenges = document.getElementById('lockscreenShowChallenges')?.checked ?? true;
+        const showStats = document.getElementById('lockscreenShowStats')?.checked ?? true;
+        const selectedSize = document.querySelector('.size-btn.selected')?.dataset.size || 'medium';
+        
+        hideLockscreenExportModal();
+        exportShareCardWithOptions({
+            showSchedule,
+            showChallenges,
+            showStats,
+            fontSize: selectedSize
         });
     });
 }
