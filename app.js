@@ -7329,6 +7329,7 @@ function generateSplitsTable(flatPace, uphillPace, downhillPace, apiTotalTime) {
 
             const aidRow = document.createElement('tr');
             aidRow.classList.add('aid-station-row');
+            aidRow.dataset.stationIndex = stationIndex; // For mobile tap-to-edit
             if (isNightTime(clockTimeMinutes % (24 * 60))) {
                 aidRow.classList.add('night-section');
             }
@@ -7416,6 +7417,7 @@ function generateSplitsTable(flatPace, uphillPace, downhillPace, apiTotalTime) {
         const row = document.createElement('tr');
         if (hasAidStation) {
             row.classList.add('aid-station-row');
+            row.dataset.stationIndex = aidStations.findIndex(s => s.km === aidStation.km); // For mobile tap-to-edit
         }
         if (isNightTime(clockTimeMinutes % (24 * 60))) {
             row.classList.add('night-section');
@@ -7521,6 +7523,36 @@ function setupEditableStopTimes() {
                     cell.textContent = originalContent;
                 }
             });
+        });
+    });
+    
+    // Mobile: Allow tapping entire AID row to edit stop time (since Stop column is hidden on mobile)
+    const aidRows = document.querySelectorAll('.aid-station-row[data-station-index]');
+    aidRows.forEach(row => {
+        row.style.cursor = 'pointer';
+        row.title = 'Tap to edit stop time';
+        
+        row.addEventListener('click', function(e) {
+            // Don't trigger if clicking on an editable-stop cell (desktop behavior)
+            if (e.target.closest('.editable-stop')) return;
+            // Don't trigger if already editing
+            if (this.querySelector('input')) return;
+            
+            const stationIndex = parseInt(this.dataset.stationIndex);
+            if (isNaN(stationIndex) || !aidStations[stationIndex]) return;
+            
+            const station = aidStations[stationIndex];
+            const currentValue = station.stopMin || 0;
+            
+            // Use prompt for mobile (simpler than inline editing)
+            const newValueStr = prompt(`Stop time at ${station.name} (minutes):`, currentValue);
+            if (newValueStr === null) return; // Cancelled
+            
+            const newValue = Math.max(0, Math.min(60, parseInt(newValueStr) || 0));
+            station.stopMin = newValue;
+            
+            // Recalculate race plan
+            calculateRacePlan();
         });
     });
 }

@@ -4961,6 +4961,20 @@ h2 {
 /* AID Station highlight in splits table */
 .aid-station-row {
     background: rgba(255, 165, 0, 0.1) !important;
+    cursor: pointer;
+}
+
+.aid-station-row:active {
+    background: rgba(255, 165, 0, 0.25) !important;
+}
+
+/* Mobile: Show tap hint on AID station name */
+@media (max-width: 768px) {
+    .aid-station-row .aid-station-cell::after {
+        content: ' ✏️';
+        font-size: 0.8em;
+        opacity: 0.6;
+    }
 }
 
 .aid-station-cell {
