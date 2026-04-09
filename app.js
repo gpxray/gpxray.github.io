@@ -968,7 +968,7 @@ function updateOverrideHint() {
     const heroTargetTime = document.getElementById('heroTargetTime');
     const mainItraInput = document.getElementById('mainItraScoreInput');
     
-    const hasTargetTime = heroTargetTime?.value?.match(/^\\d{1,2}:\\d{2}$/);
+    const hasTargetTime = heroTargetTime?.value?.match(/^\d{1,2}:\d{2}$/);
     const hasItra = mainItraInput?.value && parseInt(mainItraInput.value) >= 200;
     
     if (mainHint) {
