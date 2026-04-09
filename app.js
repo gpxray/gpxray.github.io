@@ -4004,11 +4004,15 @@ function updateHoverMarker(lat, lon, distance, elevation) {
     if (now - lastHoverUpdate < HOVER_THROTTLE_MS) return;
     lastHoverUpdate = now;
     
+    // Calculate cumulative elevation gain to this point (D+)
+    const cumulativeGain = Math.round(calculateElevationGainBetween(0, distance));
+    const tooltipText = `📍 ${distance.toFixed(2)} km · ⛰️ ${cumulativeGain} m`;
+    
     if (hoverMarker) {
         // Just move existing marker (fast)
         hoverMarker.setLatLng([lat, lon]);
         // Update tooltip content
-        hoverMarker.setTooltipContent(`${distance.toFixed(1)} km · ${elevation?.toFixed(0) || '?'} m`);
+        hoverMarker.setTooltipContent(tooltipText);
     } else {
         // Create marker once with simple circle style
         hoverMarker = L.circleMarker([lat, lon], {
@@ -4021,7 +4025,7 @@ function updateHoverMarker(lat, lon, distance, elevation) {
         }).addTo(map);
         
         // Bind permanent tooltip
-        hoverMarker.bindTooltip(`${distance.toFixed(1)} km · ${elevation?.toFixed(0) || '?'} m`, {
+        hoverMarker.bindTooltip(tooltipText, {
             permanent: true,
             direction: 'top',
             offset: [0, -10],
