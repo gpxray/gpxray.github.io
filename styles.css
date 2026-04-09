@@ -6881,13 +6881,13 @@ h2 {
 
 /* Override hint message */
 .level-override-hint {
-    margin-top: 8px;
-    padding: 6px 10px;
-    background: rgba(255, 200, 100, 0.1);
-    border: 1px solid rgba(255, 200, 100, 0.3);
-    border-radius: 6px;
-    font-size: 0.75rem;
-    color: rgba(255, 200, 100, 0.9);
+    margin-top: 6px;
+    padding: 4px 8px;
+    background: rgba(255, 200, 100, 0.08);
+    border: 1px solid rgba(255, 200, 100, 0.25);
+    border-radius: 4px;
+    font-size: 0.7rem;
+    color: rgba(255, 200, 100, 0.8);
     text-align: center;
 }
 
