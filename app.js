@@ -972,15 +972,28 @@ function clearTargetTimeOverride() {
 
 // Update override hint visibility based on active overrides
 function updateOverrideHint() {
+    // Main page hint
     const mainHint = document.getElementById('mainLevelOverrideHint');
     const heroTargetTime = document.getElementById('heroTargetTime');
     const mainItraInput = document.getElementById('mainItraScoreInput');
     
-    const hasTargetTime = heroTargetTime?.value?.match(/^\d{1,2}:\d{2}$/);
-    const hasItra = mainItraInput?.value && parseInt(mainItraInput.value) >= 200;
+    const hasMainTargetTime = heroTargetTime?.value?.match(/^\d{1,2}:\d{2}$/);
+    const hasMainItra = mainItraInput?.value && parseInt(mainItraInput.value) >= 200;
     
     if (mainHint) {
-        mainHint.style.display = (hasTargetTime || hasItra) ? 'block' : 'none';
+        mainHint.style.display = (hasMainTargetTime || hasMainItra) ? 'block' : 'none';
+    }
+    
+    // Race modal hint
+    const raceHint = document.getElementById('raceLevelOverrideHint');
+    const raceTargetTime = document.getElementById('raceTargetTime');
+    const raceItraInput = document.getElementById('itraScoreInput');
+    
+    const hasRaceTargetTime = raceTargetTime?.value?.match(/^\d{1,2}:\d{2}$/);
+    const hasRaceItra = raceItraInput?.value && parseInt(raceItraInput.value) >= 200;
+    
+    if (raceHint) {
+        raceHint.style.display = (hasRaceTargetTime || hasRaceItra) ? 'block' : 'none';
     }
 }
 
