@@ -1002,6 +1002,12 @@ VALID_ACCESS_HASHES = {
     '4aac120e578508cd3ce77a6e6f1f1a1538678128557bd2ba1918ba672422b313',  # GPXRAYBENE
 }
 
+# Time-bounded access codes (hash -> expiry ISO date string)
+# To add: hashlib.sha256("PROMOCODE".encode()).hexdigest() : "2026-05-01"
+TIMED_ACCESS_HASHES = {
+    # Example: 'hash_here': '2026-12-31',  # PROMOCODE expires Dec 31, 2026
+}
+
 # Simple in-memory rate limiting (resets on function cold start)
 _rate_limit_cache = {}
 RATE_LIMIT_ATTEMPTS = 10
@@ -1039,8 +1045,23 @@ def validate_access_code(code: str) -> dict:
     normalized = code.strip().upper()
     code_hash = hashlib.sha256(normalized.encode()).hexdigest()
     
+    # Check permanent codes
     if code_hash in VALID_ACCESS_HASHES:
         return {'valid': True, 'code': normalized}
+    
+    # Check time-bounded codes
+    if code_hash in TIMED_ACCESS_HASHES:
+        expiry_str = TIMED_ACCESS_HASHES[code_hash]
+        try:
+            from datetime import datetime
+            expiry_date = datetime.fromisoformat(expiry_str)
+            if datetime.now() <= expiry_date:
+                return {'valid': True, 'code': normalized, 'expires': expiry_str}
+            else:
+                return {'valid': False, 'reason': 'expired'}
+        except:
+            # Invalid date format, treat as invalid
+            return {'valid': False, 'reason': 'invalid_code'}
     
     return {'valid': False, 'reason': 'invalid_code'}
 
