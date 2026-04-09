@@ -1,6 +1,13 @@
 // Global state
 let gpxData = null;
 let map = null;
+
+// Fallback translation function (in case i18n.js hasn't loaded)
+// This will be overwritten by the proper t() from i18n.js
+if (typeof t !== 'function') {
+    window.t = function(key) { return key; };
+}
+
 let routeLayers = [];
 let elevationChart = null;
 let gradientChart = null;
