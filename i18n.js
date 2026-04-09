@@ -993,7 +993,7 @@ const TRANSLATIONS = {
         'lockscreenExport.small': 'Klein',
         'lockscreenExport.medium': 'Mittel',
         'lockscreenExport.large': 'Groß',
-        'lockscreenExport.hint': '💡 Profil und Herausforderungen sind exklusiv — wähle einen visuellen Stil für deine Karte.'
+        'lockscreenExport.hint': '💡 Profil und Herausforderungen sind exklusiv — wähle einen visuellen Stil für deine Karte.',
         'lockscreenExport.export': 'Karte erstellen',
         
         // Crew Card export
