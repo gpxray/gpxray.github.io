@@ -7329,12 +7329,12 @@ function generateSplitsTable(flatPace, uphillPace, downhillPace, apiTotalTime) {
 
             const aidRow = document.createElement('tr');
             aidRow.classList.add('aid-station-row');
+            // Find station index for editing
+            const stationIndex = aidStations.findIndex(s => s.km === station.km);
             aidRow.dataset.stationIndex = stationIndex; // For mobile tap-to-edit
             if (isNightTime(clockTimeMinutes % (24 * 60))) {
                 aidRow.classList.add('night-section');
             }
-            // Find station index for editing
-            const stationIndex = aidStations.findIndex(s => s.km === station.km);
             aidRow.innerHTML = `
                 <td>${displayDistance.toFixed(1)}</td>
                 <td>-</td>
