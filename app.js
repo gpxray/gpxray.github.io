@@ -6800,7 +6800,7 @@ async function calculateRacePlanFromAPI() {
     const raceModal = document.getElementById('raceModal');
     const isRaceModalContext = raceModal && raceModal.style.display !== 'none' && raceModal.offsetHeight > 0;
     
-    // Get ratios based on context - check if slider is visible and has valid value
+    // Get ratios based on context
     let uphillRatioValue = 1.4;
     let downhillRatioValue = 0.85;
     
@@ -6808,8 +6808,8 @@ async function calculateRacePlanFromAPI() {
         // Race modal context: use race modal sliders
         uphillRatioValue = parseFloat(raceUphillEl.value) || 1.4;
         downhillRatioValue = parseFloat(raceDownhillEl?.value) || 0.85;
-    } else if (mainUphillEl && mainUphillEl.offsetParent !== null) {
-        // Main page context: use main page sliders (check if visible)
+    } else if (mainUphillEl) {
+        // Main page context: use main page sliders (they sync to hidden inputs)
         uphillRatioValue = parseFloat(mainUphillEl.value) || 1.4;
         downhillRatioValue = parseFloat(mainDownhillEl?.value) || 0.85;
     } else if (heroUphillEl) {
@@ -6821,15 +6821,6 @@ async function calculateRacePlanFromAPI() {
         uphillRatioValue = parseFloat(uphillRatioEl.value) || 1.4;
         downhillRatioValue = parseFloat(downhillRatioEl?.value) || 0.85;
     }
-    
-    console.log('🎿 Terrain ratios being sent to API:', { 
-        uphillRatio: uphillRatioValue, 
-        downhillRatio: downhillRatioValue,
-        mode: currentMode,
-        isRaceModalContext,
-        raceSlider: raceUphillEl?.value,
-        mainSlider: mainUphillEl?.value
-    });
     
     const payload = {
         segments: apiSegments,
