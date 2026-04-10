@@ -486,8 +486,39 @@ function setupTerrainSliders() {
     // Setup hero sliders
     setupSliderPair('heroUphillSlider', 'heroDownhillSlider', 'heroUphillHint', 'heroDownhillHint');
     
-    // Setup race modal sliders (in advanced options)
-    setupSliderPair('raceUphillSlider', 'raceDownhillSlider', 'raceUphillHint', 'raceDownhillHint');
+    // Setup race modal sliders (in advanced options) - with percentage display
+    const raceUphillSlider = document.getElementById('raceUphillSlider');
+    const raceDownhillSlider = document.getElementById('raceDownhillSlider');
+    const raceUphillPercent = document.getElementById('raceUphillPercent');
+    const raceDownhillPercent = document.getElementById('raceDownhillPercent');
+    
+    const updateUphillPercent = (value) => {
+        const percent = Math.round((value - 1) * 100);
+        if (raceUphillPercent) raceUphillPercent.textContent = `+${percent}%`;
+    };
+    
+    const updateDownhillPercent = (value) => {
+        const percent = Math.round((1 - value) * 100);
+        if (raceDownhillPercent) raceDownhillPercent.textContent = `-${percent}%`;
+    };
+    
+    if (raceUphillSlider) {
+        raceUphillSlider.addEventListener('input', () => {
+            const value = parseFloat(raceUphillSlider.value);
+            if (uphillRatio) uphillRatio.value = value.toFixed(2);
+            updateUphillPercent(value);
+        });
+        updateUphillPercent(parseFloat(raceUphillSlider.value));
+    }
+    
+    if (raceDownhillSlider) {
+        raceDownhillSlider.addEventListener('input', () => {
+            const value = parseFloat(raceDownhillSlider.value);
+            if (downhillRatio) downhillRatio.value = value.toFixed(2);
+            updateDownhillPercent(value);
+        });
+        updateDownhillPercent(parseFloat(raceDownhillSlider.value));
+    }
     
     // Setup hero terrain toggle
     const terrainToggle = document.getElementById('heroTerrainToggle');

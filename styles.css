@@ -6992,7 +6992,7 @@ h2 {
 
 .terrain-skill-row {
     display: grid;
-    grid-template-columns: 90px 1fr;
+    grid-template-columns: 90px 1fr 50px;
     align-items: center;
     gap: 8px;
 }
@@ -7050,6 +7050,17 @@ h2 {
 
 .terrain-skill-hint {
     display: none;
+}
+
+.terrain-skill-percent {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #00d4ff;
+    background: rgba(0, 212, 255, 0.15);
+    padding: 2px 8px;
+    border-radius: 10px;
+    min-width: 45px;
+    text-align: center;
 }
 
 .race-level-buttons.itra-override .race-level-btn,
