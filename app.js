@@ -505,10 +505,9 @@ function setupTerrainSliders() {
     // Debounced recalculation for race pages
     let terrainRecalcTimeout = null;
     const triggerRaceRecalc = () => {
-        // Only auto-recalculate on race pages (no Calculate button) and if already calculated
-        const heroCalculateBtn = document.getElementById('heroCalculateBtn');
+        // Auto-recalculate on race pages if results visible
         const paceResults = document.getElementById('paceResults');
-        if (!heroCalculateBtn && paceResults && paceResults.style.display !== 'none' && gpxData) {
+        if (paceResults && paceResults.offsetHeight > 0 && typeof gpxData !== 'undefined' && gpxData) {
             clearTimeout(terrainRecalcTimeout);
             terrainRecalcTimeout = setTimeout(() => {
                 calculateRacePlan();
@@ -557,7 +556,8 @@ function setupTerrainSliders() {
     const triggerMainRecalc = () => {
         // Auto-recalculate on main page if already calculated
         const paceResults = document.getElementById('paceResults');
-        if (paceResults && paceResults.style.display !== 'none' && gpxData) {
+        // Use offsetHeight to check actual visibility (works with CSS classes too)
+        if (paceResults && paceResults.offsetHeight > 0 && typeof gpxData !== 'undefined' && gpxData) {
             clearTimeout(mainTerrainRecalcTimeout);
             mainTerrainRecalcTimeout = setTimeout(() => {
                 calculateRacePlan();
@@ -923,9 +923,12 @@ function setupRunnerLevel() {
         // Apply new paces and recalculate (only if not waiting for Calculate button)
         applyRunnerLevelPaces();
         
-        // Only auto-calculate on race pages, not on main page with Calculate button
+        // Auto-recalculate: race pages always, main page only if results visible
         const heroCalculateBtn = document.getElementById('heroCalculateBtn');
-        if (!heroCalculateBtn) {
+        const paceResults = document.getElementById('paceResults');
+        const resultsVisible = paceResults && paceResults.offsetHeight > 0;
+        
+        if (!heroCalculateBtn || resultsVisible) {
             calculateRacePlan();
             fetchGpxWeather(); // Re-fetch weather after recalculating
         }
