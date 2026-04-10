@@ -6804,22 +6804,36 @@ async function calculateRacePlanFromAPI() {
     let uphillRatioValue = 1.4;
     let downhillRatioValue = 0.85;
     
+    console.log('🎿 Terrain slider debug:', {
+        isRaceModalContext,
+        raceUphillEl: !!raceUphillEl,
+        raceUphillVal: raceUphillEl?.value,
+        mainUphillEl: !!mainUphillEl,
+        mainUphillVal: mainUphillEl?.value,
+        heroUphillEl: !!heroUphillEl,
+        heroUphillVal: heroUphillEl?.value
+    });
+    
     if (isRaceModalContext && raceUphillEl) {
         // Race modal context: use race modal sliders
         uphillRatioValue = parseFloat(raceUphillEl.value) || 1.4;
         downhillRatioValue = parseFloat(raceDownhillEl?.value) || 0.85;
+        console.log('🎿 Using RACE sliders:', { uphillRatioValue, downhillRatioValue });
     } else if (mainUphillEl) {
         // Main page context: use main page sliders (they sync to hidden inputs)
         uphillRatioValue = parseFloat(mainUphillEl.value) || 1.4;
         downhillRatioValue = parseFloat(mainDownhillEl?.value) || 0.85;
+        console.log('🎿 Using MAIN sliders:', { uphillRatioValue, downhillRatioValue });
     } else if (heroUphillEl) {
         // Fallback to hero sliders
         uphillRatioValue = parseFloat(heroUphillEl.value) || 1.4;
         downhillRatioValue = parseFloat(heroDownhillEl?.value) || 0.85;
+        console.log('🎿 Using HERO sliders:', { uphillRatioValue, downhillRatioValue });
     } else if (uphillRatioEl) {
         // Fallback to hidden inputs
         uphillRatioValue = parseFloat(uphillRatioEl.value) || 1.4;
         downhillRatioValue = parseFloat(downhillRatioEl?.value) || 0.85;
+        console.log('🎿 Using HIDDEN inputs:', { uphillRatioValue, downhillRatioValue });
     }
     
     const payload = {
