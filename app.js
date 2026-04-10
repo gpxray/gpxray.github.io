@@ -520,6 +520,40 @@ function setupTerrainSliders() {
         updateDownhillPercent(parseFloat(raceDownhillSlider.value));
     }
     
+    // Setup main page sliders (in advanced options) - with percentage display
+    const mainUphillSlider = document.getElementById('mainUphillSlider');
+    const mainDownhillSlider = document.getElementById('mainDownhillSlider');
+    const mainUphillPercent = document.getElementById('mainUphillPercent');
+    const mainDownhillPercent = document.getElementById('mainDownhillPercent');
+    
+    const updateMainUphillPercent = (value) => {
+        const percent = Math.round((value - 1) * 100);
+        if (mainUphillPercent) mainUphillPercent.textContent = `+${percent}%`;
+    };
+    
+    const updateMainDownhillPercent = (value) => {
+        const percent = Math.round((1 - value) * 100);
+        if (mainDownhillPercent) mainDownhillPercent.textContent = `-${percent}%`;
+    };
+    
+    if (mainUphillSlider) {
+        mainUphillSlider.addEventListener('input', () => {
+            const value = parseFloat(mainUphillSlider.value);
+            if (uphillRatio) uphillRatio.value = value.toFixed(2);
+            updateMainUphillPercent(value);
+        });
+        updateMainUphillPercent(parseFloat(mainUphillSlider.value));
+    }
+    
+    if (mainDownhillSlider) {
+        mainDownhillSlider.addEventListener('input', () => {
+            const value = parseFloat(mainDownhillSlider.value);
+            if (downhillRatio) downhillRatio.value = value.toFixed(2);
+            updateMainDownhillPercent(value);
+        });
+        updateMainDownhillPercent(parseFloat(mainDownhillSlider.value));
+    }
+    
     // Setup hero terrain toggle
     const terrainToggle = document.getElementById('heroTerrainToggle');
     const terrainContent = document.getElementById('heroTerrainContent');
@@ -540,6 +574,17 @@ function setupTerrainSliders() {
         terrainInfoToggle.addEventListener('click', () => {
             terrainInfoBox.classList.toggle('visible');
             terrainInfoToggle.classList.toggle('active');
+        });
+    }
+    
+    // Setup terrain info toggle (main page)
+    const mainTerrainInfoToggle = document.getElementById('mainTerrainInfoToggle');
+    const mainTerrainInfoBox = document.getElementById('mainTerrainInfoBox');
+    
+    if (mainTerrainInfoToggle && mainTerrainInfoBox) {
+        mainTerrainInfoToggle.addEventListener('click', () => {
+            mainTerrainInfoBox.classList.toggle('visible');
+            mainTerrainInfoToggle.classList.toggle('active');
         });
     }
 }
@@ -814,6 +859,25 @@ function setupRunnerLevel() {
             raceDownhillSlider.value = ratios.downhill;
             if (raceDownhillPercent) {
                 raceDownhillPercent.textContent = `-${Math.round((1 - ratios.downhill) * 100)}%`;
+            }
+        }
+        
+        // Update main page sliders
+        const mainUphillSlider = document.getElementById('mainUphillSlider');
+        const mainDownhillSlider = document.getElementById('mainDownhillSlider');
+        const mainUphillPercent = document.getElementById('mainUphillPercent');
+        const mainDownhillPercent = document.getElementById('mainDownhillPercent');
+        
+        if (mainUphillSlider) {
+            mainUphillSlider.value = ratios.uphill;
+            if (mainUphillPercent) {
+                mainUphillPercent.textContent = `+${Math.round((ratios.uphill - 1) * 100)}%`;
+            }
+        }
+        if (mainDownhillSlider) {
+            mainDownhillSlider.value = ratios.downhill;
+            if (mainDownhillPercent) {
+                mainDownhillPercent.textContent = `-${Math.round((1 - ratios.downhill) * 100)}%`;
             }
         }
         
@@ -6695,12 +6759,16 @@ async function calculateRacePlanFromAPI() {
     const heroDownhillEl = document.getElementById('heroDownhillSlider');
     const raceUphillEl = document.getElementById('raceUphillSlider');
     const raceDownhillEl = document.getElementById('raceDownhillSlider');
+    const mainUphillEl = document.getElementById('mainUphillSlider');
+    const mainDownhillEl = document.getElementById('mainDownhillSlider');
     
-    // Get ratios - prefer race modal sliders, then hero sliders, then hidden inputs
+    // Get ratios - prefer race modal sliders, then main page sliders, then hero sliders, then hidden inputs
     const uphillRatioValue = parseFloat(raceUphillEl?.value) || 
+                             parseFloat(mainUphillEl?.value) ||
                              parseFloat(heroUphillEl?.value) || 
                              parseFloat(uphillRatioEl?.value) || 1.4;
     const downhillRatioValue = parseFloat(raceDownhillEl?.value) || 
+                               parseFloat(mainDownhillEl?.value) ||
                                parseFloat(heroDownhillEl?.value) || 
                                parseFloat(downhillRatioEl?.value) || 0.85;
     
