@@ -568,6 +568,7 @@ function setupTerrainSliders() {
     if (mainUphillSlider) {
         mainUphillSlider.addEventListener('input', () => {
             const value = parseFloat(mainUphillSlider.value);
+            console.log('🎚️ mainUphillSlider INPUT event:', { value, sliderValue: mainUphillSlider.value });
             if (uphillRatio) uphillRatio.value = value.toFixed(2);
             updateMainUphillPercent(value);
             triggerMainRecalc();
@@ -578,6 +579,7 @@ function setupTerrainSliders() {
     if (mainDownhillSlider) {
         mainDownhillSlider.addEventListener('input', () => {
             const value = parseFloat(mainDownhillSlider.value);
+            console.log('🎚️ mainDownhillSlider INPUT event:', { value, sliderValue: mainDownhillSlider.value });
             if (downhillRatio) downhillRatio.value = value.toFixed(2);
             updateMainDownhillPercent(value);
             triggerMainRecalc();
@@ -898,6 +900,8 @@ function setupRunnerLevel() {
         const mainDownhillSlider = document.getElementById('mainDownhillSlider');
         const mainUphillPercent = document.getElementById('mainUphillPercent');
         const mainDownhillPercent = document.getElementById('mainDownhillPercent');
+        
+        console.log('⚡ handleLevelChange resetting sliders to:', ratios);
         
         if (mainUphillSlider) {
             mainUphillSlider.value = ratios.uphill;
