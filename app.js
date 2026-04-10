@@ -9202,19 +9202,22 @@ async function exportToPdfWithTheme(theme = 'dark', options = {}) {
                             const startX = margin + (climb.start / maxDist) * chartWidth;
                             const endX = margin + (climb.end / maxDist) * chartWidth;
                             doc.setFillColor(200, 130, 0);
-                            doc.rect(startX, y + chartHeight - 4, endX - startX, 4, 'F');
+                            doc.rect(startX, y + chartHeight - 3, endX - startX, 3, 'F');
                         });
                     }
                     
-                    // Draw AID station markers on profile
+                    // Draw AID station markers on profile (subtle dashed lines)
                     if (profileShowAid && aidStations && aidStations.length > 0) {
                         const maxDist = gpxData.totalDistance;
                         aidStations.forEach(station => {
                             const xPos = margin + (station.km / maxDist) * chartWidth;
-                            // Draw vertical line
+                            // Draw thin dashed vertical line
                             doc.setDrawColor(76, 175, 80);
-                            doc.setLineWidth(0.5);
-                            doc.line(xPos, y, xPos, y + chartHeight);
+                            doc.setLineWidth(0.2);
+                            // Dashed line (short segments)
+                            for (let lineY = y + 3; lineY < y + chartHeight - 4; lineY += 2) {
+                                doc.line(xPos, lineY, xPos, Math.min(lineY + 1, y + chartHeight - 4));
+                            }
                         });
                     }
                     
