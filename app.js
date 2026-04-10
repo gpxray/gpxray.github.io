@@ -9008,14 +9008,27 @@ function setupPdfExportModal() {
     if (confirmBtn) {
         confirmBtn.addEventListener('click', () => {
             const theme = document.querySelector('input[name="pdfTheme"]:checked')?.value || 'dark';
+            const options = {
+                showStats: document.getElementById('pdfShowStats')?.checked ?? true,
+                showProfile: document.getElementById('pdfShowProfile')?.checked ?? true,
+                showAidSummary: document.getElementById('pdfShowAidSummary')?.checked ?? true,
+                showSplits: document.getElementById('pdfShowSplits')?.checked ?? true
+            };
             hidePdfExportModal();
-            exportToPdfWithTheme(theme);
+            exportToPdfWithTheme(theme, options);
         });
     }
 }
 
 // PDF Race Card Export with Theme
-async function exportToPdfWithTheme(theme = 'dark') {
+async function exportToPdfWithTheme(theme = 'dark', options = {}) {
+    const {
+        showStats = true,
+        showProfile = true,
+        showAidSummary = true,
+        showSplits = true
+    } = options;
+    
     const splitsTable = document.getElementById('splitsTable');
 
     const btn = document.getElementById('exportPdf');
@@ -9080,65 +9093,70 @@ async function exportToPdfWithTheme(theme = 'dark') {
 
         y = 30;
 
-        // Stats row
-        doc.setTextColor(...textColor);
-        doc.setFontSize(9);
-        
+        // Stats row (conditional)
         const unitLabel = useMetric ? 'km' : 'mi';
         const distance = useMetric ? gpxData.totalDistance : gpxData.totalDistance * KM_TO_MILES;
-        let totalTimeText = document.getElementById('totalTime')?.textContent || '-';
-        // Clean up time - remove "(incl. X min stops)" for cleaner display
-        const timeMatch = totalTimeText.match(/^[\d:]+/);
-        const estTime = timeMatch ? timeMatch[0] : totalTimeText;
-        const stopsMatch = totalTimeText.match(/(\d+)\s*min\s*stop/);
-        const stopsTime = stopsMatch ? `${stopsMatch[1]} min` : null;
         
-        const stats = [
-            { label: 'Distance', value: `${distance.toFixed(1)} ${unitLabel}` },
-            { label: 'Elevation', value: `+${gpxData.elevationGain.toFixed(0)}m / -${gpxData.elevationLoss.toFixed(0)}m` },
-            { label: 'Est. Time', value: estTime }
-        ];
-        
-        // Add stops as separate stat if present
-        if (stopsTime) {
-            stats.push({ label: 'Stops', value: stopsTime });
-        }
-        
-        // Add sun times if available
-        if (sunTimes && !sunTimes.polarNight && !sunTimes.midnightSun) {
-            stats.push({ label: 'Sunrise', value: formatSunTime(sunTimes.sunrise) });
-            stats.push({ label: 'Sunset', value: formatSunTime(sunTimes.sunset) });
-        }
-
-        const statWidth = (pageWidth - 2 * margin) / stats.length;
-        stats.forEach((stat, i) => {
-            const x = margin + i * statWidth;
-            doc.setFont('helvetica', 'normal');
-            doc.setTextColor(...mutedColor);
-            doc.text(stat.label, x, y);
-            doc.setFont('helvetica', 'bold');
+        if (showStats) {
             doc.setTextColor(...textColor);
-            doc.text(stat.value, x, y + 5);
-        });
+            doc.setFontSize(9);
+            
+            let totalTimeText = document.getElementById('totalTime')?.textContent || '-';
+            // Clean up time - remove "(incl. X min stops)" for cleaner display
+            const timeMatch = totalTimeText.match(/^[\d:]+/);
+            const estTime = timeMatch ? timeMatch[0] : totalTimeText;
+            const stopsMatch = totalTimeText.match(/(\d+)\s*min\s*stop/);
+            const stopsTime = stopsMatch ? `${stopsMatch[1]} min` : null;
+            
+            const stats = [
+                { label: 'Distance', value: `${distance.toFixed(1)} ${unitLabel}` },
+                { label: 'Elevation', value: `+${gpxData.elevationGain.toFixed(0)}m / -${gpxData.elevationLoss.toFixed(0)}m` },
+                { label: 'Est. Time', value: estTime }
+            ];
+            
+            // Add stops as separate stat if present
+            if (stopsTime) {
+                stats.push({ label: 'Stops', value: stopsTime });
+            }
+            
+            // Add sun times if available
+            if (sunTimes && !sunTimes.polarNight && !sunTimes.midnightSun) {
+                stats.push({ label: 'Sunrise', value: formatSunTime(sunTimes.sunrise) });
+                stats.push({ label: 'Sunset', value: formatSunTime(sunTimes.sunset) });
+            }
 
-        y += 15;
+            const statWidth = (pageWidth - 2 * margin) / stats.length;
+            stats.forEach((stat, i) => {
+                const x = margin + i * statWidth;
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(...mutedColor);
+                doc.text(stat.label, x, y);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(...textColor);
+                doc.text(stat.value, x, y + 5);
+            });
 
-        // Elevation chart capture
-        const chartCanvas = document.getElementById('elevationChart');
-        if (chartCanvas && chartCanvas.style.display !== 'none') {
-            try {
-                const chartImage = chartCanvas.toDataURL('image/png', 1.0);
-                const chartWidth = pageWidth - 2 * margin;
-                const chartHeight = 35;
-                doc.addImage(chartImage, 'PNG', margin, y, chartWidth, chartHeight);
-                y += chartHeight + 8;
-            } catch (e) {
-                console.warn('Could not capture chart:', e);
+            y += 15;
+        }
+
+        // Elevation chart capture (conditional)
+        if (showProfile) {
+            const chartCanvas = document.getElementById('elevationChart');
+            if (chartCanvas && chartCanvas.style.display !== 'none') {
+                try {
+                    const chartImage = chartCanvas.toDataURL('image/png', 1.0);
+                    const chartWidth = pageWidth - 2 * margin;
+                    const chartHeight = 35;
+                    doc.addImage(chartImage, 'PNG', margin, y, chartWidth, chartHeight);
+                    y += chartHeight + 8;
+                } catch (e) {
+                    console.warn('Could not capture chart:', e);
+                }
             }
         }
 
-        // AID Stations / Leg Summary
-        if (aidStations.length > 0) {
+        // AID Stations / Leg Summary (conditional)
+        if (showAidSummary && aidStations.length > 0) {
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(11);
             doc.setTextColor(...primaryColor);
@@ -9158,84 +9176,86 @@ async function exportToPdfWithTheme(theme = 'dark') {
             y += 4;
         }
 
-        // Splits table
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(11);
-        doc.setTextColor(...primaryColor);
-        doc.text('Splits', margin, y);
-        y += 6;
+        // Splits table (conditional)
+        if (showSplits) {
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11);
+            doc.setTextColor(...primaryColor);
+            doc.text('Splits', margin, y);
+            y += 6;
 
-        // Table header
-        const cols = [
-            { header: unitLabel.toUpperCase(), width: 12 },
-            { header: 'Elev', width: 18 },
-            { header: 'Terrain', width: 18 },
-            { header: 'AID', width: 35 },
-            { header: 'Pace', width: 22 },
-            { header: 'Split', width: 18 },
-            { header: 'Total', width: 18 },
-            { header: 'Clock', width: 18 }
-        ];
+            // Table header
+            const cols = [
+                { header: unitLabel.toUpperCase(), width: 12 },
+                { header: 'Elev', width: 18 },
+                { header: 'Terrain', width: 18 },
+                { header: 'AID', width: 35 },
+                { header: 'Pace', width: 22 },
+                { header: 'Split', width: 18 },
+                { header: 'Total', width: 18 },
+                { header: 'Clock', width: 18 }
+            ];
 
-        doc.setFillColor(...tableHeaderBg);
-        doc.rect(margin, y - 3, pageWidth - 2 * margin, 6, 'F');
-        
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(7);
-        doc.setTextColor(...mutedColor);
-        
-        let colX = margin + 1;
-        cols.forEach(col => {
-            doc.text(col.header, colX, y);
-            colX += col.width;
-        });
-        y += 5;
-
-        // Table rows
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(7);
-        
-        const rows = splitsTable.querySelectorAll('tbody tr');
-        rows.forEach((row, rowIndex) => {
-            // Check if we need a new page
-            if (y > pageHeight - 20) {
-                doc.addPage();
-                doc.setFillColor(...bgColor);
-                doc.rect(0, 0, pageWidth, pageHeight, 'F');
-                y = margin;
-            }
-
-            const cells = row.querySelectorAll('td');
-            const isAid = row.classList.contains('aid-station-row');
-            const isNight = row.classList.contains('night-section');
+            doc.setFillColor(...tableHeaderBg);
+            doc.rect(margin, y - 3, pageWidth - 2 * margin, 6, 'F');
             
-            // Row background (theme-aware)
-            if (isAid) {
-                doc.setFillColor(...aidRowBg);
-                doc.rect(margin, y - 3, pageWidth - 2 * margin, 5, 'F');
-            } else if (isNight) {
-                doc.setFillColor(...nightRowBg);
-                doc.rect(margin, y - 3, pageWidth - 2 * margin, 5, 'F');
-            } else if (rowIndex % 2 === 0) {
-                doc.setFillColor(...rowAltBg);
-                doc.rect(margin, y - 3, pageWidth - 2 * margin, 5, 'F');
-            }
-
-            doc.setTextColor(...textColor);
-            colX = margin + 1;
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(7);
+            doc.setTextColor(...mutedColor);
             
-            // Columns: 0=km, 1=elev, 2=terrain, 4=aid, 7=pace, 8=split, 9=total, 10=clock
-            // Skip: 3=surface, 5=stop, 6=fuel icons
-            const indices = [0, 1, 2, 4, 7, 8, 9, 10];
-            indices.forEach((cellIndex, i) => {
-                let text = cells[cellIndex]?.textContent?.trim() || '-';
-                // Truncate long text
-                if (text.length > 15) text = text.substring(0, 14) + '…';
-                doc.text(text, colX, y);
-                colX += cols[i].width;
+            let colX = margin + 1;
+            cols.forEach(col => {
+                doc.text(col.header, colX, y);
+                colX += col.width;
             });
             y += 5;
-        });
+
+            // Table rows
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(7);
+            
+            const rows = splitsTable.querySelectorAll('tbody tr');
+            rows.forEach((row, rowIndex) => {
+                // Check if we need a new page
+                if (y > pageHeight - 20) {
+                    doc.addPage();
+                    doc.setFillColor(...bgColor);
+                    doc.rect(0, 0, pageWidth, pageHeight, 'F');
+                    y = margin;
+                }
+
+                const cells = row.querySelectorAll('td');
+                const isAid = row.classList.contains('aid-station-row');
+                const isNight = row.classList.contains('night-section');
+                
+                // Row background (theme-aware)
+                if (isAid) {
+                    doc.setFillColor(...aidRowBg);
+                    doc.rect(margin, y - 3, pageWidth - 2 * margin, 5, 'F');
+                } else if (isNight) {
+                    doc.setFillColor(...nightRowBg);
+                    doc.rect(margin, y - 3, pageWidth - 2 * margin, 5, 'F');
+                } else if (rowIndex % 2 === 0) {
+                    doc.setFillColor(...rowAltBg);
+                    doc.rect(margin, y - 3, pageWidth - 2 * margin, 5, 'F');
+                }
+
+                doc.setTextColor(...textColor);
+                colX = margin + 1;
+                
+                // Columns: 0=km, 1=elev, 2=terrain, 4=aid, 7=pace, 8=split, 9=total, 10=clock
+                // Skip: 3=surface, 5=stop, 6=fuel icons
+                const indices = [0, 1, 2, 4, 7, 8, 9, 10];
+                indices.forEach((cellIndex, i) => {
+                    let text = cells[cellIndex]?.textContent?.trim() || '-';
+                    // Truncate long text
+                    if (text.length > 15) text = text.substring(0, 14) + '…';
+                    doc.text(text, colX, y);
+                    colX += cols[i].width;
+                });
+                y += 5;
+            });
+        } // end showSplits
 
         // Footer with branded GPXray
         y = pageHeight - 10;

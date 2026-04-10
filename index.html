@@ -1380,6 +1380,15 @@
         const BETA_PASSWORD = 'GPXray#2026!';
         const STORAGE_KEY = 'gpxray_beta_access';
         
+        // Check URL parameter for access code
+        const urlParams = new URLSearchParams(window.location.search);
+        const accessParam = urlParams.get('access');
+        if (accessParam === BETA_PASSWORD) {
+            sessionStorage.setItem(STORAGE_KEY, 'granted');
+            // Clean URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+        
         // Check if already authenticated
         if (sessionStorage.getItem(STORAGE_KEY) === 'granted') {
             document.getElementById('betaGate').style.display = 'none';
@@ -1519,31 +1528,70 @@
         <div class="gpx-export-modal-content">
             <button class="gpx-export-modal-close" id="pdfExportModalClose">✕</button>
             <div class="gpx-export-modal-icon">📄</div>
-            <h3 data-i18n="pdfExport.title">PDF Theme</h3>
-            <p class="gpx-export-modal-subtitle" data-i18n="pdfExport.subtitle">Choose your preferred PDF style:</p>
+            <h3 data-i18n="pdfExport.title">Customize PDF Export</h3>
+            <p class="gpx-export-modal-subtitle" data-i18n="pdfExport.subtitle">Choose what to include:</p>
             
-            <div class="pdf-theme-options">
-                <label class="pdf-theme-option">
-                    <input type="radio" name="pdfTheme" value="dark" checked>
-                    <span class="pdf-theme-preview pdf-theme-dark">
-                        <span class="pdf-theme-icon">🌙</span>
-                        <span class="pdf-theme-text">
-                            <strong data-i18n="pdfExport.dark">Dark</strong>
-                            <small data-i18n="pdfExport.darkDesc">Easy on the eyes, saves ink</small>
-                        </span>
+            <div class="gpx-export-options">
+                <label class="gpx-export-option">
+                    <input type="checkbox" id="pdfShowStats" checked>
+                    <span class="gpx-option-icon">📊</span>
+                    <span class="gpx-option-text">
+                        <strong data-i18n="pdfExport.stats">Race Stats</strong>
+                        <small data-i18n="pdfExport.statsDesc">Distance, elevation, time, sun times</small>
                     </span>
                 </label>
                 
-                <label class="pdf-theme-option">
-                    <input type="radio" name="pdfTheme" value="light">
-                    <span class="pdf-theme-preview pdf-theme-light">
-                        <span class="pdf-theme-icon">☀️</span>
-                        <span class="pdf-theme-text">
-                            <strong data-i18n="pdfExport.light">Light</strong>
-                            <small data-i18n="pdfExport.lightDesc">Classic white background</small>
-                        </span>
+                <label class="gpx-export-option">
+                    <input type="checkbox" id="pdfShowProfile" checked>
+                    <span class="gpx-option-icon">📈</span>
+                    <span class="gpx-option-text">
+                        <strong data-i18n="pdfExport.profile">Elevation Profile</strong>
+                        <small data-i18n="pdfExport.profileDesc">Course elevation chart</small>
                     </span>
                 </label>
+                
+                <label class="gpx-export-option">
+                    <input type="checkbox" id="pdfShowAidSummary" checked>
+                    <span class="gpx-option-icon">🏕️</span>
+                    <span class="gpx-option-text">
+                        <strong data-i18n="pdfExport.aidSummary">AID Station Summary</strong>
+                        <small data-i18n="pdfExport.aidSummaryDesc">Quick reference list with stop times</small>
+                    </span>
+                </label>
+                
+                <label class="gpx-export-option">
+                    <input type="checkbox" id="pdfShowSplits" checked>
+                    <span class="gpx-option-icon">⏱️</span>
+                    <span class="gpx-option-text">
+                        <strong data-i18n="pdfExport.splits">Detailed Splits Table</strong>
+                        <small data-i18n="pdfExport.splitsDesc">Pace, terrain, times per kilometer</small>
+                    </span>
+                </label>
+            </div>
+            
+            <div class="pdf-theme-section">
+                <label class="pdf-section-label" data-i18n="pdfExport.themeLabel">Theme:</label>
+                <div class="pdf-theme-options">
+                    <label class="pdf-theme-option">
+                        <input type="radio" name="pdfTheme" value="dark" checked>
+                        <span class="pdf-theme-preview pdf-theme-dark">
+                            <span class="pdf-theme-icon">🌙</span>
+                            <span class="pdf-theme-text">
+                                <strong data-i18n="pdfExport.dark">Dark</strong>
+                            </span>
+                        </span>
+                    </label>
+                    
+                    <label class="pdf-theme-option">
+                        <input type="radio" name="pdfTheme" value="light">
+                        <span class="pdf-theme-preview pdf-theme-light">
+                            <span class="pdf-theme-icon">☀️</span>
+                            <span class="pdf-theme-text">
+                                <strong data-i18n="pdfExport.light">Light</strong>
+                            </span>
+                        </span>
+                    </label>
+                </div>
             </div>
             
             <div class="gpx-export-buttons">

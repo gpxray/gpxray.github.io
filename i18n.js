@@ -426,12 +426,19 @@ const TRANSLATIONS = {
         'lockscreenExport.export': 'Create Card',
         
         // PDF Export Options Modal
-        'pdfExport.title': 'PDF Theme',
-        'pdfExport.subtitle': 'Choose your preferred PDF style:',
+        'pdfExport.title': 'Customize PDF Export',
+        'pdfExport.subtitle': 'Choose what to include:',
+        'pdfExport.stats': 'Race Stats',
+        'pdfExport.statsDesc': 'Distance, elevation, time, sun times',
+        'pdfExport.profile': 'Elevation Profile',
+        'pdfExport.profileDesc': 'Course elevation chart',
+        'pdfExport.aidSummary': 'AID Station Summary',
+        'pdfExport.aidSummaryDesc': 'Quick reference list with stop times',
+        'pdfExport.splits': 'Detailed Splits Table',
+        'pdfExport.splitsDesc': 'Pace, terrain, times per kilometer',
+        'pdfExport.themeLabel': 'Theme:',
         'pdfExport.dark': 'Dark',
-        'pdfExport.darkDesc': 'Easy on the eyes, saves ink',
         'pdfExport.light': 'Light',
-        'pdfExport.lightDesc': 'Classic white background',
         'pdfExport.download': 'Download PDF',
         
         // Crew Card export
@@ -1040,12 +1047,19 @@ const TRANSLATIONS = {
         'lockscreenExport.export': 'Karte erstellen',
         
         // PDF Export Options Modal
-        'pdfExport.title': 'PDF Design',
-        'pdfExport.subtitle': 'Wähle dein bevorzugtes Design:',
+        'pdfExport.title': 'PDF Export anpassen',
+        'pdfExport.subtitle': 'Wähle, was enthalten sein soll:',
+        'pdfExport.stats': 'Rennstatistiken',
+        'pdfExport.statsDesc': 'Distanz, Höhenmeter, Zeit, Sonnenzeiten',
+        'pdfExport.profile': 'Höhenprofil',
+        'pdfExport.profileDesc': 'Streckenhöhendiagramm',
+        'pdfExport.aidSummary': 'Verpflegungsübersicht',
+        'pdfExport.aidSummaryDesc': 'Schnellreferenz mit Pausenzeiten',
+        'pdfExport.splits': 'Detaillierte Splits-Tabelle',
+        'pdfExport.splitsDesc': 'Tempo, Terrain, Zeiten pro Kilometer',
+        'pdfExport.themeLabel': 'Design:',
         'pdfExport.dark': 'Dunkel',
-        'pdfExport.darkDesc': 'Augenschonend, spart Tinte',
         'pdfExport.light': 'Hell',
-        'pdfExport.lightDesc': 'Klassisch weißer Hintergrund',
         'pdfExport.download': 'PDF herunterladen',
         
         // Crew Card export
@@ -1653,12 +1667,19 @@ const TRANSLATIONS = {
         'lockscreenExport.export': 'Créer Carte',
         
         // PDF Export Options Modal
-        'pdfExport.title': 'Thème PDF',
-        'pdfExport.subtitle': 'Choisis ton style de PDF préféré:',
+        'pdfExport.title': 'Personnaliser Export PDF',
+        'pdfExport.subtitle': 'Choisis ce qui apparaît:',
+        'pdfExport.stats': 'Stats Course',
+        'pdfExport.statsDesc': 'Distance, dénivelé, temps, heures soleil',
+        'pdfExport.profile': 'Profil Altitude',
+        'pdfExport.profileDesc': 'Graphique d\'altitude du parcours',
+        'pdfExport.aidSummary': 'Résumé Ravitos',
+        'pdfExport.aidSummaryDesc': 'Liste rapide avec temps de pause',
+        'pdfExport.splits': 'Tableau Splits Détaillé',
+        'pdfExport.splitsDesc': 'Allure, terrain, temps par kilomètre',
+        'pdfExport.themeLabel': 'Thème:',
         'pdfExport.dark': 'Sombre',
-        'pdfExport.darkDesc': 'Doux pour les yeux, économise l\'encre',
         'pdfExport.light': 'Clair',
-        'pdfExport.lightDesc': 'Fond blanc classique',
         'pdfExport.download': 'Télécharger PDF',
         
         // Crew Card export

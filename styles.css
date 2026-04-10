@@ -1747,6 +1747,21 @@ header h1 {
     font-size: 0.8rem;
 }
 
+/* PDF Theme Section */
+.pdf-theme-section {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pdf-section-label {
+    display: block;
+    font-size: 0.9rem;
+    color: #bbb;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
 /* Mobile optimizations for export modals */
 @media (max-width: 600px) {
     .gpx-export-modal {
