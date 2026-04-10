@@ -788,6 +788,41 @@ function setupRunnerLevel() {
             });
         }
         
+        // Sync terrain sliders to runner level defaults
+        const levelTerrainRatios = {
+            beginner: { uphill: 1.5, downhill: 0.90 },
+            intermediate: { uphill: 1.4, downhill: 0.85 },
+            advanced: { uphill: 1.3, downhill: 0.82 },
+            elite: { uphill: 1.25, downhill: 0.80 }
+        };
+        
+        const ratios = levelTerrainRatios[level] || levelTerrainRatios.intermediate;
+        
+        // Update race modal sliders
+        const raceUphillSlider = document.getElementById('raceUphillSlider');
+        const raceDownhillSlider = document.getElementById('raceDownhillSlider');
+        const raceUphillPercent = document.getElementById('raceUphillPercent');
+        const raceDownhillPercent = document.getElementById('raceDownhillPercent');
+        
+        if (raceUphillSlider) {
+            raceUphillSlider.value = ratios.uphill;
+            if (raceUphillPercent) {
+                raceUphillPercent.textContent = `+${Math.round((ratios.uphill - 1) * 100)}%`;
+            }
+        }
+        if (raceDownhillSlider) {
+            raceDownhillSlider.value = ratios.downhill;
+            if (raceDownhillPercent) {
+                raceDownhillPercent.textContent = `-${Math.round((1 - ratios.downhill) * 100)}%`;
+            }
+        }
+        
+        // Also update hidden ratio inputs
+        const uphillRatioInput = document.getElementById('uphillRatio');
+        const downhillRatioInput = document.getElementById('downhillRatio');
+        if (uphillRatioInput) uphillRatioInput.value = ratios.uphill.toFixed(2);
+        if (downhillRatioInput) downhillRatioInput.value = ratios.downhill.toFixed(2);
+        
         if (!gpxData || segments.length === 0) return;
         
         // Apply new paces and recalculate (only if not waiting for Calculate button)
