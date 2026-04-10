@@ -9302,7 +9302,7 @@ async function exportToPdfWithTheme(theme = 'dark', options = {}) {
             doc.setTextColor(...mutedColor);
             doc.text(`+${totalGain}m D+`, legendX + 3, legendY + 1);
             
-            y += chartHeight + 18;
+            y += chartHeight + 24;
         }
 
         // AID Stations / Leg Summary (conditional)
