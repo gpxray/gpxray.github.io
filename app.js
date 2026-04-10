@@ -531,6 +531,17 @@ function setupTerrainSliders() {
             terrainToggle.classList.toggle('expanded', !isExpanded);
         });
     }
+    
+    // Setup terrain info toggle (race modal)
+    const terrainInfoToggle = document.getElementById('terrainInfoToggle');
+    const terrainInfoBox = document.getElementById('terrainInfoBox');
+    
+    if (terrainInfoToggle && terrainInfoBox) {
+        terrainInfoToggle.addEventListener('click', () => {
+            terrainInfoBox.classList.toggle('visible');
+            terrainInfoToggle.classList.toggle('active');
+        });
+    }
 }
 
 // Target Time Input styling
