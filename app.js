@@ -6794,6 +6794,23 @@ async function calculateRacePlanForTargetTime() {
     }
     
     console.log(`Using best found pace: ${bestPace.toFixed(2)} min/km`);
+    
+    // Check if target was achievable - warn user if result differs significantly
+    if (bestResult && bestResult.totalTimeMinutes) {
+        const diff = Math.abs(bestResult.totalTimeMinutes - targetTimeMinutes);
+        if (diff > 5) {
+            // Target was unrealistic - inform user
+            const isTargetTooFast = bestResult.totalTimeMinutes > targetTimeMinutes;
+            if (isTargetTooFast) {
+                const lang = document.documentElement.lang || 'en';
+                const msg = lang === 'de' 
+                    ? `⚠️ Zielzeit ${targetHours}:${String(targetMinutes).padStart(2,'0')} ist sehr ambitioniert für diese Strecke. Zeige schnellstmögliche Schätzung.`
+                    : `⚠️ Target time ${targetHours}:${String(targetMinutes).padStart(2,'0')} is very ambitious for this course. Showing fastest achievable estimate.`;
+                showNotification(msg, 'warning');
+            }
+        }
+    }
+    
     return bestResult;
 }
 
