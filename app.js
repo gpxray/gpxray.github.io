@@ -1626,7 +1626,8 @@ function showGpxWeatherWidget(weather, weatherCode, dateStr) {
     }
     
     const raceDate = new Date(dateStr);
-    const formattedDate = raceDate.toLocaleDateString(currentLang === 'de' ? 'de-DE' : 'en-US', { 
+    const localeMap = { 'de': 'de-DE', 'fr': 'fr-FR', 'en': 'en-US' };
+    const formattedDate = raceDate.toLocaleDateString(localeMap[currentLang] || 'en-US', { 
         weekday: 'long', 
         month: 'long', 
         day: 'numeric' 
@@ -4933,18 +4934,19 @@ function setupFeedback() {
         if (prize?.enabled) {
             const lang = typeof getLang === 'function' ? getLang() : 'en';
             const isDE = lang === 'de';
+            const isFR = lang === 'fr';
             
             // Update feedback button text to show prize (header button)
             const feedbackBtnSpan = feedbackBtn?.querySelector('span');
             if (feedbackBtnSpan) {
-                feedbackBtnSpan.textContent = isDE ? '🎁 Feedback & Verlosung' : '🎁 Feedback & Win';
+                feedbackBtnSpan.textContent = isDE ? '🎁 Feedback & Verlosung' : isFR ? '🎁 Feedback & Tirage' : '🎁 Feedback & Win';
             }
             
             // Update feedback reminder button text (in export section)
             const feedbackReminderBtn = document.getElementById('feedbackReminderBtn');
             const feedbackReminderSpan = feedbackReminderBtn?.querySelector('span');
             if (feedbackReminderSpan) {
-                feedbackReminderSpan.textContent = isDE ? '🎁 Feedback & Verlosung' : '🎁 Feedback & Win';
+                feedbackReminderSpan.textContent = isDE ? '🎁 Feedback & Verlosung' : isFR ? '🎁 Feedback & Tirage' : '🎁 Feedback & Win';
             }
             
             // Check if raffle is still open
@@ -4952,8 +4954,8 @@ function setupFeedback() {
             const deadline = prize.deadline ? new Date(prize.deadline) : null;
             const isRaffleOpen = !deadline || now < deadline;
             
-            prizeTitle.textContent = isDE ? prize.titleDE : prize.title;
-            prizeDesc.textContent = isDE ? prize.descriptionDE : prize.description;
+            prizeTitle.textContent = isDE ? prize.titleDE : isFR ? (prize.titleFR || prize.title) : prize.title;
+            prizeDesc.textContent = isDE ? prize.descriptionDE : isFR ? (prize.descriptionFR || prize.description) : prize.description;
             prizeBanner.style.display = 'flex';
             
             // Show deadline
@@ -4961,11 +4963,15 @@ function setupFeedback() {
             if (prizeDeadline && deadline) {
                 if (isRaffleOpen) {
                     prizeDeadline.textContent = isDE 
-                        ? `⏰ Einsendeschluss: 30. April 2026, 17:00 Uhr` 
+                        ? `⏰ Einsendeschluss: 30. April 2026, 17:00 Uhr`
+                        : isFR 
+                        ? `⏰ Date limite: 30 avril 2026, 17h00`
                         : `⏰ Deadline: April 30, 2026 5:00 PM`;
                 } else {
                     prizeDeadline.textContent = isDE 
-                        ? `❌ Verlosung beendet` 
+                        ? `❌ Verlosung beendet`
+                        : isFR
+                        ? `❌ Tirage terminé`
                         : `❌ Raffle closed`;
                     prizeDeadline.classList.add('raffle-closed-msg');
                 }
@@ -10035,19 +10041,29 @@ async function exportStoryCard() {
         let raceDateFormatted = '';
         if (dateInput?.value) {
             const raceDate = new Date(dateInput.value);
-            const weekdays = currentLang === 'de' 
-                ? ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag']
-                : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-            const months = currentLang === 'de'
-                ? ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']
-                : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            const weekdaysMap = {
+                'de': ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
+                'fr': ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
+                'en': ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+            };
+            const monthsMap = {
+                'de': ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+                'fr': ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'],
+                'en': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+            };
+            const weekdays = weekdaysMap[currentLang] || weekdaysMap['en'];
+            const months = monthsMap[currentLang] || monthsMap['en'];
             const weekday = weekdays[raceDate.getDay()];
             const day = raceDate.getDate();
             const month = months[raceDate.getMonth()];
             const year = raceDate.getFullYear();
-            raceDateFormatted = currentLang === 'de' 
-                ? `${weekday}, ${day}. ${month} ${year}`
-                : `${weekday}, ${month} ${day}, ${year}`;
+            if (currentLang === 'de') {
+                raceDateFormatted = `${weekday}, ${day}. ${month} ${year}`;
+            } else if (currentLang === 'fr') {
+                raceDateFormatted = `${weekday} ${day} ${month} ${year}`;
+            } else {
+                raceDateFormatted = `${weekday}, ${month} ${day}, ${year}`;
+            }
         }
 
         // Create Instagram Story sized card (1080x1920)
@@ -11723,11 +11739,17 @@ function populateRaceLanding(config) {
         if (raceDate && config.date) {
             const dateObj = new Date(config.date);
             const lang = typeof getLang === 'function' ? getLang() : 'en';
-            raceDate.textContent = dateObj.toLocaleDateString(lang === 'de' ? 'de-DE' : 'en-US', { 
+            const localeMap = { 'de': 'de-DE', 'fr': 'fr-FR', 'en': 'en-US' };
+            raceDate.textContent = dateObj.toLocaleDateString(localeMap[lang] || 'en-US', { 
                 weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
             });
         }
-        if (raceLocation) raceLocation.textContent = config.location || '';
+        if (raceLocation) {
+            const lang = typeof getLang === 'function' ? getLang() : 'en';
+            // Use localized location if available
+            const locationKey = lang === 'de' ? 'locationDE' : lang === 'fr' ? 'locationFR' : 'location';
+            raceLocation.textContent = config[locationKey] || config.location || '';
+        }
         
         // Set website link if available
         const raceWebsiteLink = document.getElementById('raceWebsiteLink');

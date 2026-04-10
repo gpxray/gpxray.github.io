@@ -12,6 +12,8 @@ const RACE_CONFIGS = {
         year: 2026,
         date: '2026-06-19',
         location: 'Garmisch-Partenkirchen, Germany',
+        locationDE: 'Garmisch-Partenkirchen, Deutschland',
+        locationFR: 'Garmisch-Partenkirchen, Allemagne',
         website: 'https://www.zugspitz-ultratrail.com',
         logo: 'https://res.cloudinary.com/utmb-world/image/upload/q_auto/f_auto/c_fill,g_auto/if_w_gt_1920/c_scale,w_1920/if_end/v1/zugspitz/LOGO/Zugspitz_Ultra_Trail_by_UTMB_logo_Negatve_white_6befdf758b',
         tagline: 'Run where the mountains touch the sky',
@@ -137,6 +139,8 @@ const RACE_CONFIGS = {
         year: 2026,
         date: '2026-04-18',
         location: 'Nideggen, Germany',
+        locationDE: 'Nideggen, Deutschland',
+        locationFR: 'Nideggen, Allemagne',
         coordinates: { lat: 50.68, lon: 6.48 }, // For weather API
         // website removed for briefing
         logo: 'https://gpxrayraces.blob.core.windows.net/logos/ret-logo.png',
@@ -148,8 +152,10 @@ const RACE_CONFIGS = {
             enabled: true,
             title: 'Win a free RET 2027 start!',
             titleDE: 'Gewinne einen RET 2027 Startplatz!',
+            titleFR: 'Gagnez un départ gratuit au RET 2027 !',
             description: 'Submit feedback to enter the raffle. Winner chooses any distance!',
             descriptionDE: 'Feedback abgeben und an der Verlosung teilnehmen. Gewinner wählt die Distanz!',
+            descriptionFR: 'Donnez votre avis pour participer au tirage au sort. Le gagnant choisit sa distance !',
             deadline: '2026-04-30T17:00:00+02:00',
             drawDate: '2026-04-30T21:00:00+02:00'
         },
