@@ -7114,6 +7114,43 @@ h2 {
     line-height: 1.4;
 }
 
+/* Terrain Skills Mobile */
+@media (max-width: 600px) {
+    .terrain-skills-section {
+        margin-left: -8px;
+        margin-right: -8px;
+    }
+    
+    .terrain-skill-row {
+        grid-template-columns: 65px 1fr 42px;
+        gap: 4px;
+    }
+    
+    .terrain-skill-label {
+        font-size: 0.7rem;
+    }
+    
+    .terrain-skill-percent {
+        font-size: 0.65rem;
+        padding: 2px 3px;
+        min-width: 38px;
+    }
+    
+    .terrain-skill-slider input[type="range"]::-webkit-slider-thumb {
+        width: 22px;
+        height: 22px;
+    }
+    
+    .terrain-skill-slider input[type="range"]::-moz-range-thumb {
+        width: 22px;
+        height: 22px;
+    }
+    
+    .terrain-skills-header {
+        font-size: 0.8rem;
+    }
+}
+
 .race-level-buttons.itra-override .race-level-btn,
 .race-level-buttons.target-override .race-level-btn {
     opacity: 0.5;
