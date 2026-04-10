@@ -9184,48 +9184,125 @@ async function exportToPdfWithTheme(theme = 'dark', options = {}) {
             y += 15;
         }
 
-        // Elevation chart capture (conditional)
-        if (showProfile) {
-            const chartCanvas = document.getElementById('elevationChart');
-            if (chartCanvas && chartCanvas.style.display !== 'none') {
-                try {
-                    const chartImage = chartCanvas.toDataURL('image/png', 1.0);
-                    const chartWidth = pageWidth - 2 * margin;
-                    const chartHeight = 35;
-                    doc.addImage(chartImage, 'PNG', margin, y, chartWidth, chartHeight);
-                    
-                    // Draw climb markers on profile (orange bars at bottom)
-                    if (profileShowClimbs) {
-                        const topClimbs = findTopClimbs(5);
-                        const maxDist = gpxData.totalDistance;
-                        topClimbs.forEach(climb => {
-                            const startX = margin + (climb.start / maxDist) * chartWidth;
-                            const endX = margin + (climb.end / maxDist) * chartWidth;
-                            doc.setFillColor(200, 130, 0);
-                            doc.rect(startX, y + chartHeight - 3, endX - startX, 3, 'F');
-                        });
+        // Elevation profile (clean drawn version like lockscreen card)
+        if (showProfile && gpxData && gpxData.points && gpxData.points.length > 10) {
+            const points = gpxData.points;
+            const chartWidth = pageWidth - 2 * margin;
+            const chartHeight = 28;
+            const chartX = margin;
+            const chartY = y;
+            const isLight = theme === 'light';
+            
+            // Draw rounded-ish background box
+            doc.setFillColor(...(isLight ? [235, 240, 245] : [40, 48, 58]));
+            doc.rect(margin - 2, y - 2, chartWidth + 4, chartHeight + 18, 'F');
+            
+            // Sample points for smoother profile
+            const sampleInterval = Math.max(1, Math.floor(points.length / 200));
+            const sampledPoints = points.filter((_, i) => i % sampleInterval === 0 || i === points.length - 1);
+            
+            // Find min/max elevation
+            const elevations = sampledPoints.map(p => p.elevation || 0);
+            const minElev = Math.min(...elevations);
+            const maxElev = Math.max(...elevations);
+            const elevRange = maxElev - minElev || 1;
+            const maxDist = gpxData.totalDistance;
+            
+            // Scale functions
+            const xScale = (dist) => chartX + (dist / maxDist) * chartWidth;
+            const yScale = (elev) => chartY + chartHeight - ((elev - minElev) / elevRange) * chartHeight;
+            
+            // Draw climb highlights first (background - orange filled from peak to bottom)
+            if (profileShowClimbs) {
+                const topClimbs = findTopClimbs(5);
+                topClimbs.forEach(climb => {
+                    const startX = xScale(climb.start);
+                    const endX = xScale(climb.end);
+                    // Find peak elevation in this climb
+                    let peakElev = minElev;
+                    for (const p of points) {
+                        if (p.distance >= climb.start && p.distance <= climb.end) {
+                            if (p.elevation > peakElev) peakElev = p.elevation;
+                        }
                     }
-                    
-                    // Draw AID station markers on profile (subtle dashed lines)
-                    if (profileShowAid && aidStations && aidStations.length > 0) {
-                        const maxDist = gpxData.totalDistance;
-                        aidStations.forEach(station => {
-                            const xPos = margin + (station.km / maxDist) * chartWidth;
-                            // Draw thin dashed vertical line
-                            doc.setDrawColor(76, 175, 80);
-                            doc.setLineWidth(0.2);
-                            // Dashed line (short segments)
-                            for (let lineY = y + 3; lineY < y + chartHeight - 4; lineY += 2) {
-                                doc.line(xPos, lineY, xPos, Math.min(lineY + 1, y + chartHeight - 4));
-                            }
-                        });
-                    }
-                    
-                    y += chartHeight + 8;
-                } catch (e) {
-                    console.warn('Could not capture chart:', e);
-                }
+                    const peakY = yScale(peakElev);
+                    // Draw orange highlight from peak to bottom
+                    doc.setFillColor(200, 140, 50);
+                    doc.rect(startX, peakY, endX - startX, chartY + chartHeight - peakY, 'F');
+                });
             }
+            
+            // Draw elevation profile line
+            doc.setDrawColor(0, 200, 240);
+            doc.setLineWidth(0.6);
+            for (let i = 1; i < sampledPoints.length; i++) {
+                const p1 = sampledPoints[i - 1];
+                const p2 = sampledPoints[i];
+                doc.line(
+                    xScale(p1.distance), yScale(p1.elevation || minElev),
+                    xScale(p2.distance), yScale(p2.elevation || minElev)
+                );
+            }
+            
+            // Draw AID station markers (dashed lines + dots)
+            if (profileShowAid && aidStations && aidStations.length > 0) {
+                aidStations.forEach(station => {
+                    const xPos = xScale(station.km);
+                    // Draw dashed vertical line
+                    doc.setDrawColor(76, 175, 80);
+                    doc.setLineWidth(0.25);
+                    for (let lineY = chartY + 2; lineY < chartY + chartHeight; lineY += 1.8) {
+                        doc.line(xPos, lineY, xPos, Math.min(lineY + 0.9, chartY + chartHeight));
+                    }
+                    // Draw dot (small filled square since circle may not work)
+                    doc.setFillColor(76, 175, 80);
+                    doc.rect(xPos - 1, chartY + 1, 2, 2, 'F');
+                });
+            }
+            
+            // Draw baseline
+            doc.setDrawColor(...(isLight ? [180, 185, 195] : [70, 80, 95]));
+            doc.setLineWidth(0.3);
+            doc.line(chartX, chartY + chartHeight, chartX + chartWidth, chartY + chartHeight);
+            
+            // Draw START/FINISH labels
+            doc.setFontSize(5);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(...mutedColor);
+            doc.text('START', chartX, chartY + chartHeight + 3);
+            
+            // Draw km markers along bottom
+            const kmMarkers = [Math.round(maxDist * 0.25), Math.round(maxDist * 0.5), Math.round(maxDist * 0.75)];
+            kmMarkers.forEach(km => {
+                const x = xScale(km);
+                doc.text(km.toString(), x, chartY + chartHeight + 3, { align: 'center' });
+            });
+            doc.text('FINISH', chartX + chartWidth, chartY + chartHeight + 3, { align: 'right' });
+            
+            // Draw legend
+            const legendY = chartY + chartHeight + 8;
+            let legendX = chartX + 5;
+            if (profileShowClimbs) {
+                doc.setFillColor(200, 140, 50);
+                doc.rect(legendX, legendY - 2, 6, 4, 'F');
+                doc.setFontSize(5);
+                doc.setTextColor(200, 140, 50);
+                doc.text('Climbs', legendX + 8, legendY + 1);
+                legendX += 28;
+            }
+            if (profileShowAid) {
+                doc.setFillColor(76, 175, 80);
+                doc.rect(legendX, legendY - 1, 3, 3, 'F');
+                doc.setTextColor(76, 175, 80);
+                doc.text('AID', legendX + 5, legendY + 1);
+                legendX += 18;
+            }
+            // Add D+ info
+            const totalGain = Math.round(currentDistanceConfig?.elevation || gpxData.elevationGain);
+            doc.setTextColor(...mutedColor);
+            doc.text(`+${totalGain}m D+`, legendX + 3, legendY + 1);
+            
+            y += chartHeight + 14;
         }
 
         // AID Stations / Leg Summary (conditional)
