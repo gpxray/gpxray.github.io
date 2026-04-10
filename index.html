@@ -1550,14 +1550,14 @@
                     </span>
                 </label>
                 
-                <div class="gpx-export-suboptions" id="pdfProfileOptions">
-                    <label class="gpx-export-suboption">
+                <div class="lockscreen-profile-options" id="pdfProfileOptions">
+                    <label class="profile-marker-option">
                         <input type="checkbox" id="pdfProfileShowAid" checked>
-                        <span data-i18n="pdfExport.profileAid">Show AID stations</span>
+                        <span>🏕️ <span data-i18n="pdfExport.profileAid">Show AID Stations</span></span>
                     </label>
-                    <label class="gpx-export-suboption">
+                    <label class="profile-marker-option">
                         <input type="checkbox" id="pdfProfileShowClimbs" checked>
-                        <span data-i18n="pdfExport.profileClimbs">Show climbs</span>
+                        <span>⛰️ <span data-i18n="pdfExport.profileClimbs">Show Climbs</span></span>
                     </label>
                 </div>
                 
@@ -1580,55 +1580,23 @@
                 </label>
             </div>
             
-            <div class="pdf-theme-section">
-                <label class="pdf-section-label" data-i18n="pdfExport.themeLabel">Theme:</label>
-                <div class="pdf-theme-options">
-                    <label class="pdf-theme-option">
-                        <input type="radio" name="pdfTheme" value="dark" checked>
-                        <span class="pdf-theme-preview pdf-theme-dark">
-                            <span class="pdf-theme-icon">🌙</span>
-                            <span class="pdf-theme-text">
-                                <strong data-i18n="pdfExport.dark">Dark</strong>
-                            </span>
-                        </span>
-                    </label>
-                    
-                    <label class="pdf-theme-option">
-                        <input type="radio" name="pdfTheme" value="light">
-                        <span class="pdf-theme-preview pdf-theme-light">
-                            <span class="pdf-theme-icon">☀️</span>
-                            <span class="pdf-theme-text">
-                                <strong data-i18n="pdfExport.light">Light</strong>
-                            </span>
-                        </span>
-                    </label>
+            <div class="lockscreen-size-selector">
+                <label data-i18n="pdfExport.themeLabel">Theme:</label>
+                <div class="size-buttons" id="pdfThemeButtons">
+                    <button type="button" class="size-btn selected" data-theme="dark">🌙 <span data-i18n="pdfExport.dark">Dark</span></button>
+                    <button type="button" class="size-btn" data-theme="light">☀️ <span data-i18n="pdfExport.light">Light</span></button>
                 </div>
             </div>
             
-            <div class="pdf-theme-section">
-                <label class="pdf-section-label" data-i18n="pdfExport.fontSizeLabel">Font Size:</label>
-                <div class="pdf-theme-options">
-                    <label class="pdf-theme-option">
-                        <input type="radio" name="pdfFontSize" value="normal" checked>
-                        <span class="pdf-theme-preview pdf-font-normal">
-                            <span class="pdf-theme-icon">Aa</span>
-                            <span class="pdf-theme-text">
-                                <strong data-i18n="pdfExport.fontNormal">Normal</strong>
-                            </span>
-                        </span>
-                    </label>
-                    
-                    <label class="pdf-theme-option">
-                        <input type="radio" name="pdfFontSize" value="large">
-                        <span class="pdf-theme-preview pdf-font-large">
-                            <span class="pdf-theme-icon" style="font-size: 1.3em;">Aa</span>
-                            <span class="pdf-theme-text">
-                                <strong data-i18n="pdfExport.fontLarge">Large</strong>
-                            </span>
-                        </span>
-                    </label>
+            <div class="lockscreen-size-selector">
+                <label data-i18n="pdfExport.fontSizeLabel">Font Size:</label>
+                <div class="size-buttons" id="pdfFontSizeButtons">
+                    <button type="button" class="size-btn selected" data-size="normal" data-i18n="pdfExport.fontNormal">Normal</button>
+                    <button type="button" class="size-btn" data-size="large" data-i18n="pdfExport.fontLarge">Large</button>
                 </div>
             </div>
+            
+            <p class="gpx-export-hint" data-i18n="pdfExport.hint">💡 Profile: climb zones (orange) + AID stations (green). Challenges = text list of climbs.</p>
             
             <div class="gpx-export-buttons">
                 <button class="gpx-export-cancel" id="pdfExportCancel" data-i18n="btn.cancel">Cancel</button>

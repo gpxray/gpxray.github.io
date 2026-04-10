@@ -9016,10 +9016,28 @@ function setupPdfExportModal() {
         toggleProfileOptions(); // Set initial state
     }
     
+    // Theme button selector
+    const themeButtons = document.querySelectorAll('#pdfThemeButtons .size-btn');
+    themeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            themeButtons.forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+        });
+    });
+    
+    // Font size button selector
+    const fontSizeButtons = document.querySelectorAll('#pdfFontSizeButtons .size-btn');
+    fontSizeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            fontSizeButtons.forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+        });
+    });
+    
     if (confirmBtn) {
         confirmBtn.addEventListener('click', () => {
-            const theme = document.querySelector('input[name="pdfTheme"]:checked')?.value || 'dark';
-            const fontSize = document.querySelector('input[name="pdfFontSize"]:checked')?.value || 'normal';
+            const theme = document.querySelector('#pdfThemeButtons .size-btn.selected')?.dataset.theme || 'dark';
+            const fontSize = document.querySelector('#pdfFontSizeButtons .size-btn.selected')?.dataset.size || 'normal';
             const options = {
                 showStats: document.getElementById('pdfShowStats')?.checked ?? true,
                 showProfile: document.getElementById('pdfShowProfile')?.checked ?? true,

@@ -445,6 +445,7 @@ const TRANSLATIONS = {
         'pdfExport.fontNormal': 'Normal',
         'pdfExport.fontLarge': 'Large',
         'pdfExport.download': 'Download PDF',
+        'pdfExport.hint': 'Profile: climb zones (orange) + AID stations (green).',
         
         // Crew Card export
         'crew.title': 'CREW SCHEDULE',
@@ -1071,6 +1072,7 @@ const TRANSLATIONS = {
         'pdfExport.fontNormal': 'Normal',
         'pdfExport.fontLarge': 'Groß',
         'pdfExport.download': 'PDF herunterladen',
+        'pdfExport.hint': 'Profil: Anstiegszonen (orange) + Verpflegungsstationen (grün).',
         
         // Crew Card export
         'crew.title': 'CREW ZEITPLAN',
@@ -1696,6 +1698,7 @@ const TRANSLATIONS = {
         'pdfExport.fontNormal': 'Normal',
         'pdfExport.fontLarge': 'Grand',
         'pdfExport.download': 'Télécharger PDF',
+        'pdfExport.hint': 'Profil: zones de montée (orange) + ravitos (vert).',
         
         // Crew Card export
         'crew.title': 'PLANNING ÉQUIPE',
