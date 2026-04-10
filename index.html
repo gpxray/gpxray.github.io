@@ -1513,6 +1513,46 @@
         </div>
     </div>
 
+    <!-- PDF Export Options Modal -->
+    <div class="gpx-export-overlay" id="pdfExportOverlay"></div>
+    <div class="gpx-export-modal" id="pdfExportModal">
+        <div class="gpx-export-modal-content">
+            <button class="gpx-export-modal-close" id="pdfExportModalClose">✕</button>
+            <div class="gpx-export-modal-icon">📄</div>
+            <h3 data-i18n="pdfExport.title">PDF Theme</h3>
+            <p class="gpx-export-modal-subtitle" data-i18n="pdfExport.subtitle">Choose your preferred PDF style:</p>
+            
+            <div class="pdf-theme-options">
+                <label class="pdf-theme-option">
+                    <input type="radio" name="pdfTheme" value="dark" checked>
+                    <span class="pdf-theme-preview pdf-theme-dark">
+                        <span class="pdf-theme-icon">🌙</span>
+                        <span class="pdf-theme-text">
+                            <strong data-i18n="pdfExport.dark">Dark</strong>
+                            <small data-i18n="pdfExport.darkDesc">Easy on the eyes, saves ink</small>
+                        </span>
+                    </span>
+                </label>
+                
+                <label class="pdf-theme-option">
+                    <input type="radio" name="pdfTheme" value="light">
+                    <span class="pdf-theme-preview pdf-theme-light">
+                        <span class="pdf-theme-icon">☀️</span>
+                        <span class="pdf-theme-text">
+                            <strong data-i18n="pdfExport.light">Light</strong>
+                            <small data-i18n="pdfExport.lightDesc">Classic white background</small>
+                        </span>
+                    </span>
+                </label>
+            </div>
+            
+            <div class="gpx-export-buttons">
+                <button class="gpx-export-cancel" id="pdfExportCancel" data-i18n="btn.cancel">Cancel</button>
+                <button class="gpx-export-confirm" id="pdfExportConfirm">📄 <span data-i18n="pdfExport.download">Download PDF</span></button>
+            </div>
+        </div>
+    </div>
+
     <!-- Lockscreen Card Options Modal -->
     <div class="gpx-export-overlay" id="lockscreenExportOverlay"></div>
     <div class="gpx-export-modal" id="lockscreenExportModal">

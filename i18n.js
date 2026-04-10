@@ -425,6 +425,15 @@ const TRANSLATIONS = {
         'lockscreenExport.hint': '💡 Profile shows climb zones (orange) + AID markers (green). Challenges = text-only climbs list.',
         'lockscreenExport.export': 'Create Card',
         
+        // PDF Export Options Modal
+        'pdfExport.title': 'PDF Theme',
+        'pdfExport.subtitle': 'Choose your preferred PDF style:',
+        'pdfExport.dark': 'Dark',
+        'pdfExport.darkDesc': 'Easy on the eyes, saves ink',
+        'pdfExport.light': 'Light',
+        'pdfExport.lightDesc': 'Classic white background',
+        'pdfExport.download': 'Download PDF',
+        
         // Crew Card export
         'crew.title': 'CREW SCHEDULE',
         'crew.finish': 'FINISH',
@@ -1030,6 +1039,15 @@ const TRANSLATIONS = {
         'lockscreenExport.hint': '💡 Profil zeigt Anstiege (orange) + Verpflegung (grün). Herausforderungen = nur Text-Liste.',
         'lockscreenExport.export': 'Karte erstellen',
         
+        // PDF Export Options Modal
+        'pdfExport.title': 'PDF Design',
+        'pdfExport.subtitle': 'Wähle dein bevorzugtes Design:',
+        'pdfExport.dark': 'Dunkel',
+        'pdfExport.darkDesc': 'Augenschonend, spart Tinte',
+        'pdfExport.light': 'Hell',
+        'pdfExport.lightDesc': 'Klassisch weißer Hintergrund',
+        'pdfExport.download': 'PDF herunterladen',
+        
         // Crew Card export
         'crew.title': 'CREW ZEITPLAN',
         'crew.finish': 'ZIEL',
@@ -1633,6 +1651,15 @@ const TRANSLATIONS = {
         'lockscreenExport.large': 'Grand',
         'lockscreenExport.hint': '💡 Profil: zones de montée (orange) + ravitos (vert). Défis = liste texte des montées.',
         'lockscreenExport.export': 'Créer Carte',
+        
+        // PDF Export Options Modal
+        'pdfExport.title': 'Thème PDF',
+        'pdfExport.subtitle': 'Choisis ton style de PDF préféré:',
+        'pdfExport.dark': 'Sombre',
+        'pdfExport.darkDesc': 'Doux pour les yeux, économise l\'encre',
+        'pdfExport.light': 'Clair',
+        'pdfExport.lightDesc': 'Fond blanc classique',
+        'pdfExport.download': 'Télécharger PDF',
         
         // Crew Card export
         'crew.title': 'PLANNING ÉQUIPE',

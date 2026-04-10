@@ -1672,6 +1672,81 @@ header h1 {
     accent-color: #00d4ff;
 }
 
+/* PDF Theme Options */
+.pdf-theme-options {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.pdf-theme-option {
+    flex: 1;
+    cursor: pointer;
+}
+
+.pdf-theme-option input[type="radio"] {
+    display: none;
+}
+
+.pdf-theme-preview {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.pdf-theme-dark {
+    background: linear-gradient(135deg, #1e1e32 0%, #2a2a50 100%);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.pdf-theme-light {
+    background: linear-gradient(135deg, #f8f8f8 0%, #e8e8e8 100%);
+    border-color: rgba(0, 0, 0, 0.15);
+}
+
+.pdf-theme-light .pdf-theme-text strong,
+.pdf-theme-light .pdf-theme-text small {
+    color: #333;
+}
+
+.pdf-theme-light .pdf-theme-text small {
+    color: #666;
+}
+
+.pdf-theme-option input[type="radio"]:checked + .pdf-theme-preview {
+    border-color: #00d4ff;
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+}
+
+.pdf-theme-option:hover .pdf-theme-preview {
+    transform: translateY(-2px);
+}
+
+.pdf-theme-icon {
+    font-size: 1.5rem;
+}
+
+.pdf-theme-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.pdf-theme-text strong {
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.pdf-theme-text small {
+    color: #888;
+    font-size: 0.8rem;
+}
+
 /* Mobile optimizations for export modals */
 @media (max-width: 600px) {
     .gpx-export-modal {

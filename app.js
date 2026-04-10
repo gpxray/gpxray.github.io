@@ -351,6 +351,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupEarlyAccess();
     setupGpxExportModal();
     setupLockscreenExportModal();
+    setupPdfExportModal();
     updateEarlyAccessUI();
     setupRunnerLevel();
     setupItraScore();
@@ -8961,7 +8962,7 @@ function exportToCsv() {
     trackEvent('export_csv', { race_name: currentRouteName || 'unknown' });
 }
 
-// PDF Race Card Export
+// PDF Race Card Export - Show modal first
 async function exportToPdf() {
     if (!gpxData || segments.length === 0) {
         alert('Please load a GPX file and calculate your race strategy first.');
@@ -8973,6 +8974,49 @@ async function exportToPdf() {
         alert('Please calculate your race strategy first to generate splits.');
         return;
     }
+
+    showPdfExportModal();
+}
+
+// Show PDF Export Options Modal
+function showPdfExportModal() {
+    const overlay = document.getElementById('pdfExportOverlay');
+    const modal = document.getElementById('pdfExportModal');
+    if (overlay) overlay.classList.add('active');
+    if (modal) modal.classList.add('active');
+}
+
+// Hide PDF Export Options Modal
+function hidePdfExportModal() {
+    const overlay = document.getElementById('pdfExportOverlay');
+    const modal = document.getElementById('pdfExportModal');
+    if (overlay) overlay.classList.remove('active');
+    if (modal) modal.classList.remove('active');
+}
+
+// Setup PDF Export Modal
+function setupPdfExportModal() {
+    const overlay = document.getElementById('pdfExportOverlay');
+    const closeBtn = document.getElementById('pdfExportModalClose');
+    const cancelBtn = document.getElementById('pdfExportCancel');
+    const confirmBtn = document.getElementById('pdfExportConfirm');
+    
+    if (overlay) overlay.addEventListener('click', hidePdfExportModal);
+    if (closeBtn) closeBtn.addEventListener('click', hidePdfExportModal);
+    if (cancelBtn) cancelBtn.addEventListener('click', hidePdfExportModal);
+    
+    if (confirmBtn) {
+        confirmBtn.addEventListener('click', () => {
+            const theme = document.querySelector('input[name="pdfTheme"]:checked')?.value || 'dark';
+            hidePdfExportModal();
+            exportToPdfWithTheme(theme);
+        });
+    }
+}
+
+// PDF Race Card Export with Theme
+async function exportToPdfWithTheme(theme = 'dark') {
+    const splitsTable = document.getElementById('splitsTable');
 
     const btn = document.getElementById('exportPdf');
     const originalText = btn.textContent;
@@ -8992,14 +9036,20 @@ async function exportToPdf() {
         const margin = 15;
         let y = margin;
 
-        // Colors
-        const primaryColor = [0, 212, 255];
-        const darkBg = [30, 30, 50];
-        const textColor = [255, 255, 255];
-        const mutedColor = [150, 150, 150];
+        // Theme-aware colors
+        const isLight = theme === 'light';
+        const primaryColor = [0, 180, 220]; // Slightly darker cyan for better contrast
+        const bgColor = isLight ? [255, 255, 255] : [30, 30, 50];
+        const textColor = isLight ? [30, 30, 30] : [255, 255, 255];
+        const mutedColor = isLight ? [100, 100, 100] : [150, 150, 150];
+        const headerTextColor = isLight ? [255, 255, 255] : [0, 0, 0];
+        const rowAltBg = isLight ? [245, 245, 250] : [35, 35, 55];
+        const aidRowBg = isLight ? [220, 255, 245] : [0, 100, 80];
+        const nightRowBg = isLight ? [240, 230, 255] : [50, 30, 70];
+        const tableHeaderBg = isLight ? [230, 230, 240] : [40, 40, 60];
 
         // Background
-        doc.setFillColor(...darkBg);
+        doc.setFillColor(...bgColor);
         doc.rect(0, 0, pageWidth, pageHeight, 'F');
 
         // Header
@@ -9008,7 +9058,7 @@ async function exportToPdf() {
         
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(14);
-        doc.setTextColor(0, 0, 0);
+        doc.setTextColor(...headerTextColor);
         let routeName = currentRouteName || 'Race Strategy';
         
         // Truncate long titles to fit header (max ~50 chars)
@@ -9127,7 +9177,7 @@ async function exportToPdf() {
             { header: 'Clock', width: 18 }
         ];
 
-        doc.setFillColor(40, 40, 60);
+        doc.setFillColor(...tableHeaderBg);
         doc.rect(margin, y - 3, pageWidth - 2 * margin, 6, 'F');
         
         doc.setFont('helvetica', 'bold');
@@ -9150,7 +9200,7 @@ async function exportToPdf() {
             // Check if we need a new page
             if (y > pageHeight - 20) {
                 doc.addPage();
-                doc.setFillColor(...darkBg);
+                doc.setFillColor(...bgColor);
                 doc.rect(0, 0, pageWidth, pageHeight, 'F');
                 y = margin;
             }
@@ -9159,15 +9209,15 @@ async function exportToPdf() {
             const isAid = row.classList.contains('aid-station-row');
             const isNight = row.classList.contains('night-section');
             
-            // Row background
+            // Row background (theme-aware)
             if (isAid) {
-                doc.setFillColor(0, 100, 80);
+                doc.setFillColor(...aidRowBg);
                 doc.rect(margin, y - 3, pageWidth - 2 * margin, 5, 'F');
             } else if (isNight) {
-                doc.setFillColor(50, 30, 70);
+                doc.setFillColor(...nightRowBg);
                 doc.rect(margin, y - 3, pageWidth - 2 * margin, 5, 'F');
             } else if (rowIndex % 2 === 0) {
-                doc.setFillColor(35, 35, 55);
+                doc.setFillColor(...rowAltBg);
                 doc.rect(margin, y - 3, pageWidth - 2 * margin, 5, 'F');
             }
 
