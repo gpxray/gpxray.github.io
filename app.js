@@ -6648,7 +6648,8 @@ async function calculateRacePlanFromAPI() {
         heroUphill: heroUphillEl?.value,
         heroDownhill: heroDownhillEl?.value,
         finalUphill: uphillRatioValue,
-        finalDownhill: downhillRatioValue
+        finalDownhill: downhillRatioValue,
+        mode: currentMode
     });
     
     const payload = {
@@ -11821,8 +11822,8 @@ function setupRaceCreateStrategyButton() {
                     console.log('Race page: Target time mode activated:', hours, ':', minutes);
                 }
             } else {
-                // No target time - use runner level / manual mode
-                currentMode = 'manual';
+                // No target time - use runner level preset mode (respects terrain sliders)
+                currentMode = 'preset';
             }
             
             // Parse GPX (this will trigger calculateRacePlan with correct aidStations)
