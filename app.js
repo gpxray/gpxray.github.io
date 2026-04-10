@@ -6898,6 +6898,13 @@ async function calculateRacePlanFromAPI() {
         payload.downhillRatio = downhillRatioValue;
     }
     
+    console.log('📤 API Request payload (terrain):', { 
+        mode: payload.mode, 
+        uphillRatio: payload.uphillRatio, 
+        downhillRatio: payload.downhillRatio,
+        runnerLevel: payload.runnerLevel
+    });
+    
     // Call API with timeout
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.timeout);
@@ -6919,7 +6926,13 @@ async function calculateRacePlanFromAPI() {
             throw new Error(errorData.error || `API error: ${response.status}`);
         }
         
-        return await response.json();
+        const result = await response.json();
+        console.log('📥 API Response:', { 
+            totalTime: result.totalTime, 
+            finishTime: result.finishTime,
+            paces: result.paces
+        });
+        return result;
     } catch (error) {
         clearTimeout(timeoutId);
         if (error.name === 'AbortError') {
