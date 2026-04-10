@@ -6796,20 +6796,37 @@ async function calculateRacePlanFromAPI() {
     const mainUphillEl = document.getElementById('mainUphillSlider');
     const mainDownhillEl = document.getElementById('mainDownhillSlider');
     
-    // Get ratios - prefer race modal sliders, then main page sliders, then hero sliders, then hidden inputs
-    const uphillRatioValue = parseFloat(raceUphillEl?.value) || 
-                             parseFloat(mainUphillEl?.value) ||
-                             parseFloat(heroUphillEl?.value) || 
-                             parseFloat(uphillRatioEl?.value) || 1.4;
-    const downhillRatioValue = parseFloat(raceDownhillEl?.value) || 
-                               parseFloat(mainDownhillEl?.value) ||
-                               parseFloat(heroDownhillEl?.value) || 
-                               parseFloat(downhillRatioEl?.value) || 0.85;
+    // Detect context: race modal visible = race page, otherwise main page
+    const raceModal = document.getElementById('raceModal');
+    const isRaceModalContext = raceModal && raceModal.style.display !== 'none' && raceModal.offsetHeight > 0;
+    
+    // Get ratios based on context - check if slider is visible and has valid value
+    let uphillRatioValue = 1.4;
+    let downhillRatioValue = 0.85;
+    
+    if (isRaceModalContext && raceUphillEl) {
+        // Race modal context: use race modal sliders
+        uphillRatioValue = parseFloat(raceUphillEl.value) || 1.4;
+        downhillRatioValue = parseFloat(raceDownhillEl?.value) || 0.85;
+    } else if (mainUphillEl && mainUphillEl.offsetParent !== null) {
+        // Main page context: use main page sliders (check if visible)
+        uphillRatioValue = parseFloat(mainUphillEl.value) || 1.4;
+        downhillRatioValue = parseFloat(mainDownhillEl?.value) || 0.85;
+    } else if (heroUphillEl) {
+        // Fallback to hero sliders
+        uphillRatioValue = parseFloat(heroUphillEl.value) || 1.4;
+        downhillRatioValue = parseFloat(heroDownhillEl?.value) || 0.85;
+    } else if (uphillRatioEl) {
+        // Fallback to hidden inputs
+        uphillRatioValue = parseFloat(uphillRatioEl.value) || 1.4;
+        downhillRatioValue = parseFloat(downhillRatioEl?.value) || 0.85;
+    }
     
     console.log('🎿 Terrain ratios being sent to API:', { 
         uphillRatio: uphillRatioValue, 
         downhillRatio: downhillRatioValue,
         mode: currentMode,
+        isRaceModalContext,
         raceSlider: raceUphillEl?.value,
         mainSlider: mainUphillEl?.value
     });
