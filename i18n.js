@@ -120,7 +120,7 @@ const TRANSLATIONS = {
         'race.downhillAggressive': 'Aggressive',
         'race.downhillGood': 'Good descender',
         'race.downhillCautious': 'Cautious',
-        'race.terrainExplain': 'Adjust based on your climbing and descending ability compared to average. Strong climbers can run uphills; cautious descenders brake more on downhills.',
+        'race.terrainExplain': 'Adjust based on your climbing and descending ability. Slide right (cyan) = faster, left (orange) = slower.',
         'race.slow': 'Slow',
         'race.fast': 'Fast',
         
@@ -724,7 +724,7 @@ const TRANSLATIONS = {
         'race.downhillAggressive': 'Aggressiv',
         'race.downhillGood': 'Guter Abfahrer',
         'race.downhillCautious': 'Vorsichtig',
-        'race.terrainExplain': 'Passe an deine Stärken bergauf und bergab an. Starke Bergaufläufer können Anstiege mehr pushen, oder sind abwärts vorsichtiger.',
+        'race.terrainExplain': 'Passe an deine Stärken bergauf und bergab an. Rechts (cyan) = schneller, links (orange) = langsamer.',
         'race.slow': 'Langsam',
         'race.fast': 'Schnell',
         
