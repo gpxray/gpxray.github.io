@@ -7214,6 +7214,8 @@ function calculateRacePlan() {
         return Promise.reject('No GPX data');
     }
     
+    console.log('🚀 calculateRacePlan() starting, currentMode:', currentMode);
+    
     // Show loading state
     const resultsSection = document.getElementById('resultsSection');
     if (resultsSection) {
@@ -7227,6 +7229,7 @@ function calculateRacePlan() {
     
     return apiCall
         .then(result => {
+            console.log('🚀 calculateRacePlan() API returned');
             displayApiResults(result);
             if (resultsSection) {
                 resultsSection.classList.remove('loading');
