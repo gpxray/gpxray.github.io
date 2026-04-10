@@ -7051,6 +7051,15 @@ h2 {
     direction: rtl;
 }
 
+.slider-label-min,
+.slider-label-max {
+    font-size: 0.6rem;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
 .slider-end-label {
     font-size: 0.9rem;
     width: 20px;
@@ -7148,6 +7157,11 @@ h2 {
     
     .terrain-skills-header {
         font-size: 0.8rem;
+    }
+    
+    .slider-label-min,
+    .slider-label-max {
+        font-size: 0.5rem;
     }
 }
 
