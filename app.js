@@ -9555,7 +9555,7 @@ function generateMiniElevationProfile(showAid = true, showClimbs = true, unitLab
     const legendGroup = legendItems.length > 0 ? `<g transform="translate(${legendX}, 0)">${legendItems.join('')}</g>` : '';
     
     return `
-        <svg width="100%" height="${height}" viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%;">
             <defs>
                 <linearGradient id="elevGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                     <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.6"/>
