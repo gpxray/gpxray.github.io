@@ -10416,8 +10416,8 @@ function showGpxExportModal() {
     const modal = document.getElementById('gpxExportModal');
     
     if (overlay && modal) {
-        overlay.classList.add('visible');
-        modal.classList.add('visible');
+        overlay.classList.add('active');
+        modal.classList.add('active');
     }
 }
 
@@ -10427,8 +10427,8 @@ function hideGpxExportModal() {
     const modal = document.getElementById('gpxExportModal');
     
     if (overlay && modal) {
-        overlay.classList.remove('visible');
-        modal.classList.remove('visible');
+        overlay.classList.remove('active');
+        modal.classList.remove('active');
     }
 }
 
