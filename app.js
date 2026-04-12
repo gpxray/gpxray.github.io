@@ -8291,6 +8291,46 @@ function updateHeroSection(totalTime) {
         const eatZones = findEatZones(0.3, 10); // min 300m, max 10% grade (smoothed)
         window.allEatZones = eatZones; // cache for splits table
         
+        // Get user's fuel preferences (check both main page and race page IDs)
+        const getUserFuelPrefs = () => {
+            const getPref = (mainId, raceId, defaultVal) => {
+                const mainEl = document.getElementById(mainId);
+                const raceEl = document.getElementById(raceId);
+                if (raceEl && raceEl.offsetParent !== null) return raceEl.checked;
+                if (mainEl) return mainEl.checked;
+                return defaultVal;
+            };
+            return {
+                gels: getPref('fuelPrefGels', 'raceFuelPrefGels', true),
+                bars: getPref('fuelPrefBars', 'raceFuelPrefBars', true),
+                gummies: getPref('fuelPrefGummies', 'raceFuelPrefGummies', true),
+                realFood: getPref('fuelPrefRealFood', 'raceFuelPrefRealFood', false),
+                carbDrinks: getPref('fuelPrefCarbDrinks', 'raceFuelPrefCarbDrinks', false)
+            };
+        };
+        
+        // Get food type suggestion based on race time and terrain
+        const getFoodSuggestion = (minutes, terrainType) => {
+            const hours = minutes / 60;
+            const isClimb = terrainType === 'uphill';
+            const prefs = getUserFuelPrefs();
+            
+            const available = [];
+            if (prefs.gels) available.push({ icon: '💧', text: 'Gel', priority: isClimb ? 1 : (hours > 4 ? 1 : 3) });
+            if (prefs.gummies) available.push({ icon: '🐻', text: 'Gummy', priority: isClimb ? 2 : (hours > 2 ? 2 : 3) });
+            if (prefs.bars) available.push({ icon: '🍫', text: 'Bar', priority: isClimb ? 4 : (hours < 3 ? 1 : 3) });
+            if (prefs.realFood) available.push({ icon: '🍌', text: 'Food', priority: isClimb ? 5 : (hours < 4 ? 2 : 4) });
+            if (prefs.carbDrinks) available.push({ icon: '🧃', text: 'Carb', priority: isClimb ? 1 : 2 });
+            
+            if (available.length === 0) {
+                return { icon: '⚡', text: 'Fuel', tip: 'Time to eat!' };
+            }
+            
+            available.sort((a, b) => a.priority - b.priority);
+            const best = available[0];
+            return { icon: best.icon, text: best.text };
+        };
+        
         // Estimate time per km (rough average)
         const totalTimeEl = document.getElementById('totalTime');
         let avgPacePerKm = 6; // default fallback (min/km)
@@ -8358,7 +8398,8 @@ function updateHeroSection(totalTime) {
             
             if (fuelToShow[index]) {
                 const point = fuelToShow[index];
-                iconEl.textContent = point.isAid ? '🍫🚰' : '🍫';
+                const fuelSuggestion = getFoodSuggestion(point.estTimeMin, 'flat');
+                iconEl.textContent = point.isAid ? (fuelSuggestion.icon + '🚰') : fuelSuggestion.icon;
                 locationEl.textContent = `KM ${point.km}`;
                 // Show estimated arrival time
                 const hours = Math.floor(point.estTimeMin / 60);
@@ -8367,9 +8408,9 @@ function updateHeroSection(totalTime) {
                 item.style.display = 'flex';
                 // Add hover tooltip explaining why this spot
                 if (point.isAid) {
-                    item.title = `${point.aidName} — planned refuel stop`;
+                    item.title = `${point.aidName} — ${fuelSuggestion.text}`;
                 } else {
-                    item.title = 'Flat/downhill terrain — good eating opportunity';
+                    item.title = `${fuelSuggestion.text} — good eating opportunity`;
                 }
             } else {
                 locationEl.textContent = '-';
@@ -8763,6 +8804,43 @@ function showAllFuelStops() {
         });
     }
     
+    // Get user's fuel preferences
+    const getUserFuelPrefs = () => {
+        const getPref = (mainId, raceId, defaultVal) => {
+            const mainEl = document.getElementById(mainId);
+            const raceEl = document.getElementById(raceId);
+            if (raceEl && raceEl.offsetParent !== null) return raceEl.checked;
+            if (mainEl) return mainEl.checked;
+            return defaultVal;
+        };
+        return {
+            gels: getPref('fuelPrefGels', 'raceFuelPrefGels', true),
+            bars: getPref('fuelPrefBars', 'raceFuelPrefBars', true),
+            gummies: getPref('fuelPrefGummies', 'raceFuelPrefGummies', true),
+            realFood: getPref('fuelPrefRealFood', 'raceFuelPrefRealFood', false),
+            carbDrinks: getPref('fuelPrefCarbDrinks', 'raceFuelPrefCarbDrinks', false)
+        };
+    };
+    
+    const getFoodSuggestion = (minutes, terrainType) => {
+        const hours = minutes / 60;
+        const isClimb = terrainType === 'uphill';
+        const prefs = getUserFuelPrefs();
+        
+        const available = [];
+        if (prefs.gels) available.push({ icon: '💧', text: 'Gel', priority: isClimb ? 1 : (hours > 4 ? 1 : 3) });
+        if (prefs.gummies) available.push({ icon: '🐻', text: 'Gummy', priority: isClimb ? 2 : (hours > 2 ? 2 : 3) });
+        if (prefs.bars) available.push({ icon: '🍫', text: 'Bar', priority: isClimb ? 4 : (hours < 3 ? 1 : 3) });
+        if (prefs.realFood) available.push({ icon: '🍌', text: 'Food', priority: isClimb ? 5 : (hours < 4 ? 2 : 4) });
+        if (prefs.carbDrinks) available.push({ icon: '🧃', text: 'Carb', priority: isClimb ? 1 : 2 });
+        
+        if (available.length === 0) return { icon: '⚡', text: 'Fuel' };
+        
+        available.sort((a, b) => a.priority - b.priority);
+        const best = available[0];
+        return { icon: best.icon, text: best.text };
+    };
+    
     // Populate list
     const list = modal.querySelector('.fuel-stops-list');
     list.innerHTML = window.allFuelStops.map((point, idx) => {
@@ -8770,9 +8848,10 @@ function showAllFuelStops() {
         const mins = point.estTimeMin % 60;
         const timeStr = hours > 0 ? `~${hours}h${mins.toString().padStart(2,'0')}` : `~${mins}min`;
         const typeText = point.isAid ? (point.aidName || 'AID') : 'Flat terrain';
+        const fuelSuggestion = getFoodSuggestion(point.estTimeMin, 'flat');
         return `
-            <div class="fuel-stop-row" title="${point.isAid ? (point.aidName || 'AID') + ' — planned refuel stop' : 'Flat/downhill terrain — good eating opportunity'}">
-                <span class="fuel-stop-icon">${point.isAid ? '🍫🚰' : '🍫'}</span>
+            <div class="fuel-stop-row" title="${point.isAid ? (point.aidName || 'AID') + ' — ' + fuelSuggestion.text : fuelSuggestion.text + ' — good eating opportunity'}">
+                <span class="fuel-stop-icon">${point.isAid ? (fuelSuggestion.icon + '🚰') : fuelSuggestion.icon}</span>
                 <span class="fuel-stop-km">KM ${point.km}</span>
                 <span class="fuel-stop-type">${typeText}</span>
                 <span class="fuel-stop-time">${timeStr}</span>
