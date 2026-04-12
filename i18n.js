@@ -131,7 +131,7 @@ const TRANSLATIONS = {
         'fuel.bars': 'Bars',
         'fuel.gummies': 'Gummies',
         'fuel.realFood': 'Real Food',
-        'fuel.drinks': 'Sports Drinks',
+        'fuel.carbDrinks': 'Carb Drinks',
         
         // Race date/time presets
         'race.whenRace': 'When is your race?',
@@ -764,9 +764,9 @@ const TRANSLATIONS = {
         'race.fuelExplain': 'Wähle aus, was du wirklich im Rennen isst. Wir schlagen es in der Fuel-Spalte vor.',
         'fuel.gels': 'Gels',
         'fuel.bars': 'Riegel',
-        'fuel.gummies': 'Gummibärchen',
+        'fuel.gummies': 'Gummis',
         'fuel.realFood': 'Echtes Essen',
-        'fuel.drinks': 'Sportgetränke',
+        'fuel.carbDrinks': 'Kohlenhydrat-Drinks',
         
         // Race date/time presets
         'race.whenRace': 'Wann ist dein Rennen?',
@@ -1401,7 +1401,7 @@ const TRANSLATIONS = {
         'fuel.bars': 'Barres',
         'fuel.gummies': 'Bonbons',
         'fuel.realFood': 'Vraie Nourriture',
-        'fuel.drinks': 'Boissons Sport',
+        'fuel.carbDrinks': 'Boissons Glucidiques',
         
         // Race date/time presets
         'race.whenRace': 'Quand est ta course?',

@@ -7349,7 +7349,7 @@ function renderApiKmSplits(kmSplits, splitsBody) {
                 bars: getPref('fuelPrefBars', 'raceFuelPrefBars', true),
                 gummies: getPref('fuelPrefGummies', 'raceFuelPrefGummies', true),
                 realFood: getPref('fuelPrefRealFood', 'raceFuelPrefRealFood', false),
-                drinks: getPref('fuelPrefDrinks', 'raceFuelPrefDrinks', false)
+                carbDrinks: getPref('fuelPrefCarbDrinks', 'raceFuelPrefCarbDrinks', false)
             };
         };
         
@@ -7361,15 +7361,15 @@ function renderApiKmSplits(kmSplits, splitsBody) {
             
             // Build list of available fuel types based on preferences
             const available = [];
-            if (prefs.gels) available.push({ icon: '⚡', text: 'Gel', priority: isClimb ? 1 : (hours > 4 ? 1 : 3) });
-            if (prefs.gummies) available.push({ icon: '🍬', text: 'Gummy', priority: isClimb ? 2 : (hours > 2 ? 2 : 3) });
+            if (prefs.gels) available.push({ icon: '💧', text: 'Gel', priority: isClimb ? 1 : (hours > 4 ? 1 : 3) });
+            if (prefs.gummies) available.push({ icon: '🐻', text: 'Gummy', priority: isClimb ? 2 : (hours > 2 ? 2 : 3) });
             if (prefs.bars) available.push({ icon: '🍫', text: 'Bar', priority: isClimb ? 4 : (hours < 3 ? 1 : 3) });
             if (prefs.realFood) available.push({ icon: '🍌', text: 'Food', priority: isClimb ? 5 : (hours < 4 ? 2 : 4) });
-            if (prefs.drinks) available.push({ icon: '🥤', text: 'Drink', priority: 2 });
+            if (prefs.carbDrinks) available.push({ icon: '🧃', text: 'Carb', priority: isClimb ? 1 : 2 });
             
             // Fallback if nothing selected
             if (available.length === 0) {
-                return { icon: '🍫', text: 'Fuel', tip: 'Time to eat!' };
+                return { icon: '⚡', text: 'Fuel', tip: 'Time to eat!' };
             }
             
             // Sort by priority (lower = better for this situation)
