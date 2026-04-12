@@ -6942,7 +6942,7 @@ h2 {
 }
 
 .advanced-options-card.expanded .advanced-options-content {
-    max-height: 300px;
+    max-height: 500px;
     padding: 0 14px 14px 14px;
 }
 
@@ -7321,19 +7321,21 @@ h2 {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    max-width: 100%;
 }
 
 .fuel-pref-option {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 4px;
-    padding: 4px 10px;
+    padding: 4px 8px;
     background: rgba(255, 255, 255, 0.08);
     border-radius: 15px;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: rgba(255, 255, 255, 0.7);
     cursor: pointer;
     transition: all 0.2s ease;
+    white-space: nowrap;
 }
 
 .fuel-pref-option:hover {
