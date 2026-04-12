@@ -7282,12 +7282,12 @@ function renderApiKmSplits(kmSplits, splitsBody) {
     const eatZones = window.allEatZones || [];
     
     // Build recommended fuel points
-    const fuelIntervalMinutes = 45;
+    const fuelIntervalMinutes = 35; // Show fuel reminders every ~35 min
     const recommendedFuelKms = new Set();
     // Track AID km positions to reset fuel timer (but don't add to recommendedFuelKms, AIDs get their own rows)
     const aidKmSet = new Set(aidStations.map(aid => Math.round(aid.km)));
     
-    // Fill gaps with eat zone recommendations
+    // Fill gaps with fuel recommendations
     let lastFuelKm = 0;
     const avgPace = (lastCalculatedPaces?.flat || 6) * 1.2;
     for (let km = 1; km <= kmSplits.length; km++) {
@@ -7296,15 +7296,15 @@ function renderApiKmSplits(kmSplits, splitsBody) {
             lastFuelKm = km;
             continue;
         }
-        // Skip if AID station coming within 1km (runner can fuel there instead)
-        const aidWithin1km = aidStations.some(aid => aid.km > km && aid.km <= km + 1);
-        if (aidWithin1km) continue;
+        // Skip if AID station coming within 2km (runner can fuel there instead)
+        const aidWithin2km = aidStations.some(aid => aid.km > km && aid.km <= km + 2);
+        if (aidWithin2km) continue;
         
         const timeSinceLastFuel = (km - lastFuelKm) * avgPace;
         if (timeSinceLastFuel >= fuelIntervalMinutes) {
-            const inZone = eatZones.some(zone => km >= zone.start && km <= zone.end);
+            // Prefer flat/downhill terrain but allow on climbs too if it's been long enough
             const isFlatOrDown = isTerrainFlatOrDownhill(km);
-            if (inZone && isFlatOrDown) {
+            if (isFlatOrDown || timeSinceLastFuel >= 50) {
                 recommendedFuelKms.add(km);
                 lastFuelKm = km;
             }
@@ -7396,10 +7396,10 @@ function renderApiKmSplits(kmSplits, splitsBody) {
         
         if (aidAtKm) {
             const food = getFoodSuggestion(cumulativeTime, terrain);
-            fuelHtml = `<span class="fuel-icon" title="${aidAtKm.name || 'AID'} — Refuel: ${food.text} + Water (~${Math.round(cumulativeTime)} min)">🍫🚰</span>`;
+            fuelHtml = `<span class="fuel-icon" title="${aidAtKm.name || 'AID'} — ${food.text} + Water (~${Math.round(cumulativeTime)} min)">${food.icon}🚰</span>`;
         } else if (isRecommendedFuel) {
             const food = getFoodSuggestion(cumulativeTime, terrain);
-            fuelHtml = `<span class="fuel-icon" title="${food.tip} (~${Math.round(cumulativeTime)} min) - ${food.text}">${food.icon}</span>`;
+            fuelHtml = `<span class="fuel-icon" title="${food.tip} (~${Math.round(cumulativeTime)} min)">${food.icon}</span>`;
         }
         
         // Format times
