@@ -211,6 +211,16 @@
       "available": true
     },
     {
+      "id": "kat100-marathon",
+      "name": "KAT100 Marathon Trail",
+      "country": "🇦🇹",
+      "distance": 48,
+      "elevation": 3432,
+      "category": "marathon",
+      "gpxUrl": "races/kat100_marathon_trail_2024.gpx",
+      "available": true
+    },
+    {
       "id": "wser",
       "name": "Western States 100",
       "country": "🇺🇸",
