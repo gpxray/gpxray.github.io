@@ -3096,7 +3096,7 @@ function calculateSegments() {
         if (distanceFromSegmentStart >= segmentLength || i === points.length - 1) {
             const segmentDistance = points[i].distance - currentSegmentStart;
             const currentElevation = points[i].elevation || 0;
-            const elevationChange = currentElevation - segmentStartElevation;
+            let elevationChange = currentElevation - segmentStartElevation;
             
             // Skip very short segments that can produce extreme grades
             if (segmentDistance < 0.01) { // Skip if less than 10m
@@ -3107,6 +3107,10 @@ function calculateSegments() {
             let grade = segmentDistance > 0 ? (elevationChange / (segmentDistance * 1000)) * 100 : 0;
             // Cap grade to realistic values (-60% to +60% - steeper than any real trail)
             grade = Math.max(-60, Math.min(60, grade));
+            
+            // Cap elevation change to match realistic grade (prevents bad GPX data from breaking DDL)
+            const maxRealisticChange = segmentDistance * 1000 * 0.60; // 60% grade max
+            elevationChange = Math.max(-maxRealisticChange, Math.min(maxRealisticChange, elevationChange));
             
             let terrainType;
             if (grade > GRADE_THRESHOLD) {
