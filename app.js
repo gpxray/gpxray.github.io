@@ -26,6 +26,7 @@ let lastCalculatedPaces = null; // Store last calculated paces for re-rendering
 let lastCachedDDL = null; // Store DDL from API - formulas protected on server
 let lastCachedCheckpoints = null; // Store checkpoints from API
 let lastCachedLegNutrition = null; // Store leg nutrition from API
+let lastCachedFinishEta = null; // Store finish ETA window from API
 let hoverMarker = null; // Marker for hover position on map (profile sync)
 let lastCachedFatigue = 1.0; // Store fatigue multiplier from API
 let lastCachedKmSplits = null; // Store km splits from API (gradient-based)
@@ -7189,7 +7190,7 @@ async function calculateRacePlanForTargetTime() {
 
 // Display results from API response
 function displayApiResults(result) {
-    const { paces, terrain, totalTimeMinutes, fatigueMultiplier, checkpoints, stopTimeMinutes, ddl, finishClockTime, kmSplits, legNutrition } = result;
+    const { paces, terrain, totalTimeMinutes, fatigueMultiplier, checkpoints, stopTimeMinutes, ddl, finishClockTime, finishEtaEarly, finishEtaLate, finishUncertaintyMinutes, kmSplits, legNutrition } = result;
     
     console.log('📊 displayApiResults:', { 
         totalTimeMinutes, 
@@ -7206,6 +7207,7 @@ function displayApiResults(result) {
     lastCachedFatigue = fatigueMultiplier;
     lastCalculatedPaces = { flat: paces.flat, uphill: paces.uphill, downhill: paces.downhill };
     lastCachedKmSplits = kmSplits || null;  // Cache API km splits
+    lastCachedFinishEta = finishEtaEarly && finishEtaLate ? { early: finishEtaEarly, late: finishEtaLate, uncertainty: finishUncertaintyMinutes } : null;
     
     // Update the pace info tooltip with actual calculated values
     updatePaceInfoContent();
@@ -11410,39 +11412,54 @@ async function exportCrewCard() {
         }
         
         // Calculate ETA uncertainty windows for crew
+        // Use API-provided values if available, otherwise calculate locally
         // Uncertainty grows with race progress - early splits are more accurate than late ones
-        // Parse total race time to calculate duration-based uncertainty
-        let totalRaceHours = 12; // Default fallback
-        const timeMatch = totalTime.match(/(\d+):(\d+)/);
-        if (timeMatch) {
-            totalRaceHours = parseInt(timeMatch[1]) + parseInt(timeMatch[2]) / 60;
+        
+        // Build a lookup map from API checkpoints (keyed by station name or km)
+        const apiCheckpointMap = new Map();
+        if (lastCachedCheckpoints && Array.isArray(lastCachedCheckpoints)) {
+            lastCachedCheckpoints.forEach(cp => {
+                // Key by name for matching
+                if (cp.name) apiCheckpointMap.set(cp.name.toLowerCase().trim(), cp);
+                // Also key by km (rounded to 1 decimal) for backup matching
+                if (cp.km) apiCheckpointMap.set(`km_${cp.km.toFixed(1)}`, cp);
+            });
         }
         
-        // Calculate uncertainty for each station
+        // Calculate uncertainty for each station - prefer API values
         stationData.forEach(station => {
-            const progress = station.percentComplete / 100; // 0 to 1
+            // Try to find matching API checkpoint
+            const stationNameKey = station.name.toLowerCase().trim();
+            const stationKmKey = `km_${station.stationKm?.toFixed(1)}`;
+            const apiCheckpoint = apiCheckpointMap.get(stationNameKey) || apiCheckpointMap.get(stationKmKey);
             
-            // Base uncertainty: starts small, grows exponentially towards end
-            // Formula: base + (progress^1.5) * maxBuffer * durationFactor
-            // - Progress^1.5 makes it grow faster in second half of race
-            // - Duration factor: longer races have more accumulated variance
-            const durationFactor = Math.min(totalRaceHours / 10, 2.5); // Scale up for races >10h, cap at 2.5x
-            const baseMinutes = 3; // Even at start, allow ±3 min variance
-            const maxBuffer = 25; // Maximum additional buffer at 100% for a 10h race
-            
-            // Exponential growth - uncertainty accelerates in second half
-            const progressBuffer = Math.pow(progress, 1.5) * maxBuffer * durationFactor;
-            const uncertaintyMinutes = Math.round(baseMinutes + progressBuffer);
-            
-            // Calculate early and late ETA
-            if (station.clockTime) {
+            if (apiCheckpoint && apiCheckpoint.etaEarly && apiCheckpoint.etaLate) {
+                // Use API-provided ETA windows
+                station.etaEarly = apiCheckpoint.etaEarly;
+                station.etaLate = apiCheckpoint.etaLate;
+                station.uncertaintyMinutes = apiCheckpoint.uncertaintyMinutes;
+            } else if (station.clockTime) {
+                // Fallback: calculate locally if API data not available
+                const progress = station.percentComplete / 100; // 0 to 1
+                
+                // Parse total race time to calculate duration-based uncertainty
+                let totalRaceHours = 12; // Default fallback
+                const timeMatch = totalTime.match(/(\d+):(\d+)/);
+                if (timeMatch) {
+                    totalRaceHours = parseInt(timeMatch[1]) + parseInt(timeMatch[2]) / 60;
+                }
+                
+                const durationFactor = Math.min(totalRaceHours / 10, 2.5);
+                const baseMinutes = 3;
+                const maxBuffer = 25;
+                const progressBuffer = Math.pow(progress, 1.5) * maxBuffer * durationFactor;
+                const uncertaintyMinutes = Math.round(baseMinutes + progressBuffer);
+                
                 const [h, m] = station.clockTime.split(':').map(Number);
                 const arrivalMins = h * 60 + m;
-                
                 const earlyMins = arrivalMins - uncertaintyMinutes;
                 const lateMins = arrivalMins + uncertaintyMinutes;
                 
-                // Format as HH:MM (handle day rollover)
                 const formatTime = (mins) => {
                     let hours = Math.floor(mins / 60) % 24;
                     if (hours < 0) hours += 24;
@@ -11592,9 +11609,18 @@ async function exportCrewCard() {
         const totalElevGain = Math.round(gpxData.elevationGain);
         const finishIconMargin = stationCount <= 6 ? '10px' : (stationCount <= 8 ? '8px' : '6px');
         
-        // Calculate finish ETA window (100% progress = maximum uncertainty)
+        // Calculate finish ETA window - prefer API values
         let finishEtaWindow = extractHHMM(finishClockTime);
-        if (finishClockTime) {
+        if (lastCachedFinishEta && lastCachedFinishEta.early && lastCachedFinishEta.late) {
+            // Use API-provided finish ETA window
+            finishEtaWindow = `${lastCachedFinishEta.early} - ${lastCachedFinishEta.late}`;
+        } else if (finishClockTime) {
+            // Fallback: calculate locally
+            let totalRaceHours = 12;
+            const timeMatch = totalTime.match(/(\d+):(\d+)/);
+            if (timeMatch) {
+                totalRaceHours = parseInt(timeMatch[1]) + parseInt(timeMatch[2]) / 60;
+            }
             const durationFactor = Math.min(totalRaceHours / 10, 2.5);
             const finishUncertainty = Math.round(3 + Math.pow(1.0, 1.5) * 25 * durationFactor); // 100% progress
             const [fH, fM] = finishClockTime.split(':').map(Number);
