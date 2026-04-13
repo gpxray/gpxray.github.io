@@ -3060,6 +3060,10 @@ function calculateElevationWithSmoothing(points) {
 
 // Haversine formula for distance calculation
 function calculateDistance(lat1, lon1, lat2, lon2) {
+    // Validate inputs - NaN coordinates would break the calculation
+    if (isNaN(lat1) || isNaN(lon1) || isNaN(lat2) || isNaN(lon2)) {
+        return 0;
+    }
     const R = 6371; // Earth's radius in km
     const dLat = toRad(lat2 - lat1);
     const dLon = toRad(lon2 - lon1);
@@ -3067,7 +3071,9 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
               Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
               Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
+    const distance = R * c;
+    // Sanity check: return 0 if result is NaN or Infinity
+    return isFinite(distance) ? distance : 0;
 }
 
 function toRad(deg) {
@@ -3092,8 +3098,15 @@ function calculateSegments() {
             const currentElevation = points[i].elevation || 0;
             const elevationChange = currentElevation - segmentStartElevation;
             
-            // Calculate grade percentage
-            const grade = segmentDistance > 0 ? (elevationChange / (segmentDistance * 1000)) * 100 : 0;
+            // Skip very short segments that can produce extreme grades
+            if (segmentDistance < 0.01) { // Skip if less than 10m
+                continue;
+            }
+            
+            // Calculate grade percentage with sanity cap
+            let grade = segmentDistance > 0 ? (elevationChange / (segmentDistance * 1000)) * 100 : 0;
+            // Cap grade to realistic values (-60% to +60% - steeper than any real trail)
+            grade = Math.max(-60, Math.min(60, grade));
             
             let terrainType;
             if (grade > GRADE_THRESHOLD) {
