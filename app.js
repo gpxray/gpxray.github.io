@@ -11372,6 +11372,53 @@ async function exportCrewCard() {
                 }
             }
         }
+        
+        // Calculate ETA uncertainty windows for crew
+        // Uncertainty grows with race progress - early splits are more accurate than late ones
+        // Parse total race time to calculate duration-based uncertainty
+        let totalRaceHours = 12; // Default fallback
+        const timeMatch = totalTime.match(/(\d+):(\d+)/);
+        if (timeMatch) {
+            totalRaceHours = parseInt(timeMatch[1]) + parseInt(timeMatch[2]) / 60;
+        }
+        
+        // Calculate uncertainty for each station
+        stationData.forEach(station => {
+            const progress = station.percentComplete / 100; // 0 to 1
+            
+            // Base uncertainty: starts small, grows exponentially towards end
+            // Formula: base + (progress^1.5) * maxBuffer * durationFactor
+            // - Progress^1.5 makes it grow faster in second half of race
+            // - Duration factor: longer races have more accumulated variance
+            const durationFactor = Math.min(totalRaceHours / 10, 2.5); // Scale up for races >10h, cap at 2.5x
+            const baseMinutes = 3; // Even at start, allow ±3 min variance
+            const maxBuffer = 25; // Maximum additional buffer at 100% for a 10h race
+            
+            // Exponential growth - uncertainty accelerates in second half
+            const progressBuffer = Math.pow(progress, 1.5) * maxBuffer * durationFactor;
+            const uncertaintyMinutes = Math.round(baseMinutes + progressBuffer);
+            
+            // Calculate early and late ETA
+            if (station.clockTime) {
+                const [h, m] = station.clockTime.split(':').map(Number);
+                const arrivalMins = h * 60 + m;
+                
+                const earlyMins = arrivalMins - uncertaintyMinutes;
+                const lateMins = arrivalMins + uncertaintyMinutes;
+                
+                // Format as HH:MM (handle day rollover)
+                const formatTime = (mins) => {
+                    let hours = Math.floor(mins / 60) % 24;
+                    if (hours < 0) hours += 24;
+                    const minutes = ((mins % 60) + 60) % 60;
+                    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                };
+                
+                station.etaEarly = formatTime(earlyMins);
+                station.etaLate = formatTime(lateMins);
+                station.uncertaintyMinutes = uncertaintyMinutes;
+            }
+        });
 
         // Dynamic sizing based on station count
         const stationCount = stationData.length;
@@ -11470,12 +11517,12 @@ async function exportCrewCard() {
                 stationName = stationName.substring(0, maxNameLen - 1) + '…';
             }
             
-            // Show arrival time, and time range if there's a stop
-            const arrivalTime = extractHHMM(station.clockTime);
-            const departureTime = station.departureTime ? extractHHMM(station.departureTime) : arrivalTime;
-            const hasStop = station.stopMin > 0 && arrivalTime !== departureTime;
-            const timeDisplay = hasStop ? `${arrivalTime} - ${departureTime}` : arrivalTime;
-            const timeFontSize = hasStop ? (stationCount <= 4 ? '20px' : (stationCount <= 6 ? '17px' : (stationCount <= 8 ? '15px' : '14px'))) : timeSize;
+            // Use uncertainty window for ETA display (grows through race)
+            // Shows early-late range instead of narrow arrival-departure
+            const etaWindow = station.etaEarly && station.etaLate 
+                ? `${station.etaEarly} - ${station.etaLate}`
+                : extractHHMM(station.clockTime);
+            const timeFontSize = stationCount <= 4 ? '18px' : (stationCount <= 6 ? '16px' : (stationCount <= 8 ? '14px' : '13px'));
             
             // Build detail lines - simplified format
             const breakText = station.stopMin > 0 ? ` · ${station.stopMin}${t('crew.minBreak')}` : '';
@@ -11498,7 +11545,7 @@ async function exportCrewCard() {
                         <div style="font-size: ${detailSize}; opacity: 0.8; color: #90EE90;">${nextLegLine}</div>
                     </div>
                     <div style="text-align: right; margin-left: 10px;">
-                        <div style="font-size: ${timeFontSize}; font-weight: 800;">${timeDisplay}</div>
+                        <div style="font-size: ${timeFontSize}; font-weight: 800;">${etaWindow}</div>
                         <div style="font-size: ${etaSize}; opacity: 0.7;">ETA</div>
                     </div>
                 </div>
@@ -11506,9 +11553,24 @@ async function exportCrewCard() {
         }).join('');
 
         // Add finish row
-        const finishTimeDisplay = extractHHMM(finishClockTime);
         const totalElevGain = Math.round(gpxData.elevationGain);
         const finishIconMargin = stationCount <= 6 ? '10px' : (stationCount <= 8 ? '8px' : '6px');
+        
+        // Calculate finish ETA window (100% progress = maximum uncertainty)
+        let finishEtaWindow = extractHHMM(finishClockTime);
+        if (finishClockTime) {
+            const durationFactor = Math.min(totalRaceHours / 10, 2.5);
+            const finishUncertainty = Math.round(3 + Math.pow(1.0, 1.5) * 25 * durationFactor); // 100% progress
+            const [fH, fM] = finishClockTime.split(':').map(Number);
+            const finishMinsBase = fH * 60 + fM;
+            const formatTime = (mins) => {
+                let hours = Math.floor(mins / 60) % 24;
+                if (hours < 0) hours += 24;
+                const minutes = ((mins % 60) + 60) % 60;
+                return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+            };
+            finishEtaWindow = `${formatTime(finishMinsBase - finishUncertainty)} - ${formatTime(finishMinsBase + finishUncertainty)}`;
+        }
         
         // Check cutoff for Crew Card
         let crewCutoffHtml = '';
@@ -11524,6 +11586,8 @@ async function exportCrewCard() {
             crewCutoffHtml = `<div style="font-size: ${detailSize}; font-weight: 600; color: ${color};">${icon} Cutoff: ${cutoff}</div>`;
         }
         
+        const finishTimeFontSize = stationCount <= 4 ? '16px' : (stationCount <= 6 ? '14px' : (stationCount <= 8 ? '13px' : '12px'));
+        
         stationsHtml += `
             <div style="display: flex; align-items: center; padding: ${rowPadding}; background: rgba(76,175,80,0.4); border-radius: 10px; border: 2px solid rgba(76,175,80,0.8);">
                 <div style="font-size: ${iconSize}; margin-right: ${finishIconMargin};">🏁</div>
@@ -11534,7 +11598,7 @@ async function exportCrewCard() {
                     ${crewCutoffHtml}
                 </div>
                 <div style="text-align: right; margin-left: 10px;">
-                    <div style="font-size: ${timeSize}; font-weight: 800;">${finishTimeDisplay}</div>
+                    <div style="font-size: ${finishTimeFontSize}; font-weight: 800;">${finishEtaWindow}</div>
                     <div style="font-size: ${etaSize}; opacity: 0.7;">ETA</div>
                 </div>
             </div>
