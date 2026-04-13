@@ -80,6 +80,16 @@ function setupDevIndicator() {
     }
 }
 
+// Hide DEV-only features on PROD
+function hideDevOnlyFeatures() {
+    if (IS_DEV) return; // Show on DEV
+    
+    // Hide "My Fuel" preferences section (DEV feature)
+    document.querySelectorAll('.fuel-prefs-section').forEach(el => {
+        el.style.display = 'none';
+    });
+}
+
 // Helper to resolve GPX URLs (uses blob storage if available)
 function resolveGpxUrl(gpxPath) {
     // If GPX_STORAGE_URL is defined (in races-config.js), use it for races/ paths
@@ -367,6 +377,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Set up dev indicator (only on dev site)
     setupDevIndicator();
+    
+    // Hide DEV-only features on PROD
+    hideDevOnlyFeatures();
     
     // Check for race landing page mode
     initRaceMode();
