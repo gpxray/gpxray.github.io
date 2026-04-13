@@ -7275,8 +7275,15 @@ function displayApiResults(result) {
         const heroDescentInsight = document.getElementById('heroDescentInsight');
         
         if (heroDescentLoad && gpxData) {
-            const ddlPerKm = ddl.ddlTotal / gpxData.totalDistance;
-            heroDescentLoad.textContent = `${Math.round(ddlPerKm)}/km`;
+            let ddlPerKm = ddl.ddlTotal / gpxData.totalDistance;
+            // Cap display to realistic max (200/km is extreme, >300 indicates bad GPX data)
+            if (ddlPerKm > 300) {
+                ddlPerKm = Math.min(ddlPerKm, 300);
+                heroDescentLoad.textContent = `>${Math.round(ddlPerKm)}/km`;
+                heroDescentLoad.title = 'GPX data may contain errors - value capped';
+            } else {
+                heroDescentLoad.textContent = `${Math.round(ddlPerKm)}/km`;
+            }
         }
         
         if (heroDescentDetail) {
@@ -8729,11 +8736,18 @@ function findTopClimbs(count = 3) {
                     }
                 }
                 
-                allClimbs.push({
-                    start: windowMinDistance,
-                    end: maxElevDistance,
-                    gain: gain
-                });
+                // Calculate climb distance and filter unrealistic climbs
+                const climbDistance = maxElevDistance - windowMinDistance;
+                // Max realistic grade is ~60% (600m per km), filter anything steeper
+                const isRealistic = climbDistance > 0.05 && (gain / (climbDistance * 1000)) < 0.60;
+                
+                if (isRealistic) {
+                    allClimbs.push({
+                        start: windowMinDistance,
+                        end: maxElevDistance,
+                        gain: gain
+                    });
+                }
             }
             
             windowStart = i;
@@ -8760,11 +8774,16 @@ function findTopClimbs(count = 3) {
                 break;
             }
         }
-        allClimbs.push({
-            start: windowMinDistance,
-            end: maxElevDistance,
-            gain: finalGain
-        });
+        // Filter unrealistic final climb
+        const climbDistance = maxElevDistance - windowMinDistance;
+        const isRealistic = climbDistance > 0.05 && (finalGain / (climbDistance * 1000)) < 0.60;
+        if (isRealistic) {
+            allClimbs.push({
+                start: windowMinDistance,
+                end: maxElevDistance,
+                gain: finalGain
+            });
+        }
     }
     
     // Sort by gain descending and return top N
