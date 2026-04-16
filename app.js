@@ -5121,11 +5121,13 @@ function setupFeedback() {
     
     // Check if feedback form has any user input
     const hasFormContent = () => {
-        const feedbackText = document.getElementById('feedbackText')?.value?.trim();
+        const feedbackLike = document.getElementById('feedbackLike')?.value?.trim();
+        const feedbackMissing = document.getElementById('feedbackMissing')?.value?.trim();
+        const feedbackBugs = document.getElementById('feedbackBugs')?.value?.trim();
         const feedbackEmail = document.getElementById('feedbackEmail')?.value?.trim();
         const pricingPerRace = document.getElementById('feedbackPricingPerRace')?.value;
         const pricingPerYear = document.getElementById('feedbackPricingPerYear')?.value;
-        return feedbackText || feedbackEmail || pricingPerRace || pricingPerYear;
+        return feedbackLike || feedbackMissing || feedbackBugs || feedbackEmail || pricingPerRace || pricingPerYear;
     };
     
     // Safe close with confirmation if form has content
