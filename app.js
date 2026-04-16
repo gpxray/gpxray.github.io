@@ -675,9 +675,12 @@ function setupTerrainSliders() {
 // Target Time Input styling
 function setupTargetTimeInput() {
     // Setup for both main page and race page target time inputs
-    const setupInput = (inputId) => {
+    const setupInput = (inputId, paceHintId, paceValueId) => {
         const targetInput = document.getElementById(inputId);
         if (!targetInput) return;
+        
+        const paceHint = document.getElementById(paceHintId);
+        const paceValue = document.getElementById(paceValueId);
         
         const updateStyle = () => {
             const raceLevelButtons = document.getElementById('raceLevelButtons');
@@ -694,12 +697,18 @@ function setupTargetTimeInput() {
                 // Dim runner level buttons (Target Time overrides level)
                 if (raceLevelButtons) raceLevelButtons.classList.add('target-override');
                 if (mainLevelButtons) mainLevelButtons.classList.add('target-override');
+                
+                // Calculate and show average pace
+                updateTargetPaceHint(targetInput.value, paceHint, paceValue);
             } else {
                 targetInput.classList.remove('has-value');
                 
                 // Re-enable runner level buttons if no target time
                 if (raceLevelButtons) raceLevelButtons.classList.remove('target-override');
                 if (mainLevelButtons) mainLevelButtons.classList.remove('target-override');
+                
+                // Hide pace hint
+                if (paceHint) paceHint.style.display = 'none';
             }
             
             // Update override hint visibility
@@ -714,8 +723,8 @@ function setupTargetTimeInput() {
         updateStyle();
     };
     
-    setupInput('heroTargetTime');
-    setupInput('raceTargetTime');
+    setupInput('heroTargetTime', 'heroTargetPaceHint', 'heroTargetPaceValue');
+    setupInput('raceTargetTime', 'raceTargetPaceHint', 'raceTargetPaceValue');
     
     // Setup clear buttons for target time
     document.getElementById('heroTargetTimeClear')?.addEventListener('click', clearTargetTimeOverride);
@@ -1177,6 +1186,59 @@ function clearItraOverride() {
     updateOverrideHint();
 }
 
+// Calculate and display average pace for target time
+function updateTargetPaceHint(targetTimeValue, hintEl, valueEl) {
+    if (!hintEl || !valueEl) return;
+    
+    // Get distance from race config or GPX data
+    const distance = currentDistanceConfig?.distance || gpxData?.totalDistance;
+    if (!distance) {
+        hintEl.style.display = 'none';
+        return;
+    }
+    
+    // Parse target time (HH:MM format)
+    const match = targetTimeValue.match(/^(\d{1,2}):(\d{2})$/);
+    if (!match) {
+        hintEl.style.display = 'none';
+        return;
+    }
+    
+    const hours = parseInt(match[1]);
+    const minutes = parseInt(match[2]);
+    const totalMinutes = hours * 60 + minutes;
+    
+    if (totalMinutes <= 0) {
+        hintEl.style.display = 'none';
+        return;
+    }
+    
+    // Calculate average pace (min/km)
+    const avgPaceMin = totalMinutes / distance;
+    const paceMinutes = Math.floor(avgPaceMin);
+    const paceSeconds = Math.round((avgPaceMin - paceMinutes) * 60);
+    const paceFormatted = `${paceMinutes}:${paceSeconds.toString().padStart(2, '0')}`;
+    
+    // Format display text
+    const lang = typeof getLang === 'function' ? getLang() : 'en';
+    const unit = useMetric ? 'min/km' : 'min/mi';
+    const displayPace = useMetric ? paceFormatted : formatPaceImperial(avgPaceMin);
+    
+    valueEl.textContent = lang === 'de' 
+        ? `≈ ${displayPace} ${unit} Durchschnitt`
+        : `≈ ${displayPace} ${unit} average`;
+    
+    hintEl.style.display = 'block';
+}
+
+// Helper for imperial pace
+function formatPaceImperial(paceMinPerKm) {
+    const paceMinPerMile = paceMinPerKm * 1.60934;
+    const paceMinutes = Math.floor(paceMinPerMile);
+    const paceSeconds = Math.round((paceMinPerMile - paceMinutes) * 60);
+    return `${paceMinutes}:${paceSeconds.toString().padStart(2, '0')}`;
+}
+
 // Clear target time override
 function clearTargetTimeOverride() {
     // Clear both target time inputs
@@ -1189,6 +1251,12 @@ function clearTargetTimeOverride() {
             inp.classList.remove('has-value');
         }
     });
+    
+    // Hide pace hints
+    const heroHint = document.getElementById('heroTargetPaceHint');
+    const raceHint = document.getElementById('raceTargetPaceHint');
+    if (heroHint) heroHint.style.display = 'none';
+    if (raceHint) raceHint.style.display = 'none';
     
     // Re-enable level buttons
     const raceLevelButtons = document.getElementById('raceLevelButtons');

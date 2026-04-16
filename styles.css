@@ -7679,6 +7679,15 @@ h2 {
     color: #00d4ff;
 }
 
+/* Target pace hint (shows avg pace for target time) */
+.target-pace-hint {
+    font-size: 0.75rem;
+    color: rgba(0, 212, 255, 0.8);
+    margin-top: 4px;
+    margin-left: 2px;
+    font-style: italic;
+}
+
 .target-time-hint {
     font-size: 0.8rem;
     color: rgba(255, 255, 255, 0.4);
