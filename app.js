@@ -8284,6 +8284,12 @@ function updateHeroSection(totalTime) {
         if (adjustment && adjustment.addedMinutes >= 1) {
             weatherTimeEl.textContent = `+${adjustment.addedMinutes} min`;
             
+            // Also update the weather widget's adjustment to match (fix inconsistency bug)
+            const heroWeatherAdjText = document.getElementById('heroWeatherAdjText');
+            if (heroWeatherAdjText) {
+                heroWeatherAdjText.textContent = `+${adjustment.addedMinutes} min`;
+            }
+            
             // Build conditions text
             const conditions = [];
             if (raceWeatherData) {
