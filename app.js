@@ -1202,55 +1202,14 @@ function clearTargetTimeOverride() {
     updateOverrideHint();
 }
 
-// Update override hint visibility and text based on active overrides
+// Update override hint visibility - DISABLED: hint was confusing users
+// Keeping function for potential future use but hiding hint entirely
 function updateOverrideHint() {
-    const lang = typeof getLang === 'function' ? getLang() : 'en';
-    
-    // Helper to get positive hint text
-    const getHintText = (hasTargetTime, hasItra) => {
-        if (hasTargetTime && hasItra) {
-            return lang === 'de' ? '✓ Personalisierte Pace aus Zielzeit' : '✓ Personalized pace from target time';
-        } else if (hasTargetTime) {
-            return lang === 'de' ? '✓ Personalisierte Pace aus Zielzeit' : '✓ Personalized pace from target time';
-        } else if (hasItra) {
-            return lang === 'de' ? '✓ Personalisierte Pace aus ITRA-Score' : '✓ Personalized pace from ITRA score';
-        }
-        return '';
-    };
-    
-    // Main page hint
+    // Hide hints - the cyan input styling already shows ITRA/target time is active
     const mainHint = document.getElementById('mainLevelOverrideHint');
-    const heroTargetTime = document.getElementById('heroTargetTime');
-    const mainItraInput = document.getElementById('mainItraScoreInput');
-    
-    const hasMainTargetTime = heroTargetTime?.value?.match(/^\d{1,2}:\d{2}$/);
-    const hasMainItra = mainItraInput?.value && parseInt(mainItraInput.value) >= 200;
-    
-    if (mainHint) {
-        if (hasMainTargetTime || hasMainItra) {
-            mainHint.textContent = getHintText(hasMainTargetTime, hasMainItra);
-            mainHint.style.display = 'block';
-        } else {
-            mainHint.style.display = 'none';
-        }
-    }
-    
-    // Race modal hint
     const raceHint = document.getElementById('raceLevelOverrideHint');
-    const raceTargetTime = document.getElementById('raceTargetTime');
-    const raceItraInput = document.getElementById('itraScoreInput');
-    
-    const hasRaceTargetTime = raceTargetTime?.value?.match(/^\d{1,2}:\d{2}$/);
-    const hasRaceItra = raceItraInput?.value && parseInt(raceItraInput.value) >= 200;
-    
-    if (raceHint) {
-        if (hasRaceTargetTime || hasRaceItra) {
-            raceHint.textContent = getHintText(hasRaceTargetTime, hasRaceItra);
-            raceHint.style.display = 'block';
-        } else {
-            raceHint.style.display = 'none';
-        }
-    }
+    if (mainHint) mainHint.style.display = 'none';
+    if (raceHint) raceHint.style.display = 'none';
 }
 
 // Initialize 24h Time Picker
