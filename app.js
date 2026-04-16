@@ -12540,6 +12540,24 @@ function calculateWeatherAdjustment(tempMax, tempMin, rainChance, windSpeed, wea
     const breakdown = [];
     const tempAvg = (tempMax + tempMin) / 2;
     
+    // Calculate terrain technicality factor based on elevation ratio (m/km)
+    // Used to scale rain penalty - wet rocks/roots are much worse on technical terrain
+    let techFactor = 0.6; // Default: moderate terrain
+    const distance = currentDistanceConfig?.distance || gpxData?.totalDistance;
+    const elevation = currentDistanceConfig?.elevation || gpxData?.totalElevationGain;
+    if (distance && elevation) {
+        const elevRatio = elevation / distance; // m/km
+        if (elevRatio < 30) {
+            techFactor = 0.4; // Easy trails (gravel, forest) - RET, flat races
+        } else if (elevRatio < 50) {
+            techFactor = 0.6; // Moderate trails - rolling hills
+        } else if (elevRatio < 75) {
+            techFactor = 0.85; // Technical mountain - UTMB
+        } else {
+            techFactor = 1.0; // Very technical alpine - Lavaredo, steep races
+        }
+    }
+    
     // Heat penalty: +0.5% per °C above 15°C, accelerates above 25°C
     if (tempAvg > 15) {
         const heatDegrees = tempAvg - 15;
@@ -12562,19 +12580,21 @@ function calculateWeatherAdjustment(tempMax, tempMin, rainChance, windSpeed, wea
         breakdown.push({ factor: 'cold', degrees: Math.round(coldDegrees), penalty: coldPenalty });
     }
     
-    // Rain penalty on trails: +2-4% depending on intensity
+    // Rain penalty: base 2-4% scaled by terrain technicality
+    // Technical trails (wet rocks, roots) = full penalty; easy trails = 40% of penalty
     const isRainy = weatherCode >= 51 && weatherCode <= 82;
     if (isRainy || rainChance > 50) {
-        let rainPenalty;
+        let baseRainPenalty;
         if (weatherCode >= 61 && weatherCode <= 67) {
-            rainPenalty = 3.5; // Moderate rain
+            baseRainPenalty = 3.5; // Moderate rain
         } else if (weatherCode >= 80 && weatherCode <= 82) {
-            rainPenalty = 4.0; // Heavy showers
+            baseRainPenalty = 4.0; // Heavy showers
         } else if (rainChance > 70) {
-            rainPenalty = 3.0;
+            baseRainPenalty = 3.0;
         } else {
-            rainPenalty = 2.0; // Light rain / drizzle
+            baseRainPenalty = 2.0; // Light rain / drizzle
         }
+        const rainPenalty = baseRainPenalty * techFactor;
         totalPenalty += rainPenalty;
         breakdown.push({ factor: 'rain', penalty: rainPenalty });
     }
