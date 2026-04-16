@@ -5136,8 +5136,29 @@ function setupFeedback() {
         feedbackOverlay.classList.remove('active');
     };
     
-    feedbackClose?.addEventListener('click', closePanel);
-    feedbackOverlay?.addEventListener('click', closePanel);
+    // Check if feedback form has any user input
+    const hasFormContent = () => {
+        const feedbackText = document.getElementById('feedbackText')?.value?.trim();
+        const feedbackEmail = document.getElementById('feedbackEmail')?.value?.trim();
+        const pricingPerRace = document.getElementById('feedbackPricingPerRace')?.value;
+        const pricingPerYear = document.getElementById('feedbackPricingPerYear')?.value;
+        return feedbackText || feedbackEmail || pricingPerRace || pricingPerYear;
+    };
+    
+    // Safe close with confirmation if form has content
+    const safeClosePanel = () => {
+        if (hasFormContent()) {
+            const lang = typeof getLang === 'function' ? getLang() : 'en';
+            const confirmMsg = lang === 'de' 
+                ? 'Dein Feedback wird verworfen. Wirklich schließen?' 
+                : 'Your feedback will be lost. Close anyway?';
+            if (!confirm(confirmMsg)) return;
+        }
+        closePanel();
+    };
+    
+    feedbackClose?.addEventListener('click', safeClosePanel);
+    feedbackOverlay?.addEventListener('click', safeClosePanel);
     
     // Handle form submission
     feedbackForm?.addEventListener('submit', async (e) => {
@@ -12216,6 +12237,9 @@ function initRaceModeContent(raceConfig) {
     
     // Setup Create Strategy button handler
     setupRaceCreateStrategyButton();
+    
+    // Ensure override hints are hidden on page load (no values should be set yet)
+    updateOverrideHint();
     
     // Track race page view
     trackEvent('race_landing_view', { race_id: raceConfig.id, race_name: raceConfig.name });
